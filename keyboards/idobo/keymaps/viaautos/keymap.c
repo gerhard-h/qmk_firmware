@@ -594,28 +594,43 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            , KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_M,    KC_COMM, TD(TD_DOT),  TD(TD_DASH), KC_UP, MT(MOD_LSFT | MOD_RSFT,KC_END) ,
     
     KC_NO, KC_NO, KC_NO, MT(MOD_LCTL, KC_PGUP), MT(MOD_LGUI, KC_PGDN), MT(MOD_LALT,KC_DEL)
-                               , LT(_L1,KC_BSPC), 
-                                        LT(_L2,KC_ENT),
+                               , LT(_L2,KC_BSPC), 
+                                        LT(_L1,KC_ENT),
                                                 MT(MOD_LSFT,KC_SPC), MT(MOD_LSFT,KC_SPC),
-                                                        LT(_L1,KC_SPC),
-                                                                   OSL(_L2),
+                                                        LT(_L2,KC_SPC),
+                                                                   OSL(_L1),
                                                                             KC_LEFT, KC_DOWN, KC_RGHT
  ),
-
- [1] = LAYOUT_ortho_5x15(
+/* [1] = LAYOUT_ortho_5x15(
     KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
     KC_TRNS, KC_TRNS, KC_TRNS, KC_ESC,   ALGR(KC_Q), KC_AT,    SQUAR     , ALGR(KC_9),  KC_PERC, KC_EXLM, KC_LBRC,ALGR(KC_MINS),KC_SCLN    ,ALGR(KC_RBRC), KC_TRNS,
     KC_TRNS, KC_TRNS, KC_TRNS, KC_GRV,  KC_QUOT,    KC_MINS,  CURLY     , ALGR(KC_0), KC_RCBR , KC_UNDS, PARAN,KC_LPRN      ,S(KC_NUHS) ,KC_NUHS      , KC_TRNS,
     KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,  KC_EQL,     KC_CIRC,  ALGR(KC_NUBS),  KC_DLR,  KC_PPLS, KC_RPRN, ANGUL,ALGR(KC_MINS),    KC_AMPR,        KC_UP, KC_TRNS,
     KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,    TG(_L2),    KC_TRNS, KC_TRNS, KC_TRNS
   ),
-
- [2] = LAYOUT_ortho_5x15(
+ */
+ [1] = LAYOUT_ortho_5x15(
+    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+    KC_TRNS, KC_TRNS, KC_TRNS, KC_ESC,        KC_1,      KC_2,                   KC_3,                   ALGR(KC_E),              KC_DOT,  KC_EXLM, KC_LBRC,ALGR(KC_MINS),KC_SCLN    ,ALGR(KC_RBRC), KC_TRNS,
+    KC_TRNS, KC_TRNS, KC_TRNS, KC_GRV,  KC_4,      MT(MOD_LALT,KC_5),      MT(MOD_LCTL,KC_6),      MT(MOD_LSFT,KC_1),      KC_GT , KC_UNDS, PARAN,KC_LPRN      ,S(KC_NUHS) ,KC_PPLS      , KC_TRNS,
+    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,  KC_7,      KC_8,                   KC_9,                   KC_0,                   KC_COMM, KC_RPRN, ANGUL,ALGR(KC_MINS),    KC_AMPR,        KC_UP, KC_TRNS,
+    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,    TG(_L2),    KC_TRNS, KC_TRNS, KC_TRNS
+  ),
+/*
+[2] = LAYOUT_ortho_5x15(
     KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
     KC_TRNS, KC_TRNS, KC_TRNS, KC_ESC,       KC_1,      KC_2,                   KC_3,                   ALGR(KC_E),              KC_DOT,     KC_SLSH,      KC_LBRC,      KC_UP,      KC_SCLN,      KC_TRNS,      KC_BSPC,
     KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,      KC_4,      MT(MOD_LALT,KC_5),      MT(MOD_LSFT,KC_6),      MT(MOD_LCTL,KC_P1),      KC_GT,      KC_HOME,      KC_LEFT,      KC_DOWN,      KC_RGHT,      KC_END,      KC_TRNS,   
     KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,      KC_7,      KC_8,                   KC_9,                   KC_0,                   KC_COMM,    KC_RCBR,      KC_BSPC,      KC_DEL,      KC_ENT,      KC_TRNS,      KC_TRNS,      
     KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_LGUI,MT(MOD_LALT,KC_0),TG(_L1), KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,   TO(_L1),    KC_TRNS, KC_TRNS, KC_TRNS
+  ),
+*/
+ [2] = LAYOUT_ortho_5x15(
+    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,    KC_TRNS,              KC_TRNS,              KC_TRNS,              KC_TRNS,                  KC_TRNS,      KC_TRNS,      KC_TRNS,    KC_TRNS,      KC_TRNS,      KC_TRNS,
+    KC_TRNS, KC_TRNS, KC_TRNS, KC_ESC,  ALGR(KC_Q), KC_AT,                SQUAR  ,              ALGR(KC_9),           KC_PERC,                  KC_SLSH,      KC_LBRC,      KC_UP,      KC_SCLN,      KC_TRNS,      KC_BSPC,
+    KC_TRNS, KC_TRNS, KC_TRNS, KC_GRV,  KC_QUOT,    MT(MOD_LALT,KC_MINS), MT(MOD_LCTL,KC_PAST), MT(MOD_LSFT,KC_NUHS), KC_DLR,            KC_HOME,      KC_LEFT,      KC_DOWN,    KC_RGHT,      KC_END,       KC_TRNS,   
+    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_EQL,     KC_CIRC,              CURLY               , ALGR(KC_0),           ALGR(KC_NUBS),                  KC_ESC,       KC_BSPC,      KC_DEL,     KC_ENT,       KC_TRNS,      KC_TRNS,      
+    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_LGUI,    MT(MOD_LALT,KC_0),    TG(_L1),              KC_TRNS,              KC_TRNS,                  KC_TRNS,      KC_TRNS,      TO(_L1),    KC_TRNS,      KC_TRNS,      KC_TRNS
   ),
 
  [3] = LAYOUT_ortho_5x15(
