@@ -111,7 +111,8 @@ enum {
   PAR,
   CUR,
   SQU,
-  ANG
+  ANG,
+  TD_H
 };
 
 
@@ -285,6 +286,37 @@ void dot_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
             unregister_code(KC_DOT);
             register_code(KC_DOT);
             unregister_code(KC_DOT);
+        default: break;
+    }
+}
+static td_tap_t htap_state = {
+    .is_press_action = true,
+    .state = TD_NONE
+};
+void h_dance_reset (qk_tap_dance_state_t *state, void *user_data) {
+switch (htap_state.state) {
+        case TD_SINGLE_TAP: unregister_code(KC_H); break;
+        case TD_SINGLE_HOLD: unregister_code16(S(KC_H)); break;
+        case TD_DOUBLE_TAP: unregister_code(KC_H); break;
+        case TD_DOUBLE_HOLD: unregister_code16(S(KC_H)); break;
+        case TD_DOUBLE_SINGLE_TAP: unregister_code(KC_H);
+        default: break;
+    }htap_state.state = TD_NONE;
+}
+
+void h_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
+        htap_state.state = cur_dance(state);
+    switch (htap_state.state) {
+        case TD_SINGLE_TAP: register_code(KC_H); break;
+        case TD_SINGLE_HOLD:
+            register_code16(S(KC_H));
+        break;
+        case TD_DOUBLE_HOLD:
+            register_code16(S(KC_H));
+            break;
+        case TD_DOUBLE_TAP:
+        case TD_DOUBLE_SINGLE_TAP:
+            register_code(KC_H);
         default: break;
     }
 }
@@ -528,6 +560,7 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_Q] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_q_finished, dance_q_reset),
     [TD_DASH] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dash_dance_finished, dash_dance_reset),
     [TD_DOT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dot_dance_finished, dot_dance_reset),
+    [TD_H] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, h_dance_finished, h_dance_reset),
     [TD_SS_UML] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_suml_finished, dance_suml_reset),
     [CT_AUML] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_auml_finished, dance_auml_reset),
     [TD_O_UML] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_ouml_finished, dance_ouml_reset),
@@ -589,7 +622,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_HOME, KC_NO, KC_DEL, KC_DEL,  TD(TD_Q),    KC_W,    KC_E,    KC_R,    KC_J,    KC_Y,TD(TD_U_UML),    KC_I, TD(TD_O_UML),    KC_P,    KC_BSPC,
     
     KC_PGUP, KC_VOLU, KC_TAB, MT(MOD_LCTL | MOD_LSFT,KC_TAB),
-             TD(CT_AUML), TD(TD_SS_UML), MT(MOD_LCTL, KC_D),   MT(MOD_LSFT, KC_F),    KC_G,    KC_H,    MT(MOD_LSFT, KC_N),   MT(MOD_LCTL,KC_T),  KC_L,MT(MOD_LALT,KC_K), MT(MOD_LCTL | MOD_RCTL,KC_ENT),
+             TD(CT_AUML), TD(TD_SS_UML), MT(MOD_LCTL, KC_D),   MT(MOD_LSFT, KC_F),    KC_G,    TD(TD_H),    MT(MOD_LSFT, KC_N),   MT(MOD_LCTL,KC_T),  KC_L,MT(MOD_LALT,KC_K), MT(MOD_LCTL | MOD_RCTL,KC_ENT),
     
     KC_PGDN, KC_VOLD, KC_LSFT, MT(MOD_LSFT,KC_HOME)
            , KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_M,    KC_COMM, TD(TD_DOT),  TD(TD_DASH), KC_UP, MT(MOD_LSFT | MOD_RSFT,KC_END) ,
