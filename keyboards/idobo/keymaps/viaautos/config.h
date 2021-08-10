@@ -39,14 +39,15 @@
 
 #define TAPPING_TERM 200
 // # define TAP_CODE_DELAY 10 //will not fix Remotedesktop timings
-#define AUTO_SHIFT_TIMEOUT 150 //overwrite in C:\Users\heideg\qmk_firmware\quantum\process_keycode\process_auto_shift.h
-#define AUTO_SHIFT_NO_AUTO_REPEAT
-#define NO_AUTO_SHIFT_NUMERIC
+#define USB_POLLING_INTERVAL_MS 1
+#define AUTO_SHIFT_TIMEOUT 140 //overwrite in C:\Users\heideg\qmk_firmware\quantum\process_keycode\process_auto_shift.h
+//#define AUTO_SHIFT_NO_AUTO_REPEAT
+//#define NO_AUTO_SHIFT_NUMERIC
 #define DYNAMIC_KEYMAP_LAYER_COUNT 5
 #define NO_ACTION_MACRO //disable old-style macro handling using MACRO(), action_get_macro() (deprecated) EXTRAFLAGS += -flto
 #define NO_ACTION_FUNCTION //disable old-style function handling using fn_actions, action_function() (deprecated) EXTRAFLAGS += -flto
 
 
-#define TAPPING_FORCE_HOLD // gives the hold behavior priority over the keyrepeat behavior.
+//#define TAPPING_FORCE_HOLD // gives the hold behavior priority over the keyrepeat behavior.
 #define IGNORE_MOD_TAP_INTERRUPT
 #define PERMISSIVE_HOLD
