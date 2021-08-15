@@ -689,11 +689,11 @@ static td_tap_t pipe_sft_tap_state = {
 void dance_pipe_sft_finished(qk_tap_dance_state_t *state, void *user_data) {
     pipe_sft_tap_state.state = cur_dance(state);
     switch (pipe_sft_tap_state.state) {
-        case TD_SINGLE_TAP: tap_code16(S(KC_6)); break;
-        case TD_SINGLE_HOLD: register_mods(MOD_BIT(KC_LCTL)); break;
+        case TD_SINGLE_TAP: tap_code16(ALGR(KC_NUBS)); break;
+        case TD_SINGLE_HOLD: register_mods(MOD_BIT(KC_LSFT)); break;
         case TD_DOUBLE_HOLD:
         case TD_DOUBLE_TAP:
-        case TD_DOUBLE_SINGLE_TAP: tap_code16(S(KC_0));  register_code16(S(KC_6)); break;
+        case TD_DOUBLE_SINGLE_TAP: tap_code16(ALGR(KC_NUBS));  register_code16(ALGR(KC_NUBS)); break;
         default: break;
     }
 }
@@ -701,10 +701,10 @@ void dance_pipe_sft_finished(qk_tap_dance_state_t *state, void *user_data) {
 void dance_pipe_sft_reset(qk_tap_dance_state_t *state, void *user_data) {
     switch (pipe_sft_tap_state.state) {
         case TD_SINGLE_TAP: break;
-        case TD_SINGLE_HOLD: unregister_mods(MOD_BIT(KC_LCTL)); break;
+        case TD_SINGLE_HOLD: unregister_mods(MOD_BIT(KC_LSFT)); break;
         case TD_DOUBLE_HOLD:
         case TD_DOUBLE_TAP:
-        case TD_DOUBLE_SINGLE_TAP: unregister_code16(S(KC_6));
+        case TD_DOUBLE_SINGLE_TAP: unregister_code16(ALGR(KC_NUBS));
         default: break;
     }
     pipe_sft_tap_state.state = TD_NONE;
@@ -754,6 +754,7 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_O_UML] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_ouml_finished, dance_ouml_reset),
     [TD_I_BS] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_iuml_finished, dance_iuml_reset),
     [TD_DOL_CTL] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_dol_ctl_finished, dance_dol_ctl_reset),
+    [TD_PIPE_SFT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_pipe_sft_finished, dance_pipe_sft_reset),
     [TD_U_UML] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_uuml_finished, dance_uuml_reset),
     [TD_PAR] = ACTION_TAP_DANCE_FN_ADVANCED( NULL, paranthesis_dance_finished, paranthesis_dance_reset )
    ,[TD_CUR] = ACTION_TAP_DANCE_FN_ADVANCED( NULL, curly_dance_finished, curly_dance_reset)
