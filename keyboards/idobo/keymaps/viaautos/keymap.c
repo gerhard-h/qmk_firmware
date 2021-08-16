@@ -48,7 +48,7 @@ void keyboard_post_init_user(void) {
 }
 */
 
-enum layers { _L0, _L1, _L2, _L3, _L4, _L5 };
+enum layers { _L0, _L1, _L2, _L3, _L4 };
 
 
 // Macros
@@ -56,6 +56,7 @@ enum custom_keycodes {
     PICKFIRST = SAFE_RANGE,
     PICK2ND,
     PICK3RD,
+    CTLSFTF
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -81,6 +82,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case PICK3RD:
         if (record->event.pressed) {
              tap_code(KC_UP);tap_code(KC_RGHT);tap_code(KC_RGHT);tap_code(KC_ENT);
+        }
+        break;
+        
+    case CTLSFTF:
+        if (record->event.pressed) {
+             register_mods(MOD_BIT(KC_LCTL));
+             register_mods(MOD_BIT(KC_LSFT));
+             tap_code(KC_F);             
+             unregister_mods(MOD_BIT(KC_LSFT));
+             unregister_mods(MOD_BIT(KC_LCTL));
         }
         break;
     }
@@ -831,7 +842,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  [1] = LAYOUT_ortho_5x15(
     KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_F12,         KC_F1,              KC_F2,                  KC_F3,                  KC_F4,         KC_F5,    KC_F6,    KC_F7,          KC_F8,         KC_F9,         KC_F10,        KC_F11,
     KC_TRNS,     TO(_L2),        KC_TRNS,       KC_TRNS,         KC_1,               KC_2,                   KC_3,             ALGR(KC_E),        KC_DOT,  KC_EXLM,  KC_LBRC,  ALGR(KC_MINS),       KC_SCLN,  ALGR(KC_RBRC),       KC_TRNS,
-    KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_TRNS,         KC_4,   MT(MOD_LALT,KC_5),      MT(MOD_LCTL,KC_6),      MT(MOD_LSFT,KC_1),         KC_GT,  KC_UNDS,    PARAN,        KC_LPRN,    S(KC_NUHS),        KC_NUHS,       KC_TRNS,
+    KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_TRNS,         KC_4,   MT(MOD_LALT,KC_5),      MT(MOD_LSFT,KC_6),      MT(MOD_LCTL,KC_1),         KC_GT,  KC_UNDS,    PARAN,        KC_LPRN,    S(KC_NUHS),        KC_NUHS,       KC_TRNS,
     KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_TRNS,         KC_7,               KC_8,                   KC_9,                   KC_0,       KC_COMM,  KC_RPRN,    ANGUL,     S(KC_NUBS),       KC_AMPR,          KC_UP,       KC_TRNS,
     KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_TRNS,      KC_TRNS,  MT(MOD_LALT,KC_0),                KC_TRNS,                KC_TRNS,       KC_TRNS,  KC_TRNS,  KC_TRNS,        TG(_L2),       KC_TRNS,        KC_TRNS,       KC_TRNS
   ),
@@ -844,7 +855,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 */
  [2] = LAYOUT_ortho_5x15(
     KC_TRNS, KC_TRNS, KC_TRNS,       KC_TRNS,     KC_TRNS,                 KC_TRNS,              KC_TRNS,                 KC_TRNS,              KC_TRNS,                  KC_TRNS,      KC_TRNS,      KC_TRNS,    KC_TRNS,      KC_TRNS,      KC_TRNS,
-    KC_TRNS, TO(_L3), KC_TRNS, TD(TD_CIRCUM),  ALGR(KC_Q),                   KC_AT,                SQUAR,              ALGR(KC_9),              KC_PERC,                  KC_SLSH,      KC_LBRC,      KC_UP,      KC_SCLN,      KC_TRNS,      KC_BSPC,
+    KC_TRNS, TG(_L1), KC_TRNS, TD(TD_CIRCUM),  ALGR(KC_Q),                   KC_AT,                SQUAR,              ALGR(KC_9),              KC_PERC,                  KC_SLSH,      CTLSFTF,      KC_UP,      KC_SCLN,      KC_TRNS,      KC_BSPC,
     KC_TRNS, KC_TRNS, KC_TRNS,       KC_TRNS,     KC_QUOT,    MT(MOD_LALT,KC_MINS),       TD(TD_PIPE_SFT),         TD(TD_DOL_CTL),              KC_RBRC,                  KC_HOME,      KC_LEFT,      KC_DOWN,    KC_RGHT,      KC_END,       KC_TRNS,
     KC_TRNS, KC_TRNS, KC_TRNS,       KC_TRNS, TD(TD_TICK),                 KC_CIRC,                CURLY,               ALGR(KC_0),          S(KC_RBRC),                   KC_ESC,      KC_BSPC,      KC_DEL,     KC_ENT,       KC_TRNS,      KC_TRNS,
     KC_TRNS, KC_TRNS, KC_TRNS,       KC_TRNS,     KC_LGUI,      MT(MOD_LALT,KC_DEL),              KC_TRNS,              KC_TRNS,                KC_TRNS,                  KC_TRNS,      KC_TRNS,      KC_TRNS,    KC_TRNS,      KC_TRNS,      KC_TRNS
@@ -860,12 +871,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
  [4] = LAYOUT_ortho_5x15(
     KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_F12,         KC_F1,              KC_F2,                  KC_F3,                  KC_F4,         KC_F5,    KC_F6,    KC_F7,          KC_F8,         KC_F9,         KC_F10,        KC_F11,
-    TO(_L0),     TO(_L0),        KC_TRNS,       KC_TRNS,         KC_1,               KC_2,                   KC_3,             ALGR(KC_E),        KC_DOT,  KC_EXLM,  KC_LBRC,  ALGR(KC_MINS),       KC_SCLN,  ALGR(KC_RBRC),       KC_TRNS,
-    KC_ASDN,     KC_ASUP,        KC_TRNS,       KC_TRNS,         KC_4,   MT(MOD_LALT,KC_5),      MT(MOD_LCTL,KC_6),      MT(MOD_LSFT,KC_1),         KC_GT,  KC_UNDS, PICKFIRST,      PICK2ND,       PICK3RD,        KC_NUHS,       KC_TRNS,
+    KC_TRNS,     TO(_L0),        KC_TRNS,       KC_TRNS,         KC_1,               KC_2,                   KC_3,             ALGR(KC_E),        KC_DOT,  KC_EXLM,  KC_LBRC,  ALGR(KC_MINS),       KC_SCLN,  ALGR(KC_RBRC),       KC_TRNS,
+    KC_ASDN,     KC_ASUP,        KC_TRNS,       KC_TRNS,         KC_4,   MT(MOD_LALT,KC_5),      MT(MOD_LSFT,KC_6),      MT(MOD_LCTL,KC_1),         KC_GT,  KC_UNDS, PICKFIRST,      PICK2ND,       PICK3RD,        KC_NUHS,       KC_TRNS,
     KC_ASON,    KC_ASOFF,        KC_TRNS,       KC_TRNS,         KC_7,               KC_8,                   KC_9,                   KC_0,       KC_COMM,  KC_RPRN,    ANGUL,     S(KC_NUBS),       KC_AMPR,          KC_VOLU,       KC_TRNS,
     KC_ASTG,     KC_ASRP,        KC_TRNS,       KC_TRNS,      KC_TRNS,  MT(MOD_LALT,KC_0),                KC_TRNS,                KC_TRNS,       KC_TRNS,  KC_TRNS,  KC_TRNS,        TG(_L2),       KC_TRNS,        KC_VOLD,       KC_TRNS
   ),
-
 
 };
 
