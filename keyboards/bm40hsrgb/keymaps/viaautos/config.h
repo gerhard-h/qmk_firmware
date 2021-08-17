@@ -48,4 +48,4 @@
 
 #define TAPPING_FORCE_HOLD // gives the hold behavior priority over the keyrepeat behavior.
 #define IGNORE_MOD_TAP_INTERRUPT
-//#define PERMISSIVE_HOLD
+#define PERMISSIVE_HOLD
