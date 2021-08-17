@@ -37,7 +37,7 @@
 #define DIODE_DIRECTION COL2ROW
 
 /* Debounce reduces chatter (unintended double-presses) - set 0 if debouncing is not needed */
-#define DEBOUNCE 5
+#define DEBOUNCE 0
 
 /* Mechanical locking support. Use KC_LCAP, KC_LNUM or KC_LSCR instead in keymap */
 #define LOCKING_SUPPORT_ENABLE
@@ -53,3 +53,32 @@
 #ifndef RGB_DISABLE_WHEN_USB_SUSPENDED
 #    define RGB_DISABLE_WHEN_USB_SUSPENDED true // turn off effects when suspended
 #endif
+
+/*
+ * Force NKRO
+ *
+ * Force NKRO (nKey Rollover) to be enabled by default, regardless of the saved
+ * state in the bootmagic EEPROM settings. (Note that NKRO must be enabled in the
+ * makefile for this to work.)
+ *
+ * If forced on, NKRO can be disabled via magic key (default = LShift+RShift+N)
+ * until the next keyboard reset.
+ *
+ * NKRO may prevent your keystrokes from being detected in the BIOS, but it is
+ * fully operational during normal computer usage.
+ *
+ * For a less heavy-handed approach, enable NKRO via magic key (LShift+RShift+N)
+ * or via bootmagic (hold SPACE+N while plugging in the keyboard). Once set by
+ * bootmagic, NKRO mode will always be enabled until it is toggled again during a
+ * power-up.
+ *
+ */
+#define FORCE_NKRO
+
+/*
+ * Feature disable options
+ *  These options are also useful to firmware size reduction.
+ */
+ 
+#define NO_ACTION_MACRO
+#define NO_ACTION_FUNCTION

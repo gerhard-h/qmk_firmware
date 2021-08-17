@@ -1,4 +1,4 @@
-/* Copyright 2020 IFo Hancroft
+/* Copyright 2020 gerhard-h
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -155,7 +155,7 @@ enum {
   TD_SS_UML,
   TD_DASH,
   TD_DOT,
-  TD_Q,
+//  TD_Q,
   TD_PAR,
   TD_CUR,
   TD_SQU,
@@ -164,9 +164,6 @@ enum {
   TD_I_BS,
   TD_CIRCUM,
   TD_TICK,
-  TD_W1,
-  TD_W2,
-  TD_W3,
   TD_COMM,
   TD_DOL_CTL,
   TD_PIPE_SFT
@@ -831,28 +828,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                                                 MT(MOD_LSFT,KC_SPC), MT(MOD_LSFT,KC_SPC),
                                                                                                                                              LT(_L2,KC_SPC),       OSL(_L4),        KC_LEFT,            KC_DOWN,                         KC_RGHT
  ),
-/* [1] = LAYOUT_ortho_5x15(
-    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-    KC_TRNS, KC_TRNS, KC_TRNS, KC_ESC,   ALGR(KC_Q), KC_AT,    SQUAR     , ALGR(KC_9),  KC_PERC, KC_EXLM, KC_LBRC,ALGR(KC_MINS),KC_SCLN    ,ALGR(KC_RBRC), KC_TRNS,
-    KC_TRNS, KC_TRNS, KC_TRNS, KC_GRV,  KC_QUOT,    KC_MINS,  CURLY     , ALGR(KC_0), KC_RCBR , KC_UNDS, PARAN,KC_LPRN      ,S(KC_NUHS) ,KC_NUHS      , KC_TRNS,
-    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,  KC_EQL,     KC_CIRC,  ALGR(KC_NUBS),  KC_DLR,  KC_PPLS, KC_RPRN, ANGUL,ALGR(KC_MINS),    KC_AMPR,        KC_UP, KC_TRNS,
-    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,    TG(_L2),    KC_TRNS, KC_TRNS, KC_TRNS
-  ),
- */
+
  [1] = LAYOUT_ortho_5x15(
     KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_F12,         KC_F1,              KC_F2,                  KC_F3,                  KC_F4,         KC_F5,    KC_F6,    KC_F7,          KC_F8,         KC_F9,         KC_F10,        KC_F11,
     KC_TRNS,     TO(_L2),        KC_TRNS,       KC_TRNS,         KC_1,               KC_2,                   KC_3,             ALGR(KC_E),        KC_DOT,  KC_EXLM,  KC_LBRC,  ALGR(KC_MINS),       KC_SCLN,  ALGR(KC_RBRC),       KC_TRNS,
-    KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_TRNS,         KC_4,   MT(MOD_LALT,KC_5),      MT(MOD_LSFT,KC_6),      MT(MOD_LCTL,KC_1),         KC_GT,  KC_UNDS,    PARAN,        KC_LPRN,    S(KC_NUHS),        KC_NUHS,       KC_TRNS,
-    KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_TRNS,         KC_7,               KC_8,                   KC_9,                   KC_0,       KC_COMM,  KC_RPRN,    ANGUL,     S(KC_NUBS),       KC_AMPR,          KC_UP,       KC_TRNS,
+    KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_TRNS,         KC_4,   MT(MOD_LALT,KC_5),      MT(MOD_LSFT,KC_6),      MT(MOD_LCTL,KC_0),         KC_GT,  KC_UNDS,    PARAN,        KC_LPRN,    S(KC_NUHS),        KC_NUHS,       KC_TRNS,
+    KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_TRNS,         KC_7,               KC_8,                   KC_9,                   KC_1,       KC_COMM,  KC_RPRN,    ANGUL,     S(KC_NUBS),       KC_AMPR,          KC_UP,       KC_TRNS,
     KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_TRNS,      KC_TRNS,  MT(MOD_LALT,KC_0),                KC_TRNS,                KC_TRNS,       KC_TRNS,  KC_TRNS,  KC_TRNS,        TG(_L2),       KC_TRNS,        KC_TRNS,       KC_TRNS
   ),
-/*
-    KC_TRNS, KC_TRNS, KC_TRNS, KC_ESC,       KC_1,      KC_2,                   KC_3,                   ALGR(KC_E),              KC_DOT,     KC_SLSH,      KC_LBRC,      KC_UP,      KC_SCLN,      KC_TRNS,      KC_BSPC,
-    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,      KC_4,      MT(MOD_LALT,KC_5),      MT(MOD_LSFT,KC_6),      MT(MOD_LCTL,KC_P1),      KC_GT,      KC_HOME,      KC_LEFT,      KC_DOWN,      KC_RGHT,      KC_END,      KC_TRNS,   
-    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,      KC_7,      KC_8,                   KC_9,                   KC_0,                   KC_COMM,    KC_RCBR,      KC_BSPC,      KC_DEL,      KC_ENT,      KC_TRNS,      KC_TRNS,      
-    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_LGUI,MT(MOD_LALT,KC_0),TG(_L1), KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,   TO(_L1),    KC_TRNS, KC_TRNS, KC_TRNS
-  ),
-*/
+
  [2] = LAYOUT_ortho_5x15(
     KC_TRNS, KC_TRNS, KC_TRNS,       KC_TRNS,     KC_TRNS,                 KC_TRNS,              KC_TRNS,                 KC_TRNS,              KC_TRNS,                  KC_TRNS,      KC_TRNS,      KC_TRNS,    KC_TRNS,      KC_TRNS,      KC_TRNS,
     KC_TRNS, TG(_L1), KC_TRNS, TD(TD_CIRCUM),  ALGR(KC_Q),                   KC_AT,                SQUAR,              ALGR(KC_9),              KC_PERC,                  KC_SLSH,      CTLSFTF,      KC_UP,      KC_SCLN,      KC_TRNS,      KC_BSPC,
@@ -872,8 +856,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  [4] = LAYOUT_ortho_5x15(
     KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_F12,         KC_F1,              KC_F2,                  KC_F3,                  KC_F4,         KC_F5,    KC_F6,    KC_F7,          KC_F8,         KC_F9,         KC_F10,        KC_F11,
     KC_TRNS,     TO(_L0),        KC_TRNS,       KC_TRNS,         KC_1,               KC_2,                   KC_3,             ALGR(KC_E),        KC_DOT,  KC_EXLM,  KC_LBRC,  ALGR(KC_MINS),       KC_SCLN,  ALGR(KC_RBRC),       KC_TRNS,
-    KC_ASDN,     KC_ASUP,        KC_TRNS,       KC_TRNS,         KC_4,   MT(MOD_LALT,KC_5),      MT(MOD_LSFT,KC_6),      MT(MOD_LCTL,KC_1),         KC_GT,  KC_UNDS, PICKFIRST,      PICK2ND,       PICK3RD,        KC_NUHS,       KC_TRNS,
-    KC_ASON,    KC_ASOFF,        KC_TRNS,       KC_TRNS,         KC_7,               KC_8,                   KC_9,                   KC_0,       KC_COMM,  KC_RPRN,    ANGUL,     S(KC_NUBS),       KC_AMPR,          KC_VOLU,       KC_TRNS,
+    KC_ASDN,     KC_ASUP,        KC_TRNS,       KC_TRNS,         KC_4,   MT(MOD_LALT,KC_5),      MT(MOD_LSFT,KC_6),      MT(MOD_LCTL,KC_0),         KC_GT,  KC_UNDS, PICKFIRST,      PICK2ND,       PICK3RD,        KC_NUHS,       KC_TRNS,
+    KC_ASON,    KC_ASOFF,        KC_TRNS,       KC_TRNS,         KC_7,               KC_8,                   KC_9,                   KC_1,       KC_COMM,  KC_RPRN,    ANGUL,     S(KC_NUBS),       KC_AMPR,          KC_VOLU,       KC_TRNS,
     KC_ASTG,     KC_ASRP,        KC_TRNS,       KC_TRNS,      KC_TRNS,  MT(MOD_LALT,KC_0),                KC_TRNS,                KC_TRNS,       KC_TRNS,  KC_TRNS,  KC_TRNS,        TG(_L2),       KC_TRNS,        KC_VOLD,       KC_TRNS
   ),
 
