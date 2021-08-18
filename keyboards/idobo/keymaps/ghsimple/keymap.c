@@ -13,7 +13,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 #include QMK_KEYBOARD_H
 /*
 // Light LEDs 6 to 9 and 12 to 15 red when caps lock is active. Hard to ignore!
@@ -48,10 +47,11 @@ void keyboard_post_init_user(void) {
 }
 */
 
-enum layers { _L0 = 0, _L1, _L2, _L3, _L4, _L5 };
+enum layers { _L0 = 0, _L1, _L2, _L3 };
 
 
 // Macros
+/*
 enum custom_keycodes {
     PICKFIRST = SAFE_RANGE,
     PICK2ND,
@@ -60,21 +60,21 @@ enum custom_keycodes {
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
+  switch (keycode) {
     case PICKFIRST:
-        if (record->event.pressed) {
+      if (record->event.pressed) {
             // when keycode PICKFIRST is pressed
             tap_code(KC_UP);tap_code(KC_ENT);
-        } else {
+      } else {
             // when keycode PICKFIRST is released
-        }
-        break;
+      }
+      break;
 
     case PICK2ND:
-        if (record->event.pressed) {
+      if (record->event.pressed) {
             // when keycode PICK2ND is pressed
             tap_code(KC_UP);tap_code(KC_RGHT);tap_code(KC_ENT);
-        } else {
+      } else {
             // when keycode PICK2ND is released
         }
         break;
@@ -92,12 +92,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
              tap_code(KC_F);             
              unregister_mods(MOD_BIT(KC_LSFT));
              unregister_mods(MOD_BIT(KC_LCTL));
-        }
-        break;
-    }
-    return true;
+      }
+      break;
+  }
+  return true;
 };
-
+*/
 
 #define PARAN TD(TD_PAR)
 #define CURLY TD(TD_CUR)
@@ -810,8 +810,8 @@ vvhold > $
 
 rsft rsft hold osl makro
 
-Â´Â´
-^^````Â°Â°Â´^ auto space 
+´´
+^^````°°´^ auto space 
 */
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -823,10 +823,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_PGDN,     KC_VOLD,        KC_NO,MT(MOD_LSFT,KC_HOME), KC_Z,            KC_X,           KC_C,           KC_V,          KC_B,    KC_M,         KC_COMM,      TD(TD_DOT),    TD(TD_DASH),              KC_UP, MT(MOD_LSFT | MOD_RSFT,KC_END),
     KC_LCTL,     KC_LALT,        KC_NO,MT(MOD_LCTL, KC_PGUP), MT(MOD_LGUI, KC_PGDN),
                                                                         MT(MOD_LALT,KC_DEL)
-                                                                                         , LT(_L4,KC_TAB), 
+                                                                                         , LT(_L2,KC_TAB), 
                                                                                                         LT(_L1,KC_ENT),
                                                                                                                 MT(MOD_LSFT,KC_SPC), MT(MOD_LSFT,KC_SPC),
-                                                                                                                                             LT(_L2,KC_SPC),       OSL(_L4),        KC_LEFT,            KC_DOWN,                         KC_RGHT
+                                                                                                                                             LT(_L2,KC_SPC),       OSL(_L1),        KC_LEFT,            KC_DOWN,                         KC_RGHT
  ),
 
  [1] = LAYOUT_ortho_5x15(
@@ -839,7 +839,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
  [2] = LAYOUT_ortho_5x15(
     KC_TRNS, KC_TRNS, KC_TRNS,       KC_TRNS,     KC_TRNS,                 KC_TRNS,              KC_TRNS,                 KC_TRNS,              KC_TRNS,                  KC_TRNS,      KC_TRNS,      KC_TRNS,    KC_TRNS,      KC_TRNS,      KC_TRNS,
-    KC_TRNS, TG(_L1), KC_TRNS, TD(TD_CIRCUM),  ALGR(KC_Q),                   KC_AT,                SQUAR,              ALGR(KC_9),              KC_PERC,                  KC_SLSH,      CTLSFTF,      KC_UP,      KC_SCLN,      KC_TRNS,      KC_BSPC,
+    KC_TRNS, TG(_L1), KC_TRNS, TD(TD_CIRCUM),  ALGR(KC_Q),                   KC_AT,                SQUAR,              ALGR(KC_9),              KC_PERC,                  KC_SLSH,      KC_TRNS,      KC_UP,      KC_SCLN,      KC_TRNS,      KC_BSPC,
     KC_TRNS, KC_TRNS, KC_TRNS,       KC_TRNS,     KC_QUOT,    MT(MOD_LALT,KC_MINS),       TD(TD_PIPE_SFT),         TD(TD_DOL_CTL),              KC_RBRC,                  KC_HOME,      KC_LEFT,      KC_DOWN,    KC_RGHT,      KC_END,       KC_TRNS,
     KC_TRNS, KC_TRNS, KC_TRNS,       KC_TRNS, TD(TD_TICK),                 KC_CIRC,                CURLY,               ALGR(KC_0),          S(KC_RBRC),                   KC_ESC,      KC_BSPC,      KC_DEL,     KC_ENT,       KC_TRNS,      KC_TRNS,
     KC_TRNS, KC_TRNS, KC_TRNS,       KC_TRNS,     KC_LGUI,      MT(MOD_LALT,KC_DEL),              KC_TRNS,              KC_TRNS,                KC_TRNS,                  KC_TRNS,      KC_TRNS,      KC_TRNS,    KC_TRNS,      KC_TRNS,      KC_TRNS
@@ -847,12 +847,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
  [3] = LAYOUT_ortho_5x15(
     RESET, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-    KC_TRNS, TO(_L4), KC_TRNS, KC_F1, RESET,             DEBUG,      RGB_TOG,      RGB_MOD, RGB_HUI, RGB_HUD, KC_MS_BTN1,  KC_MS_UP,   KC_MS_BTN2, KC_MS_WH_UP     , TO(0),
+    KC_TRNS, TO(_L0), KC_TRNS, KC_F1, RESET,             DEBUG,      RGB_TOG,      RGB_MOD, RGB_HUI, RGB_HUD, KC_MS_BTN1,  KC_MS_UP,   KC_MS_BTN2, KC_MS_WH_UP     , TO(0),
     KC_TRNS, KC_TRNS, KC_TRNS, KC_F2, KC_F5,      KC_MS_ACCEL0, KC_MS_ACCEL1, KC_MS_ACCEL2, RGB_SAI, RGB_SAD, KC_MS_LEFT,  KC_MS_DOWN,KC_MS_RIGHT, KC_MS_WH_DOWN, KC_TRNS,
     KC_TRNS, KC_TRNS, KC_TRNS, KC_F3, KC_F6,             KC_F8,       KC_F10,       KC_F12, RGB_VAI, RGB_VAD, KC_MS_BTN1,  KC_MS_BTN3,  KC_MS_BTN2,      _______, _______,
     KC_ASTG , KC_TRNS, KC_TRNS, KC_F4, KC_F7,MT(MOD_LALT,KC_F9),       KC_F11,       KC_F12,KC_TRNS, KC_TRNS,    KC_TRNS,     KC_TRNS,     KC_VOLD, KC_VOLU, MT(MOD_RALT, RGB_TOG)
   ),
-
+/*
  [4] = LAYOUT_ortho_5x15(
     KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_F12,         KC_F1,              KC_F2,                  KC_F3,                  KC_F4,         KC_F5,    KC_F6,    KC_F7,          KC_F8,         KC_F9,         KC_F10,        KC_F11,
     KC_TRNS,     TO(_L5),        KC_TRNS,       KC_TRNS,         KC_1,               KC_2,                   KC_3,             ALGR(KC_E),        KC_DOT,  KC_EXLM,  KC_LBRC,  ALGR(KC_MINS),       KC_SCLN,  ALGR(KC_RBRC),       KC_TRNS,
@@ -870,7 +870,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                                                 MT(MOD_LSFT,KC_SPC), MT(MOD_LSFT,KC_SPC),
                                                                                                                                              LT(_L2,KC_SPC),      KC_NO,        KC_LEFT,            KC_DOWN,                         KC_RGHT
   )
-
+*/
 };
 
 layer_state_t layer_state_set_user(layer_state_t state) {

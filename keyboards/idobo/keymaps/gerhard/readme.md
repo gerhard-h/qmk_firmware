@@ -1,3 +1,3 @@
-# The via keymap for idobo with
+# keine via dafür mehr layer
 autoshift
 tap dance
