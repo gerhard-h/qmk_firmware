@@ -81,6 +81,9 @@ static void do_code16(uint16_t code, void (*f)(uint8_t)) {
     }
 
     f(mods_to_send);
+    #if TAP_CODE_DELAY > 0
+            wait_ms(TAP_CODE_DELAY);
+    #endif
 }
 
 void register_code16(uint16_t code) {

@@ -104,6 +104,7 @@ static void autoshift_end(uint16_t keycode, uint16_t now, bool matrix_trigger) {
             // Simulate pressing the shift key.
             add_weak_mods(MOD_BIT(KC_LSFT));
 #if TAP_CODE_DELAY > 0
+        send_keyboard_report();
         wait_ms(TAP_CODE_DELAY);
 #endif
             register_code(autoshift_lastkey);
@@ -116,9 +117,9 @@ static void autoshift_end(uint16_t keycode, uint16_t now, bool matrix_trigger) {
 #    endif
         }
 
-//    if TAP_CODE_DELAY > 0
+//#    if TAP_CODE_DELAY > 0
 //        wait_ms(TAP_CODE_DELAY);
-//    endif
+//#    endif
         unregister_code(autoshift_lastkey);
         del_weak_mods(MOD_BIT(KC_LSFT));
     } else {
