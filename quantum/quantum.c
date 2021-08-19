@@ -81,9 +81,6 @@ static void do_code16(uint16_t code, void (*f)(uint8_t)) {
     }
 
     f(mods_to_send);
-    #if TAP_CODE_DELAY > 0
-            wait_ms(TAP_CODE_DELAY);
-    #endif
 }
 
 void register_code16(uint16_t code) {
@@ -92,6 +89,9 @@ void register_code16(uint16_t code) {
     } else {
         do_code16(code, register_weak_mods);
     }
+#   if MOD_CODE_DELAY > 0
+        wait_ms(MOD_CODE_DELAY);
+#   endif
     register_code(code);
 }
 
@@ -106,9 +106,9 @@ void unregister_code16(uint16_t code) {
 
 void tap_code16(uint16_t code) {
     register_code16(code);
-#if TAP_CODE_DELAY > 0
-    wait_ms(TAP_CODE_DELAY);
-#endif
+#   if TAP_CODE_DELAY > 0
+        wait_ms(TAP_CODE_DELAY);
+#   endif
     unregister_code16(code);
 }
 
