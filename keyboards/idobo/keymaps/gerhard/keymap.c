@@ -47,6 +47,63 @@ void keyboard_post_init_user(void) {
     rgblight_layers = my_rgb_layers;
 }
 */
+/* ==========================================================================
+    LEDs
+   ========================================================================== */
+
+// RGB MODES
+// 1 = Static
+// 2-5 = Breathing
+// 6-8 = Rainbow
+// 9-14 = Swirl
+// 15-20 = Snake
+// 21-24 = Nightrider
+// 25 = Christmas
+// 26-30 = Static Gradient
+
+// Default LED colors
+uint8_t h = 170;
+uint8_t s = 255;
+uint8_t v;
+
+// default animation
+uint8_t rgbMode = RGBLIGHT_MODE_STATIC_LIGHT;
+// boot animation
+uint8_t rgbBootMode = RGBLIGHT_MODE_SNAKE;
+// boot timeout vars
+uint8_t bootComplete = 0;
+int bootTimeoutDuration = 2000;
+int bootTimeout;
+
+
+void init_hsv(void) {
+    // fetch what the brightness was last sesion
+	v = rgblight_get_val();
+    rgblight_sethsv(h,s,v);
+}
+
+// fetch current HSV vals
+void get_hsv(void) {
+	h = rgblight_get_hue();
+	s = rgblight_get_sat();
+	v = rgblight_get_val();
+}
+
+// reset HSV vals
+void reset_hsv(void) {
+    int currentV = rgblight_get_val();
+	rgblight_sethsv(h,s,currentV);
+}
+
+// deterimes when to stop bootup animation
+void bootupAnimation(void) {
+  bootComplete = (timer_elapsed(bootTimeout) > bootTimeoutDuration) ? 1 : 0;
+
+  if (bootComplete) {
+    rgblight_mode(rgbMode);
+  }
+}
+
 
 enum layers { _L0 = 0, _L1, _L2, _L3, _L4, _L5 };
 
@@ -60,6 +117,9 @@ enum custom_keycodes {
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+
+    //uint8_t layer = get_highest_layer(layer_state);
+
     switch (keycode) {
     case PICKFIRST:
         if (record->event.pressed) {
@@ -166,7 +226,17 @@ enum {
   TD_TICK,
   TD_COMM,
   TD_DOL_CTL,
-  TD_PIPE_SFT
+  TD_PIPE_SFT,
+    TD_1,
+    TD_2,
+    TD_3,
+    TD_4,
+    TD_5,
+    TD_6,
+    TD_7,
+    TD_8,
+    TD_9,
+    TD_0
 };
 
 static td_tap_t circumtap_state = {
@@ -748,6 +818,27 @@ void dance_dol_ctl_reset(qk_tap_dance_state_t *state, void *user_data) {
     dol_ctl_tap_state.state = TD_NONE;
 }
 
+typedef struct {
+    uint16_t keycode;
+} test_user_data_t;
+
+void test_fin(qk_tap_dance_state_t *state, void *user_data) {
+    uint16_t keycode = ((test_user_data_t*)user_data)->keycode;
+            for (uint8_t i=0; i < state->count; i++) {
+                tap_code16(keycode);
+            };
+};
+
+void test_each(qk_tap_dance_state_t *state, void *user_data) {
+    uint16_t keycode = ((test_user_data_t*)user_data)->keycode;
+    tap_code16(keycode);
+};
+
+#define ACTION_TAP_DANCE_FN_ADVANCED_USER(user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset, user_user_data) \
+        { .fn = {user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset}, .user_data = (void*)user_user_data, }
+
+
+
 // Tap Dance definitions
 qk_tap_dance_action_t tap_dance_actions[] = {
 //    [TD_ESC_DEL] = ACTION_TAP_DANCE_DOUBLE(KC_DEL, KC_ESC),
@@ -764,10 +855,20 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_DOL_CTL] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_dol_ctl_finished, dance_dol_ctl_reset),
     [TD_PIPE_SFT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_pipe_sft_finished, dance_pipe_sft_reset),
     [TD_U_UML] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_uuml_finished, dance_uuml_reset),
-    [TD_PAR] = ACTION_TAP_DANCE_FN_ADVANCED( NULL, paranthesis_dance_finished, paranthesis_dance_reset )
-   ,[TD_CUR] = ACTION_TAP_DANCE_FN_ADVANCED( NULL, curly_dance_finished, curly_dance_reset)
-   ,[TD_SQU] = ACTION_TAP_DANCE_FN_ADVANCED( NULL, square_dance_finished, square_dance_reset )
-   ,[TD_ANG] = ACTION_TAP_DANCE_FN_ADVANCED( NULL, angular_dance_finished, angular_dance_reset )
+    [TD_PAR] = ACTION_TAP_DANCE_FN_ADVANCED( NULL, paranthesis_dance_finished, paranthesis_dance_reset ),
+    [TD_CUR] = ACTION_TAP_DANCE_FN_ADVANCED( NULL, curly_dance_finished, curly_dance_reset),
+    [TD_SQU] = ACTION_TAP_DANCE_FN_ADVANCED( NULL, square_dance_finished, square_dance_reset ),
+    [TD_ANG] = ACTION_TAP_DANCE_FN_ADVANCED( NULL, angular_dance_finished, angular_dance_reset ),
+    [TD_1] = ACTION_TAP_DANCE_FN_ADVANCED_USER(test_each, NULL, NULL, &((test_user_data_t){KC_1})),
+    [TD_2] = ACTION_TAP_DANCE_FN_ADVANCED_USER(test_each, NULL, NULL, &((test_user_data_t){KC_2})),
+    [TD_3] = ACTION_TAP_DANCE_FN_ADVANCED_USER(test_each, NULL, NULL, &((test_user_data_t){KC_3})),
+    [TD_4] = ACTION_TAP_DANCE_FN_ADVANCED_USER(test_each, NULL, NULL, &((test_user_data_t){KC_4})),
+    [TD_5] = ACTION_TAP_DANCE_FN_ADVANCED_USER(test_each, NULL, NULL, &((test_user_data_t){KC_5})),
+    [TD_6] = ACTION_TAP_DANCE_FN_ADVANCED_USER(test_each, NULL, NULL, &((test_user_data_t){KC_6})),
+    [TD_7] = ACTION_TAP_DANCE_FN_ADVANCED_USER(test_each, NULL, NULL, &((test_user_data_t){KC_7})),
+    [TD_8] = ACTION_TAP_DANCE_FN_ADVANCED_USER(test_each, NULL, NULL, &((test_user_data_t){KC_8})),
+    [TD_9] = ACTION_TAP_DANCE_FN_ADVANCED_USER(test_each, NULL, NULL, &((test_user_data_t){KC_9})),
+    [TD_0] = ACTION_TAP_DANCE_FN_ADVANCED_USER(test_each, NULL, NULL, &((test_user_data_t){KC_0}))
 };
 /*
 * todo
@@ -830,10 +931,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  ),
 
  [1] = LAYOUT_ortho_5x15(
-    KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_F12,         KC_F1,              KC_F2,                  KC_F3,                  KC_F4,         KC_F5,    KC_F6,    KC_F7,          KC_F8,         KC_F9,         KC_F10,        KC_F11,
-    KC_TRNS,     TO(_L2),        KC_TRNS,       KC_TRNS,         KC_1,               KC_2,                   KC_3,             ALGR(KC_E),        KC_DOT,  KC_EXLM,  KC_LBRC,  ALGR(KC_MINS),       KC_SCLN,  ALGR(KC_RBRC),       KC_TRNS,
-    KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_TRNS,         KC_4,   MT(MOD_LALT,KC_5),      MT(MOD_LSFT,KC_6),      MT(MOD_LCTL,KC_0),         KC_GT,  KC_UNDS,    PARAN,        KC_LPRN,    S(KC_NUHS),        KC_NUHS,       KC_TRNS,
-    KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_TRNS,         KC_7,               KC_8,                   KC_9,                   KC_1,       KC_COMM,  KC_RPRN,    ANGUL,     S(KC_NUBS),       KC_AMPR,          KC_UP,       KC_TRNS,
+    KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_F12,         KC_F1,                    KC_F2,                       KC_F3,                  KC_F4,         KC_F5,    KC_F6,    KC_F7,          KC_F8,         KC_F9,         KC_F10,        KC_F11,
+    KC_TRNS,     TO(_L2),        KC_TRNS,       KC_TRNS,      TD(TD_1),                TD(TD_2),                    TD(TD_3),             ALGR(KC_E),        KC_DOT,  KC_EXLM,  KC_LBRC,  ALGR(KC_MINS),       KC_SCLN,  ALGR(KC_RBRC),       KC_TRNS,
+    KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_TRNS,         TD(TD_4),              TD(TD_5),                    TD(TD_6),              TD(TD_0),         KC_GT,  KC_UNDS,    PARAN,        KC_LPRN,    S(KC_NUHS),        KC_NUHS,       KC_TRNS,
+    KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_TRNS,         TD(TD_7),               TD(TD_8),                   TD(TD_9),               TD(TD_1),       KC_COMM,  KC_RPRN,    ANGUL,     S(KC_NUBS),       KC_AMPR,          KC_UP,       KC_TRNS,
     KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_TRNS,      KC_TRNS,  MT(MOD_LALT,KC_0),                KC_TRNS,                KC_TRNS,       KC_TRNS,  KC_TRNS,  KC_TRNS,        TG(_L2),       KC_TRNS,        KC_TRNS,       KC_TRNS
   ),
 
@@ -855,9 +956,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
  [4] = LAYOUT_ortho_5x15(
     KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_F12,         KC_F1,              KC_F2,                  KC_F3,                  KC_F4,         KC_F5,    KC_F6,    KC_F7,          KC_F8,         KC_F9,         KC_F10,        KC_F11,
-    KC_TRNS,     TO(_L5),        KC_TRNS,       KC_TRNS,         KC_1,               KC_2,                   KC_3,             ALGR(KC_E),        KC_DOT,  KC_EXLM,  KC_LBRC,  ALGR(KC_MINS),       KC_SCLN,  ALGR(KC_RBRC),       KC_TRNS,
-    KC_ASDN,     KC_ASUP,        KC_TRNS,       KC_TRNS,         KC_4,   MT(MOD_LALT,KC_5),      MT(MOD_LSFT,KC_6),      MT(MOD_LCTL,KC_0),         KC_GT,  KC_UNDS, PICKFIRST,      PICK2ND,       PICK3RD,        KC_NUHS,       KC_TRNS,
-    KC_ASON,    KC_ASOFF,        KC_TRNS,       KC_TRNS,         KC_7,               KC_8,                   KC_9,                   KC_1,       KC_COMM,  KC_RPRN,    ANGUL,     S(KC_NUBS),       KC_AMPR,          KC_VOLU,       KC_TRNS,
+    KC_TRNS,     TO(_L5),        KC_TRNS,       KC_TRNS,         TD(TD_1),               TD(TD_2),                   TD(TD_3),             ALGR(KC_E),        KC_DOT,  KC_EXLM,  KC_LBRC,  ALGR(KC_MINS),       KC_SCLN,  ALGR(KC_RBRC),       KC_TRNS,
+    KC_ASDN,     KC_ASUP,        KC_TRNS,       KC_TRNS,         TD(TD_4),   TD(TD_5),      TD(TD_6),      TD(TD_0),         KC_GT,  KC_UNDS, PICKFIRST,      PICK2ND,       PICK3RD,        KC_NUHS,       KC_TRNS,
+    KC_ASON,    KC_ASOFF,        KC_TRNS,       KC_TRNS,         TD(TD_7),               TD(TD_8),                   TD(TD_9),                   TD(TD_1),       KC_COMM,  KC_RPRN,    ANGUL,     S(KC_NUBS),       KC_AMPR,          KC_VOLU,       KC_TRNS,
     KC_ASTG,     KC_ASRP,        KC_TRNS,       KC_TRNS,      KC_TRNS,  MT(MOD_LALT,KC_0),                KC_TRNS,                KC_TRNS,       KC_TRNS,  KC_TRNS,  KC_TRNS,        TG(_L2),       KC_TRNS,        KC_VOLD,       KC_TRNS
   ),
   
@@ -876,3 +977,63 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 layer_state_t layer_state_set_user(layer_state_t state) {
   return update_tri_layer_state(state, _L1, _L2, _L3);
 }
+
+
+
+/* ==========================================================================
+    INITIALIZATION FUNCTION
+   ========================================================================== */
+
+void keyboard_post_init_user(void) {
+  // start a timeout
+  bootTimeout = timer_read();
+  // set rgb color
+  init_hsv();
+  // init rgb
+  rgblight_enable();
+  // animate in snake ledGreende
+  rgblight_mode(rgbBootMode);
+};
+
+
+
+
+
+
+/* ==========================================================================
+    ALWAYS RUNNING
+   ========================================================================== */
+void matrix_scan_user(void) {
+    // keep an eye on these layers
+    uint8_t layer = get_highest_layer(layer_state);
+    // handle boot-up sequence
+    bootupAnimation();
+    // watch the brightness for changes
+    v = rgblight_get_val();
+
+    switch (layer) {
+      case 3:
+        rgblight_sethsv_noeeprom(HSV_RED);
+        break;
+      case 2:
+        rgblight_sethsv_noeeprom(HSV_GOLD);
+        break;
+      case 1:
+        rgblight_sethsv_noeeprom(HSV_YELLOW);
+        break;
+      case 4:
+        rgblight_sethsv_noeeprom(HSV_GREEN);
+        break;
+      case 5:
+        rgblight_sethsv_noeeprom(HSV_PURPLE);
+        break;
+      default:
+        rgblight_sethsv_noeeprom(HSV_AZURE);
+        break;
+    }
+};
+
+
+
+
+
