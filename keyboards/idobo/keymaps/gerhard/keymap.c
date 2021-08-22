@@ -182,8 +182,17 @@ typedef struct {
     td_state_t state;
 } td_tap_t;
 
+void dbg_state(qk_tap_dance_state_t *state) {
+        dprintf("timer %s", state->timer);
+        dprintf("pressed %s", state->pressed);
+        dprintf("finished %s", state->finished);
+        dprintf("keycode %s", state->keycode);
+        dprintf("count %s", state->count);
+}
+
 /*general td state evaluation*/
 td_state_t cur_dance(qk_tap_dance_state_t *state) {
+    dbg_state(state);
     if (state->count == 1) {
         if (state->interrupted || !state->pressed) return TD_SINGLE_TAP;
         // Key has not been interrupted, but the key is still held. Means you want to send a 'HOLD'.
@@ -203,6 +212,22 @@ td_state_t cur_dance(qk_tap_dance_state_t *state) {
     if (state->count == 3) {
         if (state->interrupted || !state->pressed) return TD_TRIPLE_TAP;
         else return TD_TRIPLE_HOLD;
+    } else return TD_UNKNOWN;
+}
+ 
+/*general td state evaluation*/
+td_state_t mod_dance(qk_tap_dance_state_t *state) {
+    if (state->count == 1) {
+        if (state->interrupted) return TD_SINGLE_TAP;
+        else if (!state->pressed) return TD_DOUBLE_HOLD;
+        else return TD_SINGLE_HOLD;
+    } else if (state->count == 2) {
+        // TD_DOUBLE_SINGLE_TAP is to distinguish between typing "pepper", and actually wanting a double tap
+        // action when hitting 'pp'. Suggested use case for this return value is when you want to send two
+        // keystrokes of the key, and not the 'double tap' action/macro.
+        if (state->interrupted) return TD_DOUBLE_SINGLE_TAP;
+        else if (state->pressed) return TD_DOUBLE_HOLD;
+        else return TD_DOUBLE_TAP;
     } else return TD_UNKNOWN;
 }
 
@@ -581,32 +606,35 @@ void dance_auml_finished(qk_tap_dance_state_t *state, void *user_data) {
     atap_state.state = cur_dance(state);
     switch (atap_state.state) {
         case TD_SINGLE_TAP: register_code(KC_A); break;
-        case TD_SINGLE_HOLD: register_code16(S(KC_A)); break;
+        case TD_SINGLE_HOLD: tap_code16(S(KC_A)); break;
         case TD_DOUBLE_TAP: tap_code(KC_A);register_code(KC_A); break;
-        case TD_DOUBLE_HOLD: register_code16(KC_QUOT); break;
+        case TD_DOUBLE_HOLD: tap_code16(KC_QUOT); break;
         // Last case is for fast typing. Assuming your key is `f`:
         // For example, when typing the word `buffer`, and you want to make sure that you send `ff` and not `Esc`.
         // In order to type `ff` when typing fast, the next character will have to be hit within the `TAPPING_TERM`, which by default is 200ms.
         case TD_DOUBLE_SINGLE_TAP: tap_code(KC_A); register_code(KC_A); break;
         case TD_TRIPLE_TAP:
         case TD_TRIPLE_HOLD:
+            tap_code(KC_A);
+            tap_code(KC_A);
             register_code(KC_A);
-            unregister_code(KC_A);
-            register_code(KC_A);
-            unregister_code(KC_A);
-            register_code(KC_A);
-            unregister_code(KC_A);
-        default: break;
+        default: 
+            for (uint8_t i=0; i < state->count; i++) {
+                tap_code(KC_A);
+            };
+        break;
     }
 }
 
 void dance_auml_reset(qk_tap_dance_state_t *state, void *user_data) {
     switch (atap_state.state) {
         case TD_SINGLE_TAP: unregister_code(KC_A); break;
-        case TD_SINGLE_HOLD: unregister_code16(S(KC_A)); break;
+        case TD_SINGLE_HOLD: break;
         case TD_DOUBLE_TAP: unregister_code(KC_A); break;
-        case TD_DOUBLE_HOLD: unregister_code16(KC_QUOT); break;
+        case TD_DOUBLE_HOLD: break;
         case TD_DOUBLE_SINGLE_TAP: unregister_code(KC_A);
+        case TD_TRIPLE_TAP:
+        case TD_TRIPLE_HOLD:unregister_code(KC_A);
         default: break;
     }
     atap_state.state = TD_NONE;
@@ -820,6 +848,8 @@ void dance_dol_ctl_reset(qk_tap_dance_state_t *state, void *user_data) {
 
 typedef struct {
     uint16_t keycode;
+    uint16_t keycode2;
+    uint16_t keycode3;
 } test_user_data_t;
 
 void test_fin(qk_tap_dance_state_t *state, void *user_data) {
