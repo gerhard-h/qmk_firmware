@@ -15,38 +15,8 @@
  */
 
 #include QMK_KEYBOARD_H
-/*
-// Light LEDs 6 to 9 and 12 to 15 red when caps lock is active. Hard to ignore!
-const rgblight_segment_t PROGMEM my_capslock_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-    {6, 4, HSV_RED},       // Light 4 LEDs, starting with LED 6
-    {12, 4, HSV_RED}       // Light 4 LEDs, starting with LED 12
-);
-// Light LEDs 9 & 10 in cyan when keyboard layer 1 is active
-const rgblight_segment_t PROGMEM my_layer1_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-    {9, 2, HSV_CYAN}
-);
-// Light LEDs 11 & 12 in purple when keyboard layer 2 is active
-const rgblight_segment_t PROGMEM my_layer2_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-    {11, 2, HSV_PURPLE}
-);
-// Light LEDs 13 & 14 in green when keyboard layer 3 is active
-const rgblight_segment_t PROGMEM my_layer3_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-    {13, 2, HSV_GREEN}
-);
+#include "print.h"
 
-// Now define the array of layers. Later layers take precedence
-const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
-    my_capslock_layer,
-    my_layer1_layer,    // Overrides caps lock layer
-    my_layer2_layer,    // Overrides other layers
-    my_layer3_layer     // Overrides other layers
-);
-
-void keyboard_post_init_user(void) {
-    // Enable the LED layers
-    rgblight_layers = my_rgb_layers;
-}
-*/
 /* ==========================================================================
     LEDs
    ========================================================================== */
@@ -68,45 +38,8 @@ uint8_t v;
 
 // default animation
 uint8_t rgbMode = RGBLIGHT_MODE_STATIC_LIGHT;
-// boot animation
-uint8_t rgbBootMode = RGBLIGHT_MODE_SNAKE;
-// boot timeout vars
-uint8_t bootComplete = 0;
-int bootTimeoutDuration = 2000;
-int bootTimeout;
-
-
-void init_hsv(void) {
-    // fetch what the brightness was last sesion
-	v = rgblight_get_val();
-    rgblight_sethsv(h,s,v);
-}
-
-// fetch current HSV vals
-void get_hsv(void) {
-	h = rgblight_get_hue();
-	s = rgblight_get_sat();
-	v = rgblight_get_val();
-}
-
-// reset HSV vals
-void reset_hsv(void) {
-    int currentV = rgblight_get_val();
-	rgblight_sethsv(h,s,currentV);
-}
-
-// deterimes when to stop bootup animation
-void bootupAnimation(void) {
-  bootComplete = (timer_elapsed(bootTimeout) > bootTimeoutDuration) ? 1 : 0;
-
-  if (bootComplete) {
-    rgblight_mode(rgbMode);
-  }
-}
-
 
 enum layers { _L0 = 0, _L1, _L2, _L3, _L4, _L5 };
-
 
 // Macros
 enum custom_keycodes {
@@ -183,16 +116,22 @@ typedef struct {
 } td_tap_t;
 
 void dbg_state(qk_tap_dance_state_t *state) {
-        dprintf("timer %s", state->timer);
-        dprintf("pressed %s", state->pressed);
-        dprintf("finished %s", state->finished);
-        dprintf("keycode %s", state->keycode);
-        dprintf("count %s", state->count);
+        dprintf("count %d", state->count);
+        dprintf("timer %d", state->timer);
+        dprintf("pressed %d", state->pressed);
+        dprintf("finished %d", state->finished);
+        dprintf("keycode %d", state->keycode);
 }
 
-/*general td state evaluation*/
+/*co user_data*/
+typedef struct {
+    uint16_t keycode;
+    uint16_t keycode2;
+    uint16_t keycode3;
+} test_user_data_t;
+
+
 td_state_t cur_dance(qk_tap_dance_state_t *state) {
-    dbg_state(state);
     if (state->count == 1) {
         if (state->interrupted || !state->pressed) return TD_SINGLE_TAP;
         // Key has not been interrupted, but the key is still held. Means you want to send a 'HOLD'.
@@ -402,6 +341,7 @@ void dash_dance_reset (qk_tap_dance_state_t *state, void *user_data) {
 
 void dash_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
         dashtap_state.state = cur_dance(state);
+        dbg_state(state);
     switch (dashtap_state.state) {
         case TD_SINGLE_TAP:tap_code(KC_SLSH); break;
         case TD_SINGLE_HOLD:
@@ -604,38 +544,39 @@ static td_tap_t atap_state = {
 
 void dance_auml_finished(qk_tap_dance_state_t *state, void *user_data) {
     atap_state.state = cur_dance(state);
+    uint16_t keycode = ((test_user_data_t*)user_data)->keycode;
+    uint16_t keycode2 = ((test_user_data_t*)user_data)->keycode2;
+    uint16_t keycode3 = ((test_user_data_t*)user_data)->keycode3;
     switch (atap_state.state) {
-        case TD_SINGLE_TAP: register_code(KC_A); break;
-        case TD_SINGLE_HOLD: tap_code16(S(KC_A)); break;
-        case TD_DOUBLE_TAP: tap_code(KC_A);register_code(KC_A); break;
-        case TD_DOUBLE_HOLD: tap_code16(KC_QUOT); break;
-        // Last case is for fast typing. Assuming your key is `f`:
-        // For example, when typing the word `buffer`, and you want to make sure that you send `ff` and not `Esc`.
-        // In order to type `ff` when typing fast, the next character will have to be hit within the `TAPPING_TERM`, which by default is 200ms.
-        case TD_DOUBLE_SINGLE_TAP: tap_code(KC_A); register_code(KC_A); break;
+        case TD_SINGLE_TAP: register_code(keycode); break;
+        case TD_SINGLE_HOLD: tap_code16(keycode2); break;
+        case TD_DOUBLE_HOLD: tap_code16(keycode3); break;
+        case TD_DOUBLE_TAP:
+        case TD_DOUBLE_SINGLE_TAP:
         case TD_TRIPLE_TAP:
         case TD_TRIPLE_HOLD:
-            tap_code(KC_A);
-            tap_code(KC_A);
-            register_code(KC_A);
         default: 
-            for (uint8_t i=0; i < state->count; i++) {
-                tap_code(KC_A);
+            for (uint8_t i=1; i < state->count; i++) {
+                tap_code(keycode);
             };
+            register_code(keycode);
         break;
     }
 }
 
 void dance_auml_reset(qk_tap_dance_state_t *state, void *user_data) {
+    uint16_t keycode = ((test_user_data_t*)user_data)->keycode;
+//    uint16_t keycode2 = ((test_user_data_t*)user_data)->keycode2;
+//    uint16_t keycode3 = ((test_user_data_t*)user_data)->keycode3;
     switch (atap_state.state) {
-        case TD_SINGLE_TAP: unregister_code(KC_A); break;
+        case TD_SINGLE_TAP: unregister_code(keycode); break;
         case TD_SINGLE_HOLD: break;
-        case TD_DOUBLE_TAP: unregister_code(KC_A); break;
         case TD_DOUBLE_HOLD: break;
-        case TD_DOUBLE_SINGLE_TAP: unregister_code(KC_A);
+        case TD_DOUBLE_TAP:
+        case TD_DOUBLE_SINGLE_TAP: 
         case TD_TRIPLE_TAP:
-        case TD_TRIPLE_HOLD:unregister_code(KC_A);
-        default: break;
+        case TD_TRIPLE_HOLD:
+        default: unregister_code(keycode); break;
     }
     atap_state.state = TD_NONE;
 }
@@ -846,12 +787,6 @@ void dance_dol_ctl_reset(qk_tap_dance_state_t *state, void *user_data) {
     dol_ctl_tap_state.state = TD_NONE;
 }
 
-typedef struct {
-    uint16_t keycode;
-    uint16_t keycode2;
-    uint16_t keycode3;
-} test_user_data_t;
-
 void test_fin(qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode = ((test_user_data_t*)user_data)->keycode;
             for (uint8_t i=0; i < state->count; i++) {
@@ -879,7 +814,8 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_SS_UML] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_suml_finished, dance_suml_reset),
     [TD_CIRCUM] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, circum_dance_finished, circum_dance_reset),
     [TD_TICK] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tick_dance_finished, tick_dance_reset),
-    [TD_A_UML] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_auml_finished, dance_auml_reset),
+//    [TD_A_UML] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_auml_finished, dance_auml_reset),
+    [TD_A_UML] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_auml_finished, dance_auml_reset, &((test_user_data_t){KC_A, S(KC_A), KC_QUOT})),
     [TD_O_UML] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_ouml_finished, dance_ouml_reset),
     [TD_I_BS] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_iuml_finished, dance_iuml_reset),
     [TD_DOL_CTL] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_dol_ctl_finished, dance_dol_ctl_reset),
@@ -1001,68 +937,47 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                                                 MT(MOD_LSFT,KC_SPC), MT(MOD_LSFT,KC_SPC),
                                                                                                                                              LT(_L2,KC_SPC),      KC_NO,        KC_LEFT,            KC_DOWN,                         KC_RGHT
   )
-
 };
-
-layer_state_t layer_state_set_user(layer_state_t state) {
-  return update_tri_layer_state(state, _L1, _L2, _L3);
-}
-
-
 
 /* ==========================================================================
     INITIALIZATION FUNCTION
    ========================================================================== */
 
 void keyboard_post_init_user(void) {
-  // start a timeout
-  bootTimeout = timer_read();
-  // set rgb color
-  init_hsv();
-  // init rgb
   rgblight_enable();
-  // animate in snake ledGreende
-  rgblight_mode(rgbBootMode);
 };
 
 
-
-
-
-
-/* ==========================================================================
-    ALWAYS RUNNING
-   ========================================================================== */
-void matrix_scan_user(void) {
-    // keep an eye on these layers
-    uint8_t layer = get_highest_layer(layer_state);
-    // handle boot-up sequence
-    bootupAnimation();
-    // watch the brightness for changes
-    v = rgblight_get_val();
-
-    switch (layer) {
-      case 3:
-        rgblight_sethsv_noeeprom(HSV_RED);
-        break;
-      case 2:
-        rgblight_sethsv_noeeprom(HSV_GOLD);
-        break;
-      case 1:
-        rgblight_sethsv_noeeprom(HSV_YELLOW);
-        break;
-      case 4:
-        rgblight_sethsv_noeeprom(HSV_GREEN);
-        break;
-      case 5:
+layer_state_t layer_state_set_user(layer_state_t state) {
+    switch (get_highest_layer(state)) {
+    case _L0:
         rgblight_sethsv_noeeprom(HSV_PURPLE);
         break;
-      default:
+    case _L1:
+        rgblight_sethsv_noeeprom(HSV_YELLOW);
+        break;
+    case _L2:
+        if (layer_state_cmp(state, _L1)) {
+             rgblight_sethsv_noeeprom(HSV_RED);
+        } else {
+        rgblight_sethsv_noeeprom(HSV_WHITE);
+        }
+        break;
+    case _L3:
+        rgblight_sethsv_noeeprom(HSV_RED);
+        break;
+    case _L4:
+        rgblight_sethsv_noeeprom(HSV_GOLD);
+        break;
+    case _L5:
         rgblight_sethsv_noeeprom(HSV_AZURE);
         break;
+    default: //  for any other layers, or the default layer
+        rgblight_sethsv_noeeprom(HSV_PURPLE);
+        break;
     }
-};
-
+  return update_tri_layer_state(state, _L1, _L2, _L3);
+}
 
 
 
