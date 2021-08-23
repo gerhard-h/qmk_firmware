@@ -1,3 +1,9 @@
-# keine via dafür mehr layer
+# keymap for idobo
+no VIA 
+to be used on OS with German keyboard layout 
+6 layers (to much for via)
 autoshift
 tap dance
+macros 
+underglow color switch on layer switch
+CONSOLE ENABLED

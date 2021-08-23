@@ -17,6 +17,7 @@
 #include QMK_KEYBOARD_H
 #include "print.h"
 
+enum layers { _L0 = 0, _L1, _L2, _L3, _L4, _L5 };
 
 // Default LED colors
 //uint8_t h = 170;
@@ -24,9 +25,8 @@
 //uint8_t v;
 
 // default animation
-uint8_t rgbMode = RGBLIGHT_MODE_STATIC_LIGHT;
+//uint8_t rgbMode = RGBLIGHT_MODE_STATIC_LIGHT;
 
-enum layers { _L0 = 0, _L1, _L2, _L3, _L4, _L5 };
 
 // Macros
 enum custom_keycodes {
@@ -37,9 +37,6 @@ enum custom_keycodes {
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-
-    //uint8_t layer = get_highest_layer(layer_state);
-
     switch (keycode) {
     case PICKFIRST:
         if (record->event.pressed) {
@@ -111,6 +108,11 @@ typedef struct {
     uint16_t keycode3;
 } dance_user_data_t;
 
+//shared tapstate
+static td_tap_t atap_state = {
+    .is_press_action = true,
+    .state = TD_NONE
+};
 
 /*general td state evaluation*/
 td_state_t cur_dance(qk_tap_dance_state_t *state) {
@@ -151,11 +153,6 @@ td_state_t mod_dance(qk_tap_dance_state_t *state) {
     } else return TD_UNKNOWN;
 }
 
-//shared tapstate
-static td_tap_t atap_state = {
-    .is_press_action = true,
-    .state = TD_NONE
-};
 
 //individual Tap Dance Declarations
 enum {
@@ -171,7 +168,6 @@ enum {
   TD_ANG,
   TD_QUOT,
   TD_DQUOT,
-  TD_H,
   TD_I_BS,
   TD_CIRCUM,
   TD_TICK,
@@ -222,7 +218,7 @@ void tick_dance_reset (qk_tap_dance_state_t *state, void *user_data) {
 }
 
 
-// () <> {} [] ...
+// () <> {} [] "" '' ...
 void curly_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
      atap_state.state = cur_dance(state);
      uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
@@ -546,7 +542,3 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     }
   return update_tri_layer_state(state, _L1, _L2, _L3);
 }
-
-
-
-

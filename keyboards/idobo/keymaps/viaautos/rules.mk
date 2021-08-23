@@ -7,3 +7,4 @@ EXTRAKEY_ENABLE = yes
 # -flto saves ~14% on firmware size
 EXTRAFLAGS += -flto
 CONSOLE_ENABLE = no
+RGBLIGHT_ENABLE = yes

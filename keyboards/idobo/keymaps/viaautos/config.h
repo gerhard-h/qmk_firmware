@@ -34,13 +34,17 @@
 #define DISABLE_RGB_MATRIX_MULTISPLASH
 #define DISABLE_RGB_MATRIX_SOLID_SPLASH
 #define DISABLE_RGB_MATRIX_SOLID_MULTISPLASH
+//#define RGBLIGHT_ANIMATIONS
+//#define RGBLIGHT_EFFECT_SNAKE
 
-#define RGBLIGHT_LAYERS
+//#define RGBLIGHT_LAYERS
+#define RGBLIGHT_SLEEP
 
 #define TAPPING_TERM 200
+//#define MOD_CODE_DELAY 10
 // # define TAP_CODE_DELAY 10 //will not fix Remotedesktop timings
 #define USB_POLLING_INTERVAL_MS 1
-#define AUTO_SHIFT_TIMEOUT 150 //overwrite in C:\Users\heideg\qmk_firmware\quantum\process_keycode\process_auto_shift.h
+#define AUTO_SHIFT_TIMEOUT 140
 #define AUTO_SHIFT_NO_AUTO_REPEAT
 //#define NO_AUTO_SHIFT_NUMERIC
 #define DYNAMIC_KEYMAP_LAYER_COUNT 5
