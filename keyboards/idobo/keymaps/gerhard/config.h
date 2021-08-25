@@ -42,7 +42,7 @@
 #define RGBLIGHT_SLEEP
 
 #define TAPPING_TERM 200
-#define MOD_CODE_DELAY 10
+#define MOD_CODE_DELAY 0
 // # define TAP_CODE_DELAY 10 //will not fix Remotedesktop timings
 #define USB_POLLING_INTERVAL_MS 1
 #define AUTO_SHIFT_TIMEOUT 140
