@@ -551,20 +551,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* L3
  *                      v------------------------RGB CONTROL--------------------v
  * ,-----------------------------------------------------------------------------------.
- * |  F1  | Reset|AutoS | RGB  |RGBMOD| HUE+ | HUE- |lclick| ms-u |rclick|ms-w+ | TO(0)|
+ * |  F1  | Reset|AutoS | RGB  |RGBMOD| HUE+ | HUE- |lclick| ms-u |rclick|ms-w+ | ASTG |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * |  F2  |  F5  |ACCEL0|ACCEL1|ACCEL2| SAT+ | SAT- | ms-l | ms-d | ms-r |ms-w- |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * |  F3  |  F6  |  F8  |  F10 |  F12 |BRGTH+|BRGTH-|lclick|mclick|rclick|      |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |  F4  |  F7  |  F9  |  F11 |  F12 |             |      |      |      |      |      |
+ * |  F4  |  F7  |  F9  |  F11 |      |             |      |      |      |      | ALT  |
  * `-----------------------------------------------------------------------------------'
  * 
  */
 [3] = LAYOUT_planck_mit(
     KC_F1, RESET,             DEBUG,      RGB_TOG,      RGB_MOD, RGB_HUI, RGB_HUD, KC_MS_BTN1,  KC_MS_UP,   KC_MS_BTN2, KC_MS_WH_UP     , KC_ASTG,
     KC_F2, KC_F5,      KC_MS_ACCEL0, KC_MS_ACCEL1, KC_MS_ACCEL2, RGB_SAI, RGB_SAD, KC_MS_LEFT,  KC_MS_DOWN,KC_MS_RIGHT, KC_MS_WH_DOWN, KC_TRNS,
-    KC_F3, KC_F6,             KC_F8,       KC_F10,       KC_F12, RGB_VAI, RGB_VAD, KC_MS_BTN1,  KC_MS_BTN3,  KC_MS_BTN2,      _______, _______,
+    KC_F3, KC_F6,             KC_F8,       KC_F10,       KC_F12, RGB_VAI, RGB_VAD, KC_MS_BTN1,  KC_MS_BTN2,  KC_MS_BTN3,      _______, _______,
     KC_F4, KC_F7,MT(MOD_LALT,KC_F9),       KC_F11,       _______, _______,             _______, _______,  _______, _______, MT(MOD_RALT, KC_RGHT)
 )
 ,
@@ -572,11 +572,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* L4
  */
 [_L4] = LAYOUT_planck_mit(
-    KC_TRNS,      TD(TD_1),            TD(TD_2),                   TD(TD_3),             ALGR(KC_E),        KC_DOT,  KC_EXLM,  KC_LBRC,  ALGR(KC_MINS),       KC_SCLN,  ALGR(KC_RBRC),       KC_VOLU,
-    KC_TRNS,      TD(TD_4),            TD(TD_5),                   TD(TD_6),               TD(TD_0),         KC_GT,  KC_UNDS, PICKFIRST,      PICK2ND,       PICK3RD,    TD(TD_HASH),       KC_VOLD,
-    KC_TRNS,      TD(TD_7),             TD(TD_8),                     TD(TD_9),                     TD(TD_1),       KC_COMM,  KC_RPRN,    TD(TD_ANG),     S(KC_NUBS),       KC_AMPR,        KC_VOLU,       KC_TRNS,
-    KC_TRNS,      KC_TRNS,  MT(MOD_LALT,KC_0),                KC_TRNS,                KC_TRNS,       KC_TRNS,            KC_TRNS,        KC_TRNS,       KC_TRNS,        KC_VOLD,       KC_TRNS
-  )
+    KC_TRNS,         TD(TD_1),               TD(TD_2),       TD(TD_3),             ALGR(KC_E),        KC_DOT,  KC_EXLM,    KC_LBRC,  ALGR(KC_MINS),       KC_SCLN,  ALGR(KC_RBRC),       KC_VOLU,
+    KC_TRNS,         TD(TD_4),               TD(TD_5),       TD(TD_6),               TD(TD_0),         KC_GT,  KC_UNDS,   PICKFIRST,       PICK2ND,       PICK3RD,    TD(TD_HASH),       KC_VOLD,
+    KC_TRNS,         TD(TD_7),               TD(TD_8),       TD(TD_9),               TD(TD_1),       KC_COMM,  KC_RPRN,  TD(TD_ANG),    S(KC_NUBS),       KC_AMPR,        KC_VOLU,       KC_TRNS,
+    KC_TRNS,          KC_TRNS,      MT(MOD_LALT,KC_0),        KC_TRNS,                KC_TRNS,       KC_TRNS,               KC_TRNS,       KC_TRNS,       KC_TRNS,        KC_VOLD,       KC_TRNS
+  ),
 
 };
 
