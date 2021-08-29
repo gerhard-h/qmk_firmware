@@ -91,7 +91,7 @@ enum layers { _L0, _L1, _L2, _L3, _L4 };
 
 // Macros
 enum custom_keycodes {
-    PICKFIRST = SAFE_RANGE,
+    PICKFIRST = USER00,
     PICK2ND,
     PICK3RD,
     CTLSFTF,
@@ -203,6 +203,7 @@ td_state_t cur_dance(qk_tap_dance_state_t *state) {
 enum {
   TD_A_UML,
   TD_O_UML,
+  TD_F,
   TD_U_UML,
   TD_SS_UML,
   TD_DASH,
@@ -235,6 +236,41 @@ enum {
   TD_HASH,
   TD_Q
 };
+
+
+LEADER_EXTERNS();
+void matrix_scan_user(void) {
+  LEADER_DICTIONARY() {
+    leading = false;
+    leader_end();
+    // Replace the sequences below with your own sequences.
+    SEQ_ONE_KEY(KC_T) {
+        tap_code(KC_UP);tap_code(KC_RGHT);tap_code(KC_ENT);tap_code(KC_BSPC);
+    }
+    SEQ_ONE_KEY(KC_N) {
+        tap_code(KC_UP);tap_code(KC_ENT);tap_code(KC_BSPC);
+    }
+    SEQ_ONE_KEY(KC_L) {
+        tap_code(KC_UP);tap_code(KC_RGHT);tap_code(KC_RGHT);tap_code(KC_ENT);tap_code(KC_BSPC);
+    }
+    SEQ_ONE_KEY(TD(TD_F)) {
+             register_mods(MOD_BIT(KC_LCTL));
+             register_mods(MOD_BIT(KC_LSFT));
+             tap_code(KC_F);             
+             unregister_mods(MOD_BIT(KC_LSFT));
+             unregister_mods(MOD_BIT(KC_LCTL));
+    }
+    // Note: This is not an array, you don't need to put any commas
+    // or semicolons between sequences.
+    SEQ_TWO_KEYS(KC_N, KC_T) {
+             register_mods(MOD_BIT(KC_LCTL));
+             register_mods(MOD_BIT(KC_LSFT));
+             tap_code(KC_F);             
+             unregister_mods(MOD_BIT(KC_LSFT));
+             unregister_mods(MOD_BIT(KC_LCTL));
+    }
+  }
+}
 
 // ^ °
 void circum_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
@@ -517,6 +553,7 @@ void noshift_each(qk_tap_dance_state_t *state, void *user_data) {
 // Tap Dance definitions
 qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_Q] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_Q, S(KC_Q), KC_ESC})),
+    [TD_F] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_F, S(KC_F), S(KC_4)})),
     [TD_A_UML] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_A, S(KC_A), KC_QUOT})),
     [TD_O_UML] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_O, S(KC_O), KC_SCLN})),
     [TD_U_UML] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_U, S(KC_U), KC_LBRC})),
@@ -558,28 +595,16 @@ OSL(num) num TO(sym) sym TG(num) layer3 TO(0)
 double tap lock symbol layer double tap for exit
 tripple tap lock layer3 single tap for exit
 MO(sym) + TG(num) locked num tripple tap for exit
-
-
-* leader key for F1-F12
-* tap dance on rsft  cycle layers or leaderkey
-* q esc
-* , ' "  or , is mod_ctrl
 * combos
-* qw = esc better than tapdance
+* qw = esc better than tapdance qq?
 * 
 * numbers
 * vvv = 0
 * fff = 1.....
 * vvq - vvc = 1 - 9
 * home row mods?
-. .. : .:hold > * 
 
--_  --hold > * /
-
-ffhold > $
-
-rsft rsft hold osl makro
-
+leader key  combos? are they compatible with tapdance keys? F keys
 */
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -591,14 +616,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 */
 [0] = LAYOUT_planck_mit(    
                                              KC_DEL,          TD(TD_Q),            KC_W,   KC_E,     KC_R,          KC_J,    KC_Y,    TD(TD_U_UML),    TD(TD_I_BS),    TD(TD_O_UML),               KC_P,                        KC_BSPC,
-                               MT(MOD_LCTL ,KC_TAB),      TD(TD_A_UML),   TD(TD_SS_UML),   KC_D,     KC_F,          KC_G,    KC_H,            KC_N,            KC_T,           KC_L,     TD(TD_KOE_ALT), MT(MOD_LCTL | MOD_RCTL,KC_ENT),
+                               MT(MOD_LCTL ,KC_TAB),      TD(TD_A_UML),   TD(TD_SS_UML),   KC_D, TD(TD_F),          KC_G,    KC_H,            KC_N,            KC_T,           KC_L,     TD(TD_KOE_ALT), MT(MOD_LCTL | MOD_RCTL,KC_ENT),
                                       OSM(MOD_LSFT),              KC_Z,            KC_X,   KC_C,     KC_V,          KC_B,    KC_M,         KC_COMM,      TD(TD_DOT),    TD(TD_DASH),              KC_UP,                  OSM(MOD_RSFT),
                               MT(MOD_LCTL, KC_PGUP), MT(MOD_LGUI, KC_PGDN),
                                                                      MT(MOD_LALT,KC_DEL),
                                                                                  LT(_L4,KC_TAB), 
-                                                                                            LT(_L1,KC_ENT),
+                                                                                                 OSL(_L1),
                                                                                                                  MT(MOD_LSFT,KC_SPC),
-                                                                                                                                       LT(_L2,KC_SPC),       OSL(_L4),        KC_LEFT,            KC_DOWN,                KC_RGHT
+                                                                                                                                          OSL(_L2),         KC_LEAD,        KC_LEFT,            KC_DOWN,                KC_RGHT
  ),
 /*            ________      ________      ________      F12           F1            F2            F3            F4            F5            F6            F7            F8            F9            F10           F11
 *             ________      TO(_L2)       ________      ________      1             2             3             €             .             !             ü             \             ö             ~             ________
@@ -611,19 +636,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                           KC_ESC,         TD(TD_1),             TD(TD_2),                    TD(TD_3),             TD(TD_10),        KC_DOT,  KC_EXLM,    KC_LBRC,  ALGR(KC_MINS),       KC_SCLN,  ALGR(KC_RBRC),       KC_TRNS,
                                                          KC_TRNS,         TD(TD_4),             TD(TD_5),                    TD(TD_6),              TD(TD_0),         KC_GT,  KC_UNDS, TD(TD_PAR),        KC_LPRN,   TD(TD_QUOT),    TD(TD_HASH),       KC_TRNS,
                                                          KC_TRNS,         TD(TD_7),              TD(TD_8),                   TD(TD_9),             TD(TD_12),       KC_COMM,  KC_RPRN, TD(TD_ANG),     S(KC_NUBS),       KC_AMPR,          KC_UP,       KC_TRNS,
-                                                         KC_TRNS,          KC_TRNS,     MT(MOD_LALT,KC_0),                      TO(2),               KC_TRNS,       KC_TRNS,              KC_TRNS,        TG(_L2),       KC_TRNS,        KC_TRNS,       KC_TRNS
+                                                         KC_TRNS,          KC_TRNS,     MT(MOD_LALT,KC_0),                      TO(2),               KC_TRNS,       KC_TRNS,              MO(_L2),        TG(_L2),       KC_TRNS,        KC_TRNS,       KC_TRNS
   ),
 /*  ________      ________      ________      ________      ________      ________      ________      ________      ________      ________      ________      ________      ________      ________      ________
-*   ________      TG(_L1)       ________      ^             @             "             [             ]             %             -             CTL+SFT+F     UP            ö             ________      ________
+*   ________      TG(_L1)       ________      ^             @             "             [             ]             %             -             CTL+SFT+F     UP            PSCR          ________      ________
 *   ________      ________      ________      ________      ä             ß/alt         |/Shift       $/Ctrl        +             HOME          LEFT          DOWN          RGHT          END           ________
 *   ________      ________      ________      ________      TD(TD_TICK)   CIRC          TD(TD_CUR)    ALGR(0)       S(RBRC)       ESC           Backspc       DEL           ENT           ________      Home/Shift
 *   ________      ________      ________      ________      WIN           Del/Alt          TG(1)      ________      ________      ________      ________      ________      ________      ________      ________
 */
 [2] = LAYOUT_planck_mit(
-                                           TD(TD_CIRCUM),  ALGR(KC_Q),            TD(TD_DQUOT),           TD(TD_SQU),              ALGR(KC_9),              KC_PERC,                  KC_SLSH,      CTLSFTF,      KC_UP,      KC_SCLN,      KC_TRNS,      KC_BSPC,
+                                           TD(TD_CIRCUM),  ALGR(KC_Q),            TD(TD_DQUOT),           TD(TD_SQU),              ALGR(KC_9),              KC_PERC,                  KC_SLSH,      CTLSFTF,      KC_UP,      KC_PSCR,      KC_TRNS,      KC_BSPC,
                                                  KC_TRNS,     KC_QUOT,    MT(MOD_LALT,KC_MINS),       TD(TD_PIPE_SFT),         TD(TD_DOL_CTL),              KC_RBRC,                  KC_HOME,      KC_LEFT,      KC_DOWN,    KC_RGHT,      KC_END,       KC_TRNS,
                                                  KC_TRNS, TD(TD_TICK),                 KC_CIRC,            TD(TD_CUR),             ALGR(KC_0),           S(KC_RBRC),                   KC_ESC,      KC_BSPC,      KC_DEL,     KC_ENT,       KC_TRNS,      MT(MOD_LSFT,KC_HOME),
-                                                 KC_TRNS,     KC_LGUI,      MT(MOD_LALT,KC_DEL),              TG(1),              KC_TRNS,                KC_TRNS,                                KC_TRNS,      KC_TRNS,    KC_TRNS,      KC_TRNS,      KC_TRNS
+                                                 KC_TRNS,     KC_LGUI,      MT(MOD_LALT,KC_DEL),              TG(1),              MO(_L2),                KC_TRNS,                                KC_TRNS,      KC_TRNS,    KC_TRNS,      KC_TRNS,      KC_TRNS
   ),
 
 /* L3
