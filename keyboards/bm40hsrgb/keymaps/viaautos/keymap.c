@@ -91,7 +91,7 @@ enum layers { _L0, _L1, _L2, _L3, _L4 };
 
 // Macros
 enum custom_keycodes {
-    PICKFIRST = USER00,
+    PICKFIRST = SAFE_RANGE,
     PICK2ND,
     PICK3RD,
     CTLSFTF,
@@ -175,6 +175,7 @@ static td_tap_t atap_state = {
     .is_press_action = true,
     .state = TD_NONE
 };
+static uint8_t active_osl = 0; //for OSL tap dance
 
 /*general td state evaluation*/
 td_state_t cur_dance(qk_tap_dance_state_t *state) {
@@ -262,7 +263,7 @@ void matrix_scan_user(void) {
     }
     // Note: This is not an array, you don't need to put any commas
     // or semicolons between sequences.
-    SEQ_TWO_KEYS(KC_N, KC_T) {
+    SEQ_TWO_KEYS(KC_W, KC_E) {
              register_mods(MOD_BIT(KC_LCTL));
              register_mods(MOD_BIT(KC_LSFT));
              tap_code(KC_F);             
@@ -324,6 +325,10 @@ void curly_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
     }
 }
 void curly_dance_each(qk_tap_dance_state_t *state, void *user_data) {
+    if (state->count == 1){
+    	reset_oneshot_layer();
+    	layer_move(_L2);
+	}
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
     if (state->count > 1) tap_code16(keycode);
 };
@@ -337,6 +342,7 @@ void curly_dance_reset (qk_tap_dance_state_t *state, void *user_data) {
         break;
     }
     atap_state.state = TD_NONE;
+    //layer_move(0);
 }
 
 // ö ß
@@ -464,6 +470,13 @@ void dance_iuml_finished(qk_tap_dance_state_t *state, void *user_data) {
     }
 }
 void dance_iuml_reset(qk_tap_dance_state_t *state, void *user_data) {
+        switch(atap_state.state) {
+        case TD_SINGLE_TAP:
+            clear_oneshot_layer_state(ONESHOT_PRESSED);
+            break;
+        default:
+            break;
+    }
     atap_state.state = TD_NONE;
 }
 
@@ -647,7 +660,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [2] = LAYOUT_planck_mit(
                                            TD(TD_CIRCUM),  ALGR(KC_Q),            TD(TD_DQUOT),           TD(TD_SQU),              ALGR(KC_9),              KC_PERC,                  KC_SLSH,      CTLSFTF,      KC_UP,      KC_PSCR,      KC_TRNS,      KC_BSPC,
                                                  KC_TRNS,     KC_QUOT,    MT(MOD_LALT,KC_MINS),       TD(TD_PIPE_SFT),         TD(TD_DOL_CTL),              KC_RBRC,                  KC_HOME,      KC_LEFT,      KC_DOWN,    KC_RGHT,      KC_END,       KC_TRNS,
-                                                 KC_TRNS, TD(TD_TICK),                 KC_CIRC,            TD(TD_CUR),             ALGR(KC_0),           S(KC_RBRC),                   KC_ESC,      KC_BSPC,      KC_DEL,     KC_ENT,       KC_TRNS,      MT(MOD_LSFT,KC_HOME),
+                                                 KC_TRNS, TD(TD_TICK),                 KC_CIRC,            TD(TD_CUR),             ALGR(KC_0),           TD(TD_I_BS),                   KC_ESC,      KC_BSPC,      KC_DEL,     KC_ENT,       KC_TRNS,      MT(MOD_LSFT,KC_HOME),
                                                  KC_TRNS,     KC_LGUI,      MT(MOD_LALT,KC_DEL),              TG(1),              MO(_L2),                KC_TRNS,                                KC_TRNS,      KC_TRNS,    KC_TRNS,      KC_TRNS,      KC_TRNS
   ),
 
@@ -685,4 +698,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 layer_state_t layer_state_set_user(layer_state_t state) {
   return update_tri_layer_state(state, _L1, _L2, _L3);
+}
+
+void oneshot_layer_changed_user(uint8_t layer) {
+        active_osl = layer;
 }
