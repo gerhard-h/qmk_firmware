@@ -310,6 +310,7 @@ void tick_dance_reset (qk_tap_dance_state_t *state, void *user_data) {
 }
 
 // () <> {} [] "" '' ...
+static uint8_t curly_layer;
 void curly_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
      atap_state.state = cur_dance(state);
      uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
@@ -326,9 +327,14 @@ void curly_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
 }
 void curly_dance_each(qk_tap_dance_state_t *state, void *user_data) {
     if (state->count == 1){
-    	reset_oneshot_layer();
-    	layer_move(_L2);
-	}
+        curly_layer = active_osl; //memorize the layer before we start messing around with it
+/*
+        if (curly_layer > 0) {
+            reset_oneshot_layer();
+            layer_move(curly_layer);
+        }
+*/
+    }
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
     if (state->count > 1) tap_code16(keycode);
 };
@@ -342,7 +348,15 @@ void curly_dance_reset (qk_tap_dance_state_t *state, void *user_data) {
         break;
     }
     atap_state.state = TD_NONE;
-    //layer_move(0);
+/*    if (curly_layer > 0) {
+            layer_move(_L0);
+            curly_layer = 0;
+    }
+    layer_move(_L0);
+    set_oneshot_layer(curly_layer, ONESHOT_START);
+    tap_code(KC_NO);
+    clear_oneshot_layer_state(ONESHOT_PRESSED);
+*/
 }
 
 // ö ß
@@ -660,8 +674,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [2] = LAYOUT_planck_mit(
                                            TD(TD_CIRCUM),  ALGR(KC_Q),            TD(TD_DQUOT),           TD(TD_SQU),              ALGR(KC_9),              KC_PERC,                  KC_SLSH,      CTLSFTF,      KC_UP,      KC_PSCR,      KC_TRNS,      KC_BSPC,
                                                  KC_TRNS,     KC_QUOT,    MT(MOD_LALT,KC_MINS),       TD(TD_PIPE_SFT),         TD(TD_DOL_CTL),              KC_RBRC,                  KC_HOME,      KC_LEFT,      KC_DOWN,    KC_RGHT,      KC_END,       KC_TRNS,
-                                                 KC_TRNS, TD(TD_TICK),                 KC_CIRC,            TD(TD_CUR),             ALGR(KC_0),           TD(TD_I_BS),                   KC_ESC,      KC_BSPC,      KC_DEL,     KC_ENT,       KC_TRNS,      MT(MOD_LSFT,KC_HOME),
-                                                 KC_TRNS,     KC_LGUI,      MT(MOD_LALT,KC_DEL),              TG(1),              MO(_L2),                KC_TRNS,                                KC_TRNS,      KC_TRNS,    KC_TRNS,      KC_TRNS,      KC_TRNS
+                                                 KC_TRNS, TD(TD_TICK),                 KC_CIRC,            TD(TD_CUR),             ALGR(KC_0),           S(KC_RBRC),                   KC_ESC,      KC_BSPC,      KC_DEL,     KC_ENT,       KC_TRNS,      MT(MOD_LSFT,KC_HOME),
+                                                 KC_TRNS,     KC_LGUI,      MT(MOD_LALT,KC_DEL),              TG(1),              MO(_L1),                KC_TRNS,                                KC_TRNS,      KC_TRNS,    KC_TRNS,      KC_TRNS,      KC_TRNS
   ),
 
 /* L3
