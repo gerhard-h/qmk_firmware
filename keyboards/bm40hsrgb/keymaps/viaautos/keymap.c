@@ -235,11 +235,17 @@ enum {
   TD_10,
   TD_12,
   TD_HASH,
-  TD_Q
+  TD_Q,
+  TD_TAB_ENT,
+  TD_M,
+  TD_H,
+  TD_Z,
+  TD_ESC,
+  TD_DEL10
 };
 
-
-LEADER_EXTERNS();
+// L4 makro layer seems to be more flexible than leader key 
+/*LEADER_EXTERNS();
 void matrix_scan_user(void) {
   LEADER_DICTIONARY() {
     leading = false;
@@ -271,7 +277,7 @@ void matrix_scan_user(void) {
              unregister_mods(MOD_BIT(KC_LCTL));
     }
   }
-}
+}*/
 
 // ^ °
 void circum_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
@@ -409,6 +415,11 @@ void dance_norepeatdt_finished(qk_tap_dance_state_t *state, void *user_data) {
              tap_code(keycode); break;
         case TD_DOUBLE_TAP:
         case TD_DOUBLE_SINGLE_TAP:
+#            ifdef AUTO_SHIFT_ENABLE
+                 if (!get_autoshift_state()) {
+                     tap_code16(keycode);tap_code16(keycode); break;
+                 }
+#            endif
         case TD_DOUBLE_HOLD: tap_code16(keycode3); break;
         case TD_TRIPLE_TAP:
         case TD_TRIPLE_HOLD:
@@ -495,11 +506,15 @@ void dance_iuml_reset(qk_tap_dance_state_t *state, void *user_data) {
 }
 
 // mod tap as tap dance
+static td_tap_t mtap_state = { //tap dance with mods need there own status each else you may run into mod-tapping into a tap dance key
+    .is_press_action = true,
+    .state = TD_NONE
+};
 void modifier_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
-    atap_state.state = cur_dance(state);
+    mtap_state.state = cur_dance(state);
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
     uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
-    switch (atap_state.state) {
+    switch (mtap_state.state) {
         case TD_SINGLE_HOLD: register_mods(MOD_BIT(keycode2)); break;
         default: register_code16(keycode); break;
     }
@@ -513,20 +528,24 @@ void modifier_dance_each(qk_tap_dance_state_t *state, void *user_data) {
 void modifier_dance_reset (qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
     uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
-    switch (atap_state.state) {
+    switch (mtap_state.state) {
         case TD_SINGLE_HOLD: unregister_mods(MOD_BIT(keycode2)); break;
         default: unregister_code16(keycode); break;
     }
-    atap_state.state = TD_NONE;
+    mtap_state.state = TD_NONE;
 }
 
 // mod tap as dbl tap dance
+static td_tap_t ctap_state = { //tap dance with mods need there own status
+    .is_press_action = true,
+    .state = TD_NONE
+};
 void modifier_dbldance_finished (qk_tap_dance_state_t *state, void *user_data) {
-    atap_state.state = cur_dance(state);
+    ctap_state.state = cur_dance(state);
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
     uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
     uint16_t keycode3 = ((dance_user_data_t*)user_data)->keycode3;
-    switch (atap_state.state) {
+    switch (ctap_state.state) {
         case TD_SINGLE_HOLD: register_mods(MOD_BIT(keycode2)); break;
         case TD_DOUBLE_HOLD:
         case TD_DOUBLE_TAP:
@@ -544,14 +563,14 @@ void modifier_dbldance_reset (qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
     uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
     uint16_t keycode3 = ((dance_user_data_t*)user_data)->keycode3;
-    switch (atap_state.state) {
+    switch (ctap_state.state) {
         case TD_SINGLE_HOLD: unregister_mods(MOD_BIT(keycode2)); break;
         case TD_DOUBLE_HOLD:
         case TD_DOUBLE_TAP:
         case TD_DOUBLE_SINGLE_TAP: unregister_code(keycode3); break;
         default: unregister_code(keycode); break;
     }
-    atap_state.state = TD_NONE;
+    ctap_state.state = TD_NONE;
 }
 
 
@@ -579,7 +598,8 @@ void noshift_each(qk_tap_dance_state_t *state, void *user_data) {
 
 // Tap Dance definitions
 qk_tap_dance_action_t tap_dance_actions[] = {
-    [TD_Q] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_Q, S(KC_Q), KC_ESC})),
+    [TD_ESC] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_ESC, KC_ESC, KC_HOME})),
+    [TD_Q] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_Q, S(KC_Q), KC_END})),
     [TD_F] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_F, S(KC_F), S(KC_4)})),
     [TD_A_UML] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_A, S(KC_A), KC_QUOT})),
     [TD_O_UML] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_O, S(KC_O), KC_SCLN})),
@@ -612,6 +632,12 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_0] = ACTION_TAP_DANCE_FN_ADVANCED_USER(noshift_each, NULL, NULL, &((dance_user_data_t){KC_0, KC_F11})),
     [TD_12] = ACTION_TAP_DANCE_FN_ADVANCED_USER(noshift_each, NULL, NULL, &((dance_user_data_t){KC_1, KC_F12})),
     [TD_10] = ACTION_TAP_DANCE_FN_ADVANCED_USER(noshift_each, NULL, NULL, &((dance_user_data_t){ALGR(KC_E), KC_F10})),
+    [TD_DEL10] = ACTION_TAP_DANCE_FN_ADVANCED_USER(noshift_each, NULL, NULL, &((dance_user_data_t){KC_DEL, KC_F10})),
+    //[TD_TAB_ENT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_TAB, KC_ENT, KC_F12})),
+    [TD_TAB_ENT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, modifier_dbldance_finished, modifier_dbldance_reset, &((dance_user_data_t){KC_TAB, KC_LCTL, KC_ENT})),
+    [TD_M] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_M, S(KC_M), KC_RPRN})),
+    [TD_H] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_H, S(KC_H), KC_UNDS})),
+    [TD_Z] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_Y, S(KC_Y), S(KC_EXLM)})),
 };
 /*
 * todo
@@ -630,6 +656,9 @@ MO(sym) + TG(num) locked num tripple tap for exit
 * fff = 1.....
 * vvq - vvc = 1 - 9
 * home row mods?
+2xesc = home 2xq = end 
+hh ?
+zz !
 
 leader key  combos? are they compatible with tapdance keys? F keys
 */
@@ -642,15 +671,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 *  CTL           ALT           NO            PgUp/Ctrl     PgDn/WIN      Del/Alt       Tab/L2        Enter/L1      Space/Shift   Space/Shift   Space/L2      OSL L4        Left          Down          Right
 */
 [0] = LAYOUT_planck_mit(    
-                                             KC_DEL,          TD(TD_Q),            KC_W,   KC_E,     KC_R,          KC_J,    KC_Y,    TD(TD_U_UML),    TD(TD_I_BS),    TD(TD_O_UML),               KC_P,                        KC_BSPC,
-                               MT(MOD_LCTL ,KC_TAB),      TD(TD_A_UML),   TD(TD_SS_UML),   KC_D, TD(TD_F),          KC_G,    KC_H,            KC_N,            KC_T,           KC_L,     TD(TD_KOE_ALT), MT(MOD_LCTL | MOD_RCTL,KC_ENT),
-                                      OSM(MOD_LSFT),              KC_Z,            KC_X,   KC_C,     KC_V,          KC_B,    KC_M,         KC_COMM,      TD(TD_DOT),    TD(TD_DASH),              KC_UP,                  OSM(MOD_RSFT),
+                                         TD(TD_ESC),          TD(TD_Q),            KC_W,   KC_E,     KC_R,          KC_J, TD(TD_Z),    TD(TD_U_UML),    TD(TD_I_BS),    TD(TD_O_UML),               KC_P,                        KC_BSPC,
+                               MT(MOD_LCTL ,KC_TAB),      TD(TD_A_UML),   TD(TD_SS_UML),   KC_D, TD(TD_F),          KC_G, TD(TD_H),            KC_N,           KC_T,            KC_L,     TD(TD_KOE_ALT), MT(MOD_LCTL | MOD_RCTL,KC_ENT),
+                                      OSM(MOD_LSFT),              KC_Z,            KC_X,   KC_C,     KC_V,          KC_B, TD(TD_M),         KC_COMM,     TD(TD_DOT),     TD(TD_DASH),              KC_UP,                  OSM(MOD_RSFT),
                               MT(MOD_LCTL, KC_PGUP), MT(MOD_LGUI, KC_PGDN),
                                                                      MT(MOD_LALT,KC_DEL),
-                                                                                 LT(_L4,KC_TAB), 
+                                                                                 TD(TD_TAB_ENT),
                                                                                                  OSL(_L1),
                                                                                                                  MT(MOD_LSFT,KC_SPC),
-                                                                                                                                          OSL(_L2),         KC_LEAD,        KC_LEFT,            KC_DOWN,                KC_RGHT
+                                                                                                                                          OSL(_L2),        OSL(_L4),         KC_LEFT,            KC_DOWN,                KC_RGHT
  ),
 /*            ________      ________      ________      F12           F1            F2            F3            F4            F5            F6            F7            F8            F9            F10           F11
 *             ________      TO(_L2)       ________      ________      1             2             3             €             .             !             ü             \             ö             ~             ________
@@ -660,10 +689,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 */
 [1] = LAYOUT_planck_mit(
 
-                                                          KC_ESC,         TD(TD_1),             TD(TD_2),                    TD(TD_3),             TD(TD_10),        KC_DOT,  KC_EXLM,    KC_LBRC,  ALGR(KC_MINS),       KC_SCLN,  ALGR(KC_RBRC),       KC_TRNS,
+                                                         KC_TRNS,         TD(TD_1),             TD(TD_2),                    TD(TD_3),             TD(TD_DEL10),       KC_BSPC,  KC_EXLM,    KC_LBRC,  ALGR(KC_MINS),       KC_SCLN,  ALGR(KC_RBRC),       KC_TRNS,
                                                          KC_TRNS,         TD(TD_4),             TD(TD_5),                    TD(TD_6),              TD(TD_0),         KC_GT,  KC_UNDS, TD(TD_PAR),        KC_LPRN,   TD(TD_QUOT),    TD(TD_HASH),       KC_TRNS,
                                                          KC_TRNS,         TD(TD_7),              TD(TD_8),                   TD(TD_9),             TD(TD_12),       KC_COMM,  KC_RPRN, TD(TD_ANG),     S(KC_NUBS),       KC_AMPR,          KC_UP,       KC_TRNS,
-                                                         KC_TRNS,          KC_TRNS,     MT(MOD_LALT,KC_0),                      TO(2),               KC_TRNS,       KC_TRNS,              MO(_L2),        TG(_L2),       KC_TRNS,        KC_TRNS,       KC_TRNS
+                                                         KC_TRNS,          KC_TRNS,     MT(MOD_LALT,KC_0),                    KC_TRNS,               KC_TRNS,       KC_TRNS,              MO(_L2),        KC_TRNS,       KC_TRNS,        KC_TRNS,       KC_TRNS
   ),
 /*  ________      ________      ________      ________      ________      ________      ________      ________      ________      ________      ________      ________      ________      ________      ________
 *   ________      TG(_L1)       ________      ^             @             "             [             ]             %             -             CTL+SFT+F     UP            PSCR          ________      ________
@@ -672,10 +701,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 *   ________      ________      ________      ________      WIN           Del/Alt          TG(1)      ________      ________      ________      ________      ________      ________      ________      ________
 */
 [2] = LAYOUT_planck_mit(
-                                           TD(TD_CIRCUM),  ALGR(KC_Q),            TD(TD_DQUOT),           TD(TD_SQU),              ALGR(KC_9),              KC_PERC,                  KC_SLSH,      CTLSFTF,      KC_UP,      KC_PSCR,      KC_TRNS,      KC_BSPC,
+                                           TD(TD_CIRCUM),  ALGR(KC_Q),            TD(TD_DQUOT),            TD(TD_SQU),             ALGR(KC_9),              KC_PERC,                  KC_SLSH,      CTLSFTF,      KC_UP,      KC_PSCR,      KC_TRNS,      KC_BSPC,
                                                  KC_TRNS,     KC_QUOT,    MT(MOD_LALT,KC_MINS),       TD(TD_PIPE_SFT),         TD(TD_DOL_CTL),              KC_RBRC,                  KC_HOME,      KC_LEFT,      KC_DOWN,    KC_RGHT,      KC_END,       KC_TRNS,
                                                  KC_TRNS, TD(TD_TICK),                 KC_CIRC,            TD(TD_CUR),             ALGR(KC_0),           S(KC_RBRC),                   KC_ESC,      KC_BSPC,      KC_DEL,     KC_ENT,       KC_TRNS,      MT(MOD_LSFT,KC_HOME),
-                                                 KC_TRNS,     KC_LGUI,      MT(MOD_LALT,KC_DEL),              TG(1),              MO(_L1),                KC_TRNS,                                KC_TRNS,      KC_TRNS,    KC_TRNS,      KC_TRNS,      KC_TRNS
+                                                 KC_TRNS,     KC_LGUI,     MT(MOD_LALT,KC_DEL),               KC_TRNS,                MO(_L1),              KC_TRNS,                                KC_TRNS,      KC_TRNS,    KC_TRNS,      KC_TRNS,      KC_TRNS
   ),
 
 /* L3
@@ -692,10 +721,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * 
  */
 [3] = LAYOUT_planck_mit(
-    KC_F1, RESET,             DEBUG,      RGB_TOG,      RGB_MOD, RGB_HUI, RGB_HUD, KC_MS_BTN1,  KC_MS_UP,   KC_MS_BTN2, KC_MS_WH_UP     , KC_ASTG,
-    KC_F2, KC_F5,      KC_MS_ACCEL0, KC_MS_ACCEL1, KC_MS_ACCEL2, RGB_SAI, RGB_SAD, KC_MS_LEFT,  KC_MS_DOWN,KC_MS_RIGHT, KC_MS_WH_DOWN, KC_TRNS,
-    KC_F3, KC_F6,             KC_F8,       KC_F10,       KC_F12, RGB_VAI, RGB_VAD, KC_MS_BTN1,  KC_MS_BTN2,  KC_MS_BTN3,      _______, _______,
-    KC_F4, KC_F7,MT(MOD_LALT,KC_F9),       KC_F11,       _______, _______,             _______, _______,  _______, _______, MT(MOD_RALT, KC_RGHT)
+    KC_F1, RESET,             DEBUG,      RGB_TOG,       RGB_MOD, RGB_HUI, RGB_HUD, KC_MS_BTN1,    KC_MS_UP,   KC_MS_BTN2,   KC_MS_WH_UP,               KC_ASTG,
+    KC_F2, KC_F5,      KC_MS_ACCEL0, KC_MS_ACCEL1,  KC_MS_ACCEL2, RGB_SAI, RGB_SAD, KC_MS_LEFT,  KC_MS_DOWN,  KC_MS_RIGHT, KC_MS_WH_DOWN,               KC_TRNS,
+    KC_F3, KC_F6,             KC_F8,       KC_F10,        KC_F12, RGB_VAI, RGB_VAD, KC_MS_BTN1,  KC_MS_BTN2,   KC_MS_BTN3,       _______,               _______,
+    KC_F4, KC_F7,MT(MOD_LALT,KC_F9),       KC_F11,       _______, _______,             _______,     _______,      _______,       _______,  MT(MOD_RALT, KC_RGHT)
 )
 ,
 
@@ -714,6 +743,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
   return update_tri_layer_state(state, _L1, _L2, _L3);
 }
 
+// delete or get working
 void oneshot_layer_changed_user(uint8_t layer) {
         active_osl = layer;
 }
