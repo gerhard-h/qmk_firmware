@@ -39,8 +39,8 @@
 #define MOD_CODE_DELAY 0
 // # define TAP_CODE_DELAY 10 //will not fix Remotedesktop timings
 #define USB_POLLING_INTERVAL_MS 1
-#define AUTO_SHIFT_TIMEOUT 140
-#define AUTO_SHIFT_NO_AUTO_REPEAT
+//#define AUTO_SHIFT_TIMEOUT 140
+//#define AUTO_SHIFT_NO_AUTO_REPEAT
 //#define NO_AUTO_SHIFT_NUMERIC
 //#define DYNAMIC_KEYMAP_LAYER_COUNT 5
 #define NO_ACTION_MACRO //disable old-style macro handling using MACRO(), action_get_macro() (deprecated) EXTRAFLAGS += -flto
@@ -53,4 +53,4 @@
 #define ONESHOT_TAP_TOGGLE 2  /* Tapping this number of times holds the key until tapped once again. */
 #define ONESHOT_TIMEOUT 5000  /* Time (in ms) before the one shot key is released */
 //#define LEADER_TIMEOUT 500
-#define COMBO_COUNT 2
+//#define COMBO_COUNT 2
