@@ -64,8 +64,6 @@ rgb_matrix_set_color(36, 150,100,10);
 rgb_matrix_set_color(42, 150,100,10); 
 rgb_matrix_set_color(43, 150,100,10); 
 rgb_matrix_set_color(44, 150,100,10); 
-
-
 break;
 case 4:
 rgb_matrix_set_color_all(0,1,30); 
@@ -269,9 +267,9 @@ void circum_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
         default: 
             switch (state->count) {
                 case 2: SEND_STRING("``"); break;
-                case 3: SEND_STRING("``"); SEND_STRING("` ");break;
-                case 4: SEND_STRING("``"); SEND_STRING("``"); break;
-                case 5: SEND_STRING("``"); SEND_STRING("``"); SEND_STRING("` "); break;
+                case 3: SEND_STRING("` ");SEND_STRING("` ");SEND_STRING("` "); break;
+                case 4: SEND_STRING("` ");SEND_STRING("` ");SEND_STRING("` ");SEND_STRING("` "); break;
+                case 5: SEND_STRING("` ");SEND_STRING("` ");SEND_STRING("` ");SEND_STRING("` ");SEND_STRING("` "); break;
             };
         break;
     }
@@ -283,15 +281,14 @@ void circum_dance_reset (qk_tap_dance_state_t *state, void *user_data) {
 //´`
 void tick_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
     atap_state.state = cur_dance(state);
-            uint8_t i = 0;
     switch (atap_state.state) {
         case TD_SINGLE_TAP: SEND_STRING("= "); break;
         case TD_SINGLE_HOLD:
             SEND_STRING("+ "); break;
         default:
-            for (i=0; i < state->count; i++) {
-                SEND_STRING("=");
-                SEND_STRING(" ")^^ ^^^^^ ^^^^
+            switch (state->count) {
+                case 2: SEND_STRING("=="); break;
+                default: SEND_STRING("= ");SEND_STRING("= ");SEND_STRING("= "); break;
             };
         break;
     }
@@ -350,11 +347,13 @@ void curly_dance_reset (qk_tap_dance_state_t *state, void *user_data) {
 */
 }
 
-// TD shortcut () <> {} [] "" '' ...
+// TD shortcut () <> {} [] "" ''
 void shortcut_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
     atap_state.state = cur_dance(state);
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
+#   ifdef AUTO_SHIFT_ENABLE
     uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
+#   endif
     uint16_t keycode3 = ((dance_user_data_t*)user_data)->keycode3;
     uint16_t keycode4 = ((dance_user_data_t*)user_data)->keycode4;
     switch (atap_state.state) {
@@ -364,12 +363,17 @@ void shortcut_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
             tap_code(KC_LEFT); 
         break;
         case TD_SINGLE_HOLD:
-            tap_code16(keycode2);
+#            ifdef AUTO_SHIFT_ENABLE
+                 tap_code16(keycode2);
+#            else
+                 tap_code16(keycode3);
+#            endif
         break;
-        case TD_DOUBLE_TAP:
-        case TD_DOUBLE_SINGLE_TAP:tap_code16(keycode); tap_code16(keycode); break;
         case TD_SINGLE_TAP: tap_code16(keycode); break;
-        default: break;
+        case TD_DOUBLE_TAP:
+        case TD_DOUBLE_SINGLE_TAP:
+        default:
+        tap_code16(keycode); tap_code16(keycode); break;
     }
 }
 void shortcut_dance_each(qk_tap_dance_state_t *state, void *user_data) {
@@ -385,7 +389,9 @@ void shortcut_dance_reset (qk_tap_dance_state_t *state, void *user_data) {
 void dance_norepeat_finished(qk_tap_dance_state_t *state, void *user_data) {
     atap_state.state = cur_dance(state);
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;        //normal and double tap
+#   ifdef AUTO_SHIFT_ENABLE
     uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;      //shifted
+#   endif
     uint16_t keycode3 = ((dance_user_data_t*)user_data)->keycode3;      //double hold
     switch (atap_state.state) {
         case TD_SINGLE_TAP: tap_code(keycode); break;
@@ -394,8 +400,10 @@ void dance_norepeat_finished(qk_tap_dance_state_t *state, void *user_data) {
                  if (get_autoshift_state()) {
                      tap_code16(keycode2); break;
                  }
-#            endif
              tap_code(keycode); break;
+#            else
+                tap_code16(keycode3); break;
+#            endif
         case TD_DOUBLE_HOLD: tap_code16(keycode3); break;
         case TD_DOUBLE_TAP:
         case TD_DOUBLE_SINGLE_TAP:
@@ -417,7 +425,9 @@ void dance_norepeat_reset(qk_tap_dance_state_t *state, void *user_data) {
 void dance_norepeatdt_finished(qk_tap_dance_state_t *state, void *user_data) {
     atap_state.state = cur_dance(state);
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;        //normal
+#   ifdef AUTO_SHIFT_ENABLE
     uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;      //shifted
+#   endif
     uint16_t keycode3 = ((dance_user_data_t*)user_data)->keycode3;      //double hold and double tap
     switch (atap_state.state) {
         case TD_SINGLE_TAP: tap_code(keycode); break;
@@ -426,8 +436,10 @@ void dance_norepeatdt_finished(qk_tap_dance_state_t *state, void *user_data) {
                  if (get_autoshift_state()) {
                      tap_code16(keycode2); break;
                  }
-#            endif
              tap_code(keycode); break;
+#            else
+             tap_code16(keycode3); break;
+#            endif
         case TD_DOUBLE_TAP:
         case TD_DOUBLE_SINGLE_TAP:
 #            ifdef AUTO_SHIFT_ENABLE
@@ -590,6 +602,7 @@ void modifier_dbldance_reset (qk_tap_dance_state_t *state, void *user_data) {
 
 
 // no autoshift for numbers on the number layer, also # F key instead
+// this is a way to set a shifted key however you want
 void noshift_each(qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
     uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
@@ -688,8 +701,7 @@ single hold: if  modus==ON & Space
 enable tap dance inside OSL > z!z!!!!!!!!!!
 
         
-C+(W+W) = A+F4 oder(C+W)+W oder C+(W+Q)^^^^ ^^^^^^^^ ^^^ ^^ ^^^^^^^^^  ^^^ ^^^ ^^^^ ^^^ ^^^^^^^  ^^^ ^ ^^^ ^^^  ^^^  ^^^  ^^^ ^^^  ^^^  ^^^ ^^^ ^^^ ^^ ^^^ ^^ ^^^ ^^ ^^^ ^^ ^^^ ^^ ^^^ ^^ ^^^ ^^
-
+C+(W+W) = A+F4 oder(C+W)+W oder C+(W+Q)
 *numberpad 2.0
 €456:
 3210.
