@@ -507,9 +507,7 @@ void dance_norepeat_reset(qk_tap_dance_state_t *state, void *user_data) {
 void dance_norepeatdt_finished(qk_tap_dance_state_t *state, void *user_data) {
     atap_state.state = cur_dance(state);
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;        //normal
-#   ifdef AUTO_SHIFT_ENABLE
     uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;      //shifted = single hold
-#   endif
     uint16_t keycode3 = ((dance_user_data_t*)user_data)->keycode3;      //double hold and double tap
     switch (atap_state.state) {
         case TD_SINGLE_TAP: tap_code(keycode); break;
@@ -521,7 +519,7 @@ void dance_norepeatdt_finished(qk_tap_dance_state_t *state, void *user_data) {
                  }
                  tap_code(keycode); break;
 #            else
-                 tap_code16(keycode3); break;
+                 tap_code16(keycode2); break;
 #            endif
         case TD_DOUBLE_TAP:
         case TD_DOUBLE_SINGLE_TAP:
@@ -688,7 +686,7 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_C] = ACTION_TAP_DANCE_FN_ADVANCED_USER(shortcut_dance_each, shortcut_dance_finished, shortcut_dance_reset, &((dance_user_data_t){KC_C, C(KC_C), A(C(KC_8)), A(C(KC_9))})),
     [TD_V] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_V, A(C(KC_0)), C(KC_V)})),
     [TD_Y] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_Z, C(KC_Z), C(KC_Z)})),
-    [TD_Z] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_Y, S(KC_EXLM),  C(KC_Y)})),
+    [TD_Z] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_Y, KC_EXLM,  C(KC_Y)})),
     [TD_COMM] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_COMM, S(KC_COMM), S(KC_COMM)})),
     [TD_G] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_G, S(KC_G), KC_RBRC})),
     [TD_B] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_B, S(KC_B), S(KC_RBRC)})),
@@ -696,6 +694,9 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_U_UML] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_U, KC_LBRC, KC_LBRC})),
     [TD_A_UML] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_A, S(KC_A), KC_QUOT})),
     [TD_O_UML] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_O, S(KC_O), KC_SCLN})),
+    [TD_R] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_R, S(KC_R), A(C(KC_9))})),
+//    [TD_P] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_P, S(KC_P), ALGR(KC_RBRC)})),
+//    [TD_T] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_T, S(KC_T), S(KC_9)})),
     [TD_SS_UML] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_S, S(KC_S), KC_MINS})),
     [TD_DOT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_autorepeat_finished, dance_autorepeat_reset, &((dance_user_data_t){KC_DOT, S(KC_DOT), S(KC_RBRC)})),
     [TD_DASH] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_autorepeat_finished, dance_autorepeat_reset, &((dance_user_data_t){KC_SLSH, S(KC_SLSH), S(KC_7)})),
@@ -794,7 +795,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 *  CTL           ALT           NO            PgUp/Ctrl     PgDn/WIN      Del/Alt       Tab/L2        Enter/L1      Space/Shift   Space/Shift   Space/L2      OSL L4        Left          Down          Right
 */
 [0] = LAYOUT_planck_mit(    
-                                         TD(TD_ESC),          TD(TD_Q),        TD(TD_W), TD(TD_E),     KC_R,      TD(TD_J), TD(TD_Z),    TD(TD_U_UML),    TD(TD_I_BS),    TD(TD_O_UML),               KC_P,                        KC_BSPC,
+                                         TD(TD_ESC),          TD(TD_Q),        TD(TD_W), TD(TD_E), TD(TD_R),      TD(TD_J), TD(TD_Z),    TD(TD_U_UML),    TD(TD_I_BS),    TD(TD_O_UML),               KC_P,                        KC_BSPC,
                                MT(MOD_LCTL ,KC_TAB),      TD(TD_A_UML),   TD(TD_SS_UML), TD(TD_D), TD(TD_F),      TD(TD_G), TD(TD_H),        TD(TD_N),           KC_T,        TD(TD_L),     TD(TD_KOE_ALT), MT(MOD_LCTL | MOD_RCTL,KC_ENT),
                                       OSM(MOD_LSFT),          TD(TD_Y),        TD(TD_X), TD(TD_C), TD(TD_V),      TD(TD_B), TD(TD_M),     TD(TD_COMM),     TD(TD_DOT),     TD(TD_DASH),              KC_UP,                  OSM(MOD_RSFT),
                               MT(MOD_LCTL, KC_PGUP), MT(MOD_LGUI, KC_PGDN),
