@@ -680,15 +680,16 @@ void noshift_each(qk_tap_dance_state_t *state, void *user_data) {
 // Tap Dance definitions
 qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_ESC] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_ESC, KC_HOME, KC_HOME})),
-    [TD_Q] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_Q, KC_END, KC_END})),
+    [TD_Q] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_Q, KC_END, A(C(KC_Q))})),
     [TD_F] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_F, S(KC_F), S(KC_4)})),
     [TD_X] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_X, S(KC_6), C(KC_X)})),
     [TD_C] = ACTION_TAP_DANCE_FN_ADVANCED_USER(shortcut_dance_each, shortcut_dance_finished, shortcut_dance_reset, &((dance_user_data_t){KC_C, C(KC_C), A(C(KC_7)), A(C(KC_0))})),
     [TD_V] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_V, A(C(KC_0)), C(KC_V)})),
     [TD_Y] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_Z, C(KC_Z), C(KC_Z)})),
     [TD_Z] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_Y, KC_EXLM,  C(KC_Y)})),
-    [TD_G] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_G, S(KC_G), KC_RBRC})),
-    [TD_B] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_B, S(KC_B), S(KC_RBRC)})),
+    [TD_G] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_G, S(KC_G), KC_RPRN})),
+    [TD_B] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_B, S(KC_B), KC_RBRC})),
+    [TD_M] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_M, S(KC_M), S(KC_RBRC)})),
     [TD_J] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_J, KC_PERC, KC_PERC})),
     [TD_U_UML] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_U, KC_LBRC, KC_LBRC})),
     [TD_A_UML] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_A, S(KC_A), KC_QUOT})),
@@ -697,11 +698,11 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_P] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_P, A(C(KC_RBRC)), A(C(KC_RBRC))})),
     [TD_T] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_T, S(KC_9), S(KC_9)})),
     [TD_SS_UML] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_S, S(KC_S), KC_MINS})),
-    [TD_DOT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_autorepeat_finished, dance_autorepeat_reset, &((dance_user_data_t){KC_DOT, S(KC_DOT), S(KC_RBRC)})),
-    [TD_DASH] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_autorepeat_finished, dance_autorepeat_reset, &((dance_user_data_t){KC_SLSH, S(KC_SLSH), S(KC_7)})),
+    [TD_DOT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_autorepeat_finished, dance_autorepeat_reset, &((dance_user_data_t){KC_DOT, S(KC_DOT), S(KC_NUBS)})),
+    [TD_DASH] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_SLSH, S(KC_SLSH), S(KC_7)})),
     [TD_CIRCUM] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, circum_dance_finished, circum_dance_reset),
     [TD_TICK] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tick_dance_finished, tick_dance_reset),
-    [TD_I_BS] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_I, A(C(KC_MINS)), A(C(KC_MINS))})),
+    [TD_I_BS] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_I, A(C(KC_MINS)), S(KC_7)})),
     [TD_DOL_CTL] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dance_each, modifier_dance_finished, modifier_dance_reset, &((dance_user_data_t){S(KC_4), KC_LCTL})),
     [TD_PIPE_SFT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dance_each, modifier_dance_finished, modifier_dance_reset, &((dance_user_data_t){A(C(KC_NUBS)), KC_LSFT})),
     [TD_KOE_ALT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, modifier_dbldance_finished, modifier_dbldance_reset, &((dance_user_data_t){KC_K, KC_LALT, A(KC_TAB)})),
@@ -749,7 +750,6 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_10] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){ALGR(KC_E),  KC_F10, KC_F10})),
     [TD_DEL10] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_DEL, KC_F10, KC_F10})),
     [TD_TAB_ENT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, modifier_dbldance_finished, modifier_dbldance_reset, &((dance_user_data_t){KC_TAB, KC_LCTL, KC_ENT})),
-    [TD_M] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeat_finished, dance_norepeat_reset, &((dance_user_data_t){KC_M, S(KC_M), KC_RPRN})),
     [TD_H] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_norepeatdt_finished, dance_norepeatdt_reset, &((dance_user_data_t){KC_H, KC_UNDS, KC_UNDS})),
 };
 /*
@@ -798,8 +798,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 */
 [0] = LAYOUT_planck_mit(    
                                          TD(TD_ESC),          TD(TD_Q),        TD(TD_W), TD(TD_E), TD(TD_R),      TD(TD_J), TD(TD_Z),    TD(TD_U_UML),    TD(TD_I_BS),    TD(TD_O_UML),           TD(TD_P),                        KC_BSPC,
-                               MT(MOD_LSFT ,KC_TAB),      TD(TD_A_UML),   TD(TD_SS_UML), TD(TD_D), TD(TD_F),      TD(TD_G), TD(TD_H),        TD(TD_N),       TD(TD_T),        TD(TD_L),     TD(TD_KOE_ALT), MT(MOD_RSFT,KC_ENT),
-                                      OSM(MOD_LSFT),          TD(TD_Y),        TD(TD_X), TD(TD_C), TD(TD_V),      TD(TD_B), TD(TD_M),     TD(TD_COMM),     TD(TD_DOT),     TD(TD_DASH),              KC_UP,                  OSM(MOD_RSFT),
+                               MT(MOD_LCTL ,KC_TAB),      TD(TD_A_UML),   TD(TD_SS_UML), TD(TD_D), TD(TD_F),      TD(TD_G), TD(TD_H),        TD(TD_N),       TD(TD_T),        TD(TD_L),     TD(TD_KOE_ALT), MT(MOD_LCTL,KC_ENT),
+                                      OSM(MOD_LSFT),          TD(TD_Y),        TD(TD_X), TD(TD_C), TD(TD_V),      TD(TD_B), TD(TD_M),     TD(TD_COMM),     TD(TD_DOT),     TD(TD_DASH),              KC_UP,                  OSM(MOD_LSFT),
                               MT(MOD_LCTL, KC_PGUP), MT(MOD_LGUI, KC_PGDN),
                                                                      MT(MOD_LALT,KC_DEL),
                                                                                  TD(TD_TAB_ENT),
@@ -808,17 +808,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                                                                           OSL(_L2),        OSL(_L4),         KC_LEFT,            KC_DOWN,                KC_RGHT
  ),
 /*            ________      ________      ________      F12           F1            F2            F3            F4            F5            F6            F7            F8            F9            F10           F11
-*             ________      TO(_L2)       ________      ________      1             2             3           DEL           BSP             !             ü             \             ö             ~             ________
+*             ________      TO(_L2)       ________      ________      1             2             3           DEL           BSP             !             ü            ä\             ö             ß~            ________
 *             ________      ________      ________      ________      4             5             6             0             .             ?             (             )             '             #             ________
 *             ________      ________      ________      ________      7             8             9             1             ,             =             <             >             /             ________      ________
 *             ________      ________      ________      ________      ________      0/Alt         TO(2)      ________      ________      ________      ________      TG(_L2)          ________      ________      ________
 */
 [1] = LAYOUT_planck_mit(
 
-                                                         KC_TRNS,         TD(TD_1),             TD(TD_2),                    TD(TD_3),          TD(TD_DEL10),       KC_BSPC,  KC_EXLM,    KC_LBRC,  ALGR(KC_MINS),       KC_SCLN,  ALGR(KC_RBRC),       KC_TRNS,
-                                                         KC_TRNS,         TD(TD_4),             TD(TD_5),                    TD(TD_6),              TD(TD_0),    TD(TD_DOT),  KC_UNDS, TD(TD_PAR),        KC_LPRN,   TD(TD_QUOT),        KC_NUHS,       KC_TRNS,
-                                                         KC_TRNS,         TD(TD_7),              TD(TD_8),                   TD(TD_9),             TD(TD_12),   TD(TD_COMM),  KC_RPRN, TD(TD_ANG),     S(KC_NUBS),       KC_AMPR,          KC_UP,       KC_TRNS,
-                                                         KC_TRNS,          KC_TRNS,     MT(MOD_LALT,KC_0),                    KC_TRNS,               KC_TRNS,       KC_TRNS,              MO(_L2),        KC_TRNS,       KC_TRNS,        KC_TRNS,       KC_TRNS
+                                                         KC_TRNS,         TD(TD_1),             TD(TD_2),                    TD(TD_3),          TD(TD_DEL10),       KC_BSPC,     KC_EXLM,    KC_LBRC,        KC_QUOT,       KC_SCLN,        KC_MINS,       KC_TRNS,
+                                                         KC_TRNS,         TD(TD_4),             TD(TD_5),                    TD(TD_6),              TD(TD_0),    TD(TD_DOT),     KC_UNDS, TD(TD_PAR),        KC_LPRN,   TD(TD_QUOT),        KC_NUHS,       KC_TRNS,
+                                                         KC_TRNS,         TD(TD_7),              TD(TD_8),                   TD(TD_9),             TD(TD_12),   TD(TD_COMM),  S(KC_RBRC), TD(TD_ANG),     S(KC_NUBS),       KC_AMPR,          KC_UP,       KC_TRNS,
+                                                         KC_TRNS,          KC_TRNS,     MT(MOD_LALT,KC_0),                    KC_TRNS,               KC_TRNS,       KC_TRNS,                 MO(_L2),        KC_TRNS,       KC_TRNS,        KC_TRNS,       KC_TRNS
   ),
 /*  ________      ________      ________      ________      ________                 ________              ________                ________                  ________                 ________      ________      ________      ________   ________      ________
 *   ________      TG(_L1)       ________      ^             @                        "                     [                       ]                         %                        A(TAB)             HOME          UP            END        ________      ________
@@ -828,8 +828,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 */
 [2] = LAYOUT_planck_mit(
                                            TD(TD_CIRCUM),  ALGR(KC_Q),            S(KC_2),                 ALGR(KC_8),             ALGR(KC_9),              KC_PERC,                A(KC_TAB),      KC_HOME,        KC_UP,    KC_END,   A(S(KC_TAB)),     KC_BSPC,
-                                                 KC_TRNS,     KC_QUOT,    MT(MOD_LALT,KC_MINS),       TD(TD_PIPE_SFT),         TD(TD_DOL_CTL),              KC_RBRC,                  KC_HOME,      KC_LEFT,      KC_DOWN,    KC_RGHT,        KC_END,     KC_TRNS,
-                                                 KC_TRNS, TD(TD_TICK),                 KC_CIRC,            ALGR(KC_7),             ALGR(KC_0),           S(KC_RBRC),                   KC_ESC,      KC_ENT,        KC_DEL,    KC_BSPC,       KC_TRNS,     KC_TRNS,
+                                                 KC_TRNS,     KC_QUOT,    MT(MOD_LALT,KC_MINS),       TD(TD_PIPE_SFT),         TD(TD_DOL_CTL),              KC_RPRN,                  KC_HOME,      KC_LEFT,      KC_DOWN,    KC_RGHT,        KC_END,     KC_TRNS,
+                                                 KC_TRNS, TD(TD_TICK),                 KC_CIRC,            ALGR(KC_7),             ALGR(KC_0),              KC_RBRC,                   KC_ESC,      KC_ENT,        KC_DEL,    KC_BSPC,       KC_TRNS,     KC_TRNS,
                                                  KC_TRNS,     KC_LGUI,     MT(MOD_LALT,KC_DEL),               KC_TRNS,                MO(_L1),              KC_TRNS,                                KC_TRNS,      KC_TRNS,    KC_TRNS,       KC_TRNS,     KC_TRNS
   ),
 
@@ -857,11 +857,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* L4
  */
 [_L4] = LAYOUT_planck_mit(
-    KC_TRNS,         TD(TD_1),               TD(TD_2),       TD(TD_3),              TD(TD_10),       KC_SLSH,  KC_EXLM,    KC_LBRC,        CTLSFTF,       KC_MINS,        KC_PSCR,       KC_TRNS,
-    KC_TRNS,         TD(TD_4),               TD(TD_5),       TD(TD_6),               TD(TD_0),        KC_DOT,  KC_UNDS,   PICKFIRST,       PICK2ND,       PICK3RD,        KC_LALT,       KC_TRNS,
-    KC_TRNS,         TD(TD_7),               TD(TD_8),       TD(TD_9),              TD(TD_12),       KC_COMM,  KC_RPRN,     KC_COMM,    KC_MS_BTN2,       KC_LGUI,        KC_VOLU,       KC_TRNS,
-    KC_TRNS,          KC_TRNS,      MT(MOD_LALT,KC_0),        KC_TRNS,                KC_TRNS,       KC_TRNS,               KC_TRNS,       KC_TRNS,       KC_TRNS,        KC_VOLD,       KC_TRNS
-  ),
+    KC_TRNS,         TD(TD_1),               TD(TD_2),       TD(TD_3),              TD(TD_10),       KC_SLSH,     KC_EXLM,     KC_LBRC,        CTLSFTF,       KC_MINS,        KC_PSCR,       KC_TRNS,
+    KC_TRNS,         TD(TD_4),               TD(TD_5),       TD(TD_6),               TD(TD_0),        KC_DOT,     KC_UNDS,   PICKFIRST,        PICK2ND,       PICK3RD,        KC_LALT,       KC_TRNS,
+    KC_TRNS,         TD(TD_7),               TD(TD_8),       TD(TD_9),              TD(TD_12),       KC_COMM,  S(KC_RBRC),     KC_COMM,     KC_MS_BTN2,       KC_LGUI,        KC_VOLU,       KC_TRNS,
+    KC_TRNS,          KC_TRNS,      MT(MOD_LALT,KC_0),        KC_TRNS,                KC_TRNS,       KC_TRNS,                  KC_TRNS,        KC_TRNS,       KC_TRNS,        KC_VOLD,       KC_TRNS
+  ),    
 
 };
 
