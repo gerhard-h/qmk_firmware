@@ -77,7 +77,7 @@ rgb_matrix_set_color(28, 150, 150, 50);
 
 break;
 case 4:
-rgb_matrix_set_color_all(RGB_YELLOW);
+rgb_matrix_set_color_all(0,1,60);
 rgb_matrix_set_color(1, 150, 150, 50); // num pad
 rgb_matrix_set_color(2, 150, 150, 50);
 rgb_matrix_set_color(3, 150, 150, 50);
@@ -857,7 +857,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 *   ________      ________      ________      ________      WIN                      Del/Alt                  TG(1)                ________                  ________                 ________      ________      ________      ________   ________      ________
 */
 [2] = LAYOUT_planck_mit(
-                                                CIRCUMFL,  ALGR(KC_Q),            TD(TD_QUOT),             TD(TD_SQU),             ALGR(KC_9),              KC_PERC,                A(KC_TAB),      KC_HOME,        KC_UP,    KC_END,   A(S(KC_TAB)),     KC_BSPC,
+                                                CIRCUMFL,  ALGR(KC_Q),            TD(TD_DQUOT),             TD(TD_SQU),             ALGR(KC_9),              KC_PERC,                A(KC_TAB),      KC_HOME,        KC_UP,    KC_END,   A(S(KC_TAB)),     KC_BSPC,
                                                  KC_TRNS,     KC_QUOT,    MT(MOD_LALT,KC_MINS),       TD(TD_PIPE_SFT),         TD(TD_DOL_CTL),              KC_RPRN,                  KC_HOME,      KC_LEFT,      KC_DOWN,    KC_RGHT,        KC_END,     KC_TRNS,
                                                  KC_TRNS,    TICKTICK,                 KC_CIRC,            TD(TD_CUR),             ALGR(KC_0),              KC_RBRC,                   KC_ESC,      KC_ENT,        KC_DEL,    KC_BSPC,       KC_TRNS,     KC_TRNS,
                                                  KC_TRNS,     KC_LGUI,     MT(MOD_LALT,KC_DEL),               KC_TRNS,                MO(_L1),              KC_TRNS,                                KC_TRNS,      KC_TRNS,    KC_TRNS,       KC_TRNS,     KC_TRNS
@@ -900,9 +900,9 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 }
 
 void oneshot_locked_mods_changed_user(uint8_t mods) {
-  if (mods & MOD_MASK_SHIFT) {
+  //if (mods & MOD_MASK_SHIFT) {
   rgb_matrix_set_color_all(RGB_YELLOW);
-  }
+  //}
 //  if (!mods) {
 //    println("Oneshot locked mods off");
 //  }
