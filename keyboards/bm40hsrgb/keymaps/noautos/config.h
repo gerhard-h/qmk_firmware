@@ -42,7 +42,7 @@
 //#define AUTO_SHIFT_TIMEOUT 140
 //#define AUTO_SHIFT_NO_AUTO_REPEAT
 //#define NO_AUTO_SHIFT_NUMERIC
-#define DYNAMIC_KEYMAP_LAYER_COUNT 5
+//#define DYNAMIC_KEYMAP_LAYER_COUNT 5
 #define NO_ACTION_MACRO //disable old-style macro handling using MACRO(), action_get_macro() (deprecated) EXTRAFLAGS += -flto
 #define NO_ACTION_FUNCTION //disable old-style function handling using fn_actions, action_function() (deprecated) EXTRAFLAGS += -flto
 

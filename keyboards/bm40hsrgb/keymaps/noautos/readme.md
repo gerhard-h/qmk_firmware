@@ -1,8 +1,9 @@
-# a via keymap for bm40hsrgb with
-VIA 
-to be used on OS with German keyboard layout 
-5 dynamic layers
-no autoshift but hold to go into symbol layer
-tap dance (not compatible with VIA-Save-feature)
+# an autosymbol keymap for bm40hsrgb
+no VIA, it conflicts with the large amount of tap dances
+best used with German keyboard layout 
+no autoshift but hold does autosymbol
+
+features:
+tap dance
 macros 
 rgb per layer
