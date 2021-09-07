@@ -109,7 +109,8 @@ enum custom_keycodes {
     PICK2ND,
     PICK3RD,
     CTLSFTF,
-//    CIRCUM
+    CIRCUMFL,
+    TICKTICK,
 //    L0AUTOS,
 //    ALT_TAB
 };
@@ -152,15 +153,25 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
              unregister_mods(MOD_BIT(KC_LCTL));
         }
         break;
-/*    case CIRCUM:
+    case CIRCUMFL:
         if (record->event.pressed) {
-            if (get_mods() | MOD_MASK_SHIFT) {tap_code16(S(KC_GRV)); break;}
-            tap_code16(KC_GRV);
+            if ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT) {tap_code16(S(KC_GRV)); break;}
+            tap_code(KC_GRV);
             tap_code(KC_SPC);
             break;
         }
         break;
-        */
+    case TICKTICK:
+        if (record->event.pressed) {
+            if ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT) {
+                tap_code16(S(KC_EQL));}
+            else {
+                tap_code(KC_EQL);
+            }
+            tap_code(KC_SPC);
+            break;
+        }
+        break;
 /*        
 #   ifdef AUTO_SHIFT_ENABLE
     case L0AUTOS:
@@ -348,7 +359,7 @@ void matrix_scan_user(void) {
   }
 }*/
 
-// ^ °
+/*// ^ ° replaced by CIRCUMFL 
 void circum_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
     atap_state.state = cur_dance(state);
     switch (atap_state.state) {
@@ -368,8 +379,9 @@ void circum_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
 void circum_dance_reset (qk_tap_dance_state_t *state, void *user_data) {
     atap_state.state = TD_NONE;
 }
+*/
 
-//´`
+/*//´`
 void tick_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
     atap_state.state = cur_dance(state);
     switch (atap_state.state) {
@@ -387,6 +399,7 @@ void tick_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
 void tick_dance_reset (qk_tap_dance_state_t *state, void *user_data) {
     atap_state.state = TD_NONE;
 }
+*/
 
 // () <> {} [] "" '' ...
 //static uint8_t curly_layer;
@@ -689,7 +702,7 @@ void noshift_each(qk_tap_dance_state_t *state, void *user_data) {
 
 // Tap Dance definitions
 qk_tap_dance_action_t tap_dance_actions[] = {
-    [TD_ESC] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_dbltap_finished, dance_dbltap_reset, &((dance_user_data_t){KC_ESC, KC_HOME, KC_HOME})), // tap, hold, double_tap 
+    [TD_ESC] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_dbltap_finished, dance_dbltap_reset, &((dance_user_data_t){KC_ESC, KC_HOME, KC_GRV})), // tap, hold, double_tap 
     [TD_Q] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_dbltap_finished, dance_dbltap_reset, &((dance_user_data_t){KC_Q, KC_END, A(C(KC_Q))})), 
     [TD_F] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_hold_finished, dance_hold_reset, &((dance_user_data_t){KC_F, S(KC_F), S(KC_4)})), // tap, autoshift only hold, hold & double_hold
     [TD_X] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_dbltap_finished, dance_dbltap_reset, &((dance_user_data_t){KC_X, S(KC_6), C(KC_X)})),
@@ -705,13 +718,13 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_A_UML] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_hold_finished, dance_hold_reset, &((dance_user_data_t){KC_A, S(KC_A), KC_QUOT})),
     [TD_O_UML] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_hold_finished, dance_hold_reset, &((dance_user_data_t){KC_O, S(KC_O), KC_SCLN})),
     [TD_R] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_hold_finished, dance_hold_reset, &((dance_user_data_t){KC_R, S(KC_R), A(C(KC_9))})),
-//    [TD_P] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_hold_finished, dance_hold_reset, &((dance_user_data_t){KC_P, A(C(KC_RBRC)), A(C(KC_RBRC))})),
+    [TD_P] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_hold_finished, dance_hold_reset, &((dance_user_data_t){KC_P, A(C(KC_RBRC)), A(C(KC_RBRC))})),
     [TD_T] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_hold_finished, dance_hold_reset, &((dance_user_data_t){KC_T, S(KC_9), S(KC_9)})),
     [TD_SS_UML] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_hold_finished, dance_hold_reset, &((dance_user_data_t){KC_S, S(KC_S), KC_MINS})),
     [TD_DOT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_autorepeat_finished, dance_autorepeat_reset, &((dance_user_data_t){KC_DOT, S(KC_DOT), S(KC_NUBS)})),  // tap(repeated on tripple tap), hold(repeated), double_hold (not repeated)
     [TD_DASH] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_autorepeat_finished, dance_autorepeat_reset, &((dance_user_data_t){KC_SLSH, S(KC_SLSH), S(KC_7)})),
-    [TD_CIRCUM] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, circum_dance_finished, circum_dance_reset), //^
-    [TD_TICK] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tick_dance_finished, tick_dance_reset), //´´´```
+//    [TD_CIRCUM] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, circum_dance_finished, circum_dance_reset), //^
+//    [TD_TICK] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tick_dance_finished, tick_dance_reset), //´´´```
     [TD_I_BS] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_dbltap_finished, dance_dbltap_reset, &((dance_user_data_t){KC_I, A(C(KC_MINS)), S(KC_7)})),
     [TD_DOL_CTL] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dance_each, modifier_dance_finished, modifier_dance_reset, &((dance_user_data_t){S(KC_4), KC_LCTL})),
     [TD_PIPE_SFT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dance_each, modifier_dance_finished, modifier_dance_reset, &((dance_user_data_t){A(C(KC_NUBS)), KC_LSFT})),
@@ -719,10 +732,10 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_ANG] = ACTION_TAP_DANCE_FN_ADVANCED_USER( curly_dance_each, curly_dance_finished, curly_dance_reset, &((dance_user_data_t){KC_NUBS, S(KC_NUBS)})),
     [TD_QUOT] = ACTION_TAP_DANCE_FN_ADVANCED_USER( curly_dance_each, curly_dance_finished, curly_dance_reset, &((dance_user_data_t){S(KC_NUHS), S(KC_NUHS)})),
     [TD_PAR] = ACTION_TAP_DANCE_FN_ADVANCED_USER( curly_dance_each, curly_dance_finished, curly_dance_reset, &((dance_user_data_t){S(KC_8), S(KC_9)})),
-    /*
+
     [TD_CUR] = ACTION_TAP_DANCE_FN_ADVANCED_USER( curly_dance_each, curly_dance_finished, curly_dance_reset, &((dance_user_data_t){A(C(KC_7)), A(C(KC_0))})),
     [TD_SQU] = ACTION_TAP_DANCE_FN_ADVANCED_USER( curly_dance_each, curly_dance_finished, curly_dance_reset, &((dance_user_data_t){A(C(KC_8)), A(C(KC_9))})),
-
+    /*
     [TD_DQUOT] = ACTION_TAP_DANCE_FN_ADVANCED_USER( curly_dance_each, curly_dance_finished, curly_dance_reset, &((dance_user_data_t){KC_AT, KC_AT})),
     S(KC_8)*/
     [TD_COMM] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_dbltap_finished,  dance_dbltap_reset, &((dance_user_data_t){KC_COMM, S(KC_COMM), KC_NUBS})),
@@ -846,9 +859,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 *   ________      ________      ________      ________      WIN                      Del/Alt                  TG(1)                ________                  ________                 ________      ________      ________      ________   ________      ________
 */
 [2] = LAYOUT_planck_mit(
-                                           TD(TD_CIRCUM),  ALGR(KC_Q),            S(KC_2),                 ALGR(KC_8),             ALGR(KC_9),              KC_PERC,                A(KC_TAB),      KC_HOME,        KC_UP,    KC_END,   A(S(KC_TAB)),     KC_BSPC,
+                                                CIRCUMFL,  ALGR(KC_Q),            S(KC_2),                 ALGR(KC_8),             ALGR(KC_9),              KC_PERC,                A(KC_TAB),      KC_HOME,        KC_UP,    KC_END,   A(S(KC_TAB)),     KC_BSPC,
                                                  KC_TRNS,     KC_QUOT,    MT(MOD_LALT,KC_MINS),       TD(TD_PIPE_SFT),         TD(TD_DOL_CTL),              KC_RPRN,                  KC_HOME,      KC_LEFT,      KC_DOWN,    KC_RGHT,        KC_END,     KC_TRNS,
-                                                 KC_TRNS, TD(TD_TICK),                 KC_CIRC,            ALGR(KC_7),             ALGR(KC_0),              KC_RBRC,                   KC_ESC,      KC_ENT,        KC_DEL,    KC_BSPC,       KC_TRNS,     KC_TRNS,
+                                                 KC_TRNS,    TICKTICK,                 KC_CIRC,            TD(TD_CUR),             ALGR(KC_0),              KC_RBRC,                   KC_ESC,      KC_ENT,        KC_DEL,    KC_BSPC,       KC_TRNS,     KC_TRNS,
                                                  KC_TRNS,     KC_LGUI,     MT(MOD_LALT,KC_DEL),               KC_TRNS,                MO(_L1),              KC_TRNS,                                KC_TRNS,      KC_TRNS,    KC_TRNS,       KC_TRNS,     KC_TRNS
   ),
 
