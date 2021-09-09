@@ -119,7 +119,40 @@ enum custom_keycodes {
 static uint16_t alt_tab_timer = 0;*/
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    static uint16_t key_timer;
     switch (keycode) {
+    //implement differnt key on hold feature case KC_A...KC_Z:
+    /*case  KC_P:
+        if (record->event.pressed) {
+            if ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT) {return true;}
+            return false;
+        } else {
+            if (record->event.time < TAPPING_TERM){
+                   tap_code(keycode); 
+            } else {
+                   tap_code16(keycode); 
+            }                
+        }
+        return true;
+        */
+    // safe tapdances J R are other good candidates
+    case KC_P:
+	if (record->event.pressed) {
+                key_timer = timer_read();  // start the timer
+                //if (get_mods() | get_oneshot_mods()) {return true;}
+                        return false;              // return false to keep the 1 from being sent
+        } else {
+                       // If key was held
+		if ((timer_elapsed(key_timer) > 150) &&  !(get_mods() | get_oneshot_mods())) {
+				tap_code16(A(C(KC_RBRC)));
+    				return false;
+                } else { 
+                       // if key was tapped
+    			tap_code16(KC_P);
+                        return false;
+                }
+    	}
+    	break;
     case PICKFIRST:
         if (record->event.pressed) {
             // when keycode PICKFIRST is pressed
@@ -757,6 +790,16 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_H] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_dbltap_finished, dance_dbltap_reset, &((dance_user_data_t){KC_H, KC_UNDS, KC_UNDS})),
 };
 /*
+ 23 x hold (autosymbol),
+ 11 x hold+dbltap,
+  3 x hold+dbltap+dblhold,
+  5 x hold+dblhold (autoclose),
+6(4)x hold (autoclose),
+  2 x mod_tap emulation with shifted keycode,
+  2 x mod_tap emulation with extra double tap,
+==============================================
+ 52(50) keys pysical keys 47
+
 * todo
 * 
 * light_control on OSM fixed
@@ -802,16 +845,16 @@ always send KC_LEAD after ESC ?
 */
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-/* ESC           PSCR          NO            ESC Home      1             2             3             4             5             6             7             8             9             0             DEL
-*  TO(L0)        TO(L1)        NO            ESC Home      Q End         W             E             R             J             Y             U Ü           I             O Ö           P             Backspc
-*  PgUp          VOLU          NO            TAB/Ctrl      A Ä           S ß           D             F             G             H             N             T             L             k/Alt K       Enter/Ctrl
-*  PgDn          VOLD          NO            HOME/Shift    Z             X             C             V             B             M             ,             . : *         - _ /         Up            END/Shift
-*  CTL           ALT           NO            PgUp/Ctrl     PgDn/WIN      Del/Alt       Tab/L2        Enter/L1      Space/Shift   Space/Shift   Space/L2      OSL L4        Left          Down          Right
+/* ESC           PSCR          NO            ESC Home      1             2             3             4             5             6             7             8             9                          0             DEL
+*  TO(L0)        TO(L1)        NO            ESC Home      Q End         W             E             R             J             Y             U Ü           I             O Ö                        P             Backspc
+*  PgUp          VOLU          NO            TAB/Ctrl      A Ä           S ß           D             F             G             H             N             T             L                          k/Alt atab    Enter/Ctrl
+*  PgDn          VOLD          NO            HOME/Shift    Z             X             C             V             B             M             ,             . : *         - _ /                      Up            END/Shift
+*  CTL           ALT           NO            PgUp/Ctrl     PgDn/WIN      Del/Alt       Tab/L2        Enter/L1      Space/Shift   Space/Shift   Space/L2      OSL L4        Left                       Down          Right
 */
 [0] = LAYOUT_planck_mit(    
-                                         TD(TD_ESC),          TD(TD_Q),        TD(TD_W), TD(TD_E), TD(TD_R),      TD(TD_J), TD(TD_Z),    TD(TD_U_UML),    TD(TD_I_BS),    TD(TD_O_UML),           TD(TD_P),                        KC_BSPC,
-                               MT(MOD_LCTL ,KC_TAB),      TD(TD_A_UML),   TD(TD_SS_UML), TD(TD_D), TD(TD_F),      TD(TD_G), TD(TD_H),        TD(TD_N),       TD(TD_T),        TD(TD_L),     TD(TD_KOE_ALT), MT(MOD_LCTL,KC_ENT),
-                                      OSM(MOD_LSFT),          TD(TD_Y),        TD(TD_X), TD(TD_C), TD(TD_V),      TD(TD_B), TD(TD_M),     TD(TD_COMM),     TD(TD_DOT),     TD(TD_DASH),              KC_UP,                  OSM(MOD_LSFT),
+                                         TD(TD_ESC),          TD(TD_Q),        TD(TD_W), TD(TD_E), TD(TD_R),      TD(TD_J), TD(TD_Z),    TD(TD_U_UML),    TD(TD_I_BS),    TD(TD_O_UML),               KC_P,                KC_BSPC,
+                               MT(MOD_LCTL ,KC_TAB),      TD(TD_A_UML),   TD(TD_SS_UML), TD(TD_D), TD(TD_F),      TD(TD_G), TD(TD_H),        TD(TD_N),       TD(TD_T),        TD(TD_L),     TD(TD_KOE_ALT),    MT(MOD_LCTL,KC_ENT),
+                                      OSM(MOD_LSFT),          TD(TD_Y),        TD(TD_X), TD(TD_C), TD(TD_V),      TD(TD_B), TD(TD_M),     TD(TD_COMM),     TD(TD_DOT),     TD(TD_DASH),              KC_UP,          OSM(MOD_LSFT),
                               MT(MOD_LCTL, KC_PGUP), MT(MOD_LGUI, KC_PGDN),
                                                                      MT(MOD_LALT,KC_DEL),
                                                                                  TD(TD_TAB_ENT),
