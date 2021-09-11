@@ -15,7 +15,7 @@
  */
 
 #include QMK_KEYBOARD_H
-
+#include "keymap_german.h"
 
 void rgb_matrix_indicators_user(void) {
 switch (biton32(layer_state)) {
@@ -117,42 +117,78 @@ enum custom_keycodes {
 
 /*static bool is_alt_tab_active = false;
 static uint16_t alt_tab_timer = 0;*/
+typedef struct {
+    uint16_t key_hold_timer;
+    bool is_key_hold_active;
+    uint16_t key_hold_keycode;
+} key_hold_data_t;
+// each key needs its own set of status variables
+static key_hold_data_t p_hold = {
+        .key_hold_timer = 0,
+        .is_key_hold_active = false,
+        .key_hold_keycode = 0
+        };
+static key_hold_data_t j_hold = {
+        .key_hold_timer = 0,
+        .is_key_hold_active = false,
+        .key_hold_keycode = 0
+        };
+static key_hold_data_t r_hold = {
+        .key_hold_timer = 0,
+        .is_key_hold_active = false,
+        .key_hold_keycode = 0
+        };
+
+void matrix_scan_user(void) {
+        if (p_hold.is_key_hold_active) {
+           if (timer_elapsed(p_hold.key_hold_timer) > TAPPING_TERM) {
+               p_hold.is_key_hold_active = false;    
+               register_code16(p_hold.key_hold_keycode);
+           }
+        }
+        if (j_hold.is_key_hold_active) {
+           if (timer_elapsed(j_hold.key_hold_timer) > TAPPING_TERM) {
+               j_hold.is_key_hold_active = false;    
+               register_code16(j_hold.key_hold_keycode);
+           }
+        }
+        if (r_hold.is_key_hold_active) {
+           if (timer_elapsed(r_hold.key_hold_timer) > TAPPING_TERM) {
+               r_hold.is_key_hold_active = false;    
+               register_code16(r_hold.key_hold_keycode);
+           }
+        }
+}
+
+bool process_record_hold_key(uint16_t keycode, keyrecord_t *record, uint16_t keycode2, key_hold_data_t *hold_status ){
+    if (record->event.pressed) {
+                if (get_mods() | get_oneshot_mods()) { // If key was held ans no mods
+                        hold_status->key_hold_keycode =  keycode;
+                } else {                       
+                        hold_status->key_hold_keycode = keycode2;
+                }
+                hold_status->key_hold_timer = timer_read();  // start the timer
+                hold_status->is_key_hold_active = true;
+                return false;              // return false to keep keycode from being sent yet
+        } else {                      
+                if (timer_elapsed(hold_status->key_hold_timer) > TAPPING_TERM) { // If key was held ans no mods
+                        unregister_code16(hold_status->key_hold_keycode);
+                        hold_status->is_key_hold_active = false;
+                } else if (hold_status->is_key_hold_active){                       
+                        tap_code16(keycode);// if key was tapped
+                        hold_status->is_key_hold_active = false;
+                }
+                return false;
+    	}    
+}
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    static uint16_t key_timer;
     switch (keycode) {
     //implement differnt key on hold feature case KC_A...KC_Z:
-    /*case  KC_P:
-        if (record->event.pressed) {
-            if ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT) {return true;}
-            return false;
-        } else {
-            if (record->event.time < TAPPING_TERM){
-                   tap_code(keycode); 
-            } else {
-                   tap_code16(keycode); 
-            }                
-        }
-        return true;
-        */
-    // safe tapdances J R are other good candidates
-    case KC_P:
-	if (record->event.pressed) {
-                key_timer = timer_read();  // start the timer
-                //if (get_mods() | get_oneshot_mods()) {return true;}
-                        return false;              // return false to keep the 1 from being sent
-        } else {
-                       // If key was held
-		if ((timer_elapsed(key_timer) > 150) &&  !(get_mods() | get_oneshot_mods())) {
-				tap_code16(A(C(KC_RBRC)));
-    				return false;
-                } else { 
-                       // if key was tapped
-    			tap_code16(KC_P);
-                        return false;
-                }
-    	}
-    	break;
+    // safe tapdances are J R other good candidates, keys have autorepeat 
+    case KC_P: return process_record_hold_key(keycode, record, A(C(KC_RBRC)), &p_hold);	break;
+    case KC_J: return process_record_hold_key(keycode, record, KC_PERC, &j_hold);	break;
+    case KC_R: return process_record_hold_key(keycode, record, A(C(KC_9)), &r_hold);	break;
     case PICKFIRST:
         if (record->event.pressed) {
             // when keycode PICKFIRST is pressed
@@ -345,17 +381,6 @@ enum {
   TD_P,
   TD_T,
 };
-
-/* ALT_TAB
-void matrix_scan_user(void) {
-  if (is_alt_tab_active) {
-    if (timer_elapsed(alt_tab_timer) > 1500) {
-      unregister_code(KC_LALT);
-      is_alt_tab_active = false;
-    }
-  }
-}
-*/
 
 // L4 makro layer seems to be more flexible than leader key 
 /*LEADER_EXTERNS();
@@ -639,17 +664,23 @@ void dance_autorepeat_reset(qk_tap_dance_state_t *state, void *user_data) {
     atap_state.state = TD_NONE;
 }
 
-// mod tap as tap dance
-static td_tap_t mtap_state = { //tap dance with mods need there own status each else you may run into mod-tapping into a tap dance key
+// mod tap as tap dance only LCTL LSFT supported
+static td_tap_t mtap_state_ctl = { //tap dance with mods need there own state each, else you may run into mod-tapping into a tap dance key
+    .is_press_action = true,
+    .state = TD_NONE
+};
+static td_tap_t mtap_state_sft = {
     .is_press_action = true,
     .state = TD_NONE
 };
 void modifier_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
-    mtap_state.state = cur_dance(state);
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
     uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
-    switch (mtap_state.state) {
-        case TD_SINGLE_HOLD: register_mods(MOD_BIT(keycode2)); break;
+    //td_tap_t mtap_state = (keycode2 == KC_LSFT) ? mtap_state_sft : mtap_state_ctl;
+    //mtap_state.state = cur_dance(state);
+    mtap_state_ctl.state = cur_dance(state);
+    switch (mtap_state_ctl.state) {
+        case TD_SINGLE_HOLD: register_code16(keycode2); break;
         default: register_code16(keycode); break;
     }
 }
@@ -662,23 +693,97 @@ void modifier_dance_each(qk_tap_dance_state_t *state, void *user_data) {
 void modifier_dance_reset (qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
     uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
-    switch (mtap_state.state) {
+    //td_tap_t mtap_state = (keycode2 == KC_LSFT) ? mtap_state_sft : mtap_state_ctl;
+    mtap_state_ctl.state = cur_dance(state);
+    switch (mtap_state_ctl.state) {
+        case TD_SINGLE_HOLD: unregister_code16(keycode2); break;
+        default: unregister_code16(keycode); break;
+    }
+    mtap_state_ctl.state = TD_NONE;
+}
+
+
+void sft_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
+    uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
+    uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
+    mtap_state_sft.state = cur_dance(state);
+    switch (mtap_state_sft.state) {
+        case TD_SINGLE_HOLD: register_mods(MOD_BIT(keycode2)); break;
+        default: register_code16(keycode); break;
+    }
+}
+void sft_dance_each(qk_tap_dance_state_t *state, void *user_data) {
+    uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
+    if (state->count > 1) {
+            tap_code16(keycode);
+    }
+};
+void sft_dance_reset (qk_tap_dance_state_t *state, void *user_data) {
+    uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
+    uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
+    mtap_state_sft.state = cur_dance(state);
+    switch (mtap_state_sft.state) {
         case TD_SINGLE_HOLD: unregister_mods(MOD_BIT(keycode2)); break;
         default: unregister_code16(keycode); break;
     }
-    mtap_state.state = TD_NONE;
+    mtap_state_sft.state = TD_NONE;
 }
 
-// mod tap as dbl tap dance
-static td_tap_t ctap_state = { //tap dance with mods need there own status
+static td_tap_t dance_state12 = {
+    .is_press_action = true,
+    .state = TD_NONE
+};
+void on_dance_12(qk_tap_dance_state_t *state, void *user_data) {
+    if(state->count == 3) {
+        tap_code16(LALT(LCTL(DE_LESS)));
+        tap_code16(LALT(LCTL(DE_LESS)));
+        tap_code16(LALT(LCTL(DE_LESS)));
+    }
+    if(state->count > 3) {
+        tap_code16(LALT(LCTL(DE_LESS)));
+    }
+}
+
+void dance_12_finished(qk_tap_dance_state_t *state, void *user_data) {
+    dance_state12.state = cur_dance(state);
+    switch (dance_state12.state) {
+        case TD_SINGLE_TAP: register_code16(LALT(LCTL(DE_LESS))); break;
+        case TD_SINGLE_HOLD: register_code16(KC_LSHIFT); break;
+        case TD_DOUBLE_TAP: register_code16(KC_6); break;
+        case TD_DOUBLE_SINGLE_TAP: tap_code16(LALT(LCTL(DE_LESS))); register_code16(LALT(LCTL(DE_LESS)));
+        default: register_code16(KC_7); break;
+    }
+}
+
+void dance_12_reset(qk_tap_dance_state_t *state, void *user_data) {
+    wait_ms(10);
+    switch (dance_state12.state) {
+        case TD_SINGLE_TAP: unregister_code16(LALT(LCTL(DE_LESS))); break;
+        case TD_SINGLE_HOLD: unregister_code16(KC_LSHIFT); break;
+        case TD_DOUBLE_TAP: unregister_code16(KC_6); break;
+        case TD_DOUBLE_SINGLE_TAP: unregister_code16(LALT(LCTL(DE_LESS))); break;
+        default: break;
+    }
+    dance_state12.state = TD_NONE;
+}
+
+
+
+// mod tap as dbl tap dance    TODO each key needs its own state
+static td_tap_t ctap_state_dbl = { //tap dance with mods need there own status
+    .is_press_action = true,
+    .state = TD_NONE
+};
+static td_tap_t atap_state_dbl = { 
     .is_press_action = true,
     .state = TD_NONE
 };
 void modifier_dbldance_finished (qk_tap_dance_state_t *state, void *user_data) {
-    ctap_state.state = cur_dance(state);
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
     uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
     uint16_t keycode3 = ((dance_user_data_t*)user_data)->keycode3;
+    td_tap_t ctap_state = (keycode2 == KC_LALT) ? atap_state_dbl : ctap_state_dbl; 
+    ctap_state.state = cur_dance(state);
     switch (ctap_state.state) {
         case TD_SINGLE_HOLD: register_mods(MOD_BIT(keycode2)); break;
         case TD_DOUBLE_HOLD:
@@ -697,6 +802,7 @@ void modifier_dbldance_reset (qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
     uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
     uint16_t keycode3 = ((dance_user_data_t*)user_data)->keycode3;
+    td_tap_t ctap_state = (keycode2 == KC_LALT) ? atap_state_dbl : ctap_state_dbl;
     switch (ctap_state.state) {
         case TD_SINGLE_HOLD: unregister_mods(MOD_BIT(keycode2)); break;
         case TD_DOUBLE_HOLD:
@@ -758,7 +864,8 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_DASH] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_autorepeat_finished, dance_autorepeat_reset, &((dance_user_data_t){KC_SLSH, S(KC_SLSH), S(KC_7)})),
     [TD_I_BS] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_dbltap_finished, dance_dbltap_reset, &((dance_user_data_t){KC_I, A(C(KC_MINS)), S(KC_7)})),
     [TD_DOL_CTL] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dance_each, modifier_dance_finished, modifier_dance_reset, &((dance_user_data_t){S(KC_4), KC_LCTL})),
-    [TD_PIPE_SFT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dance_each, modifier_dance_finished, modifier_dance_reset, &((dance_user_data_t){A(C(KC_NUBS)), KC_LSFT})),
+//    [TD_PIPE_SFT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(sft_dance_each, sft_dance_finished, sft_dance_reset, &((dance_user_data_t){A(C(KC_NUBS)), KC_LSFT})),
+    [TD_PIPE_SFT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(on_dance_12, dance_12_finished, dance_12_reset, &((dance_user_data_t){A(C(KC_NUBS)), KC_LSFT})),
     [TD_KOE_ALT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, modifier_dbldance_finished, modifier_dbldance_reset, &((dance_user_data_t){KC_K, KC_LALT, A(KC_TAB)})),
     [TD_ANG] = ACTION_TAP_DANCE_FN_ADVANCED_USER( curly_dance_each, curly_dance_finished, curly_dance_reset, &((dance_user_data_t){KC_NUBS, S(KC_NUBS)})),
     [TD_QUOT] = ACTION_TAP_DANCE_FN_ADVANCED_USER( curly_dance_each, curly_dance_finished, curly_dance_reset, &((dance_user_data_t){S(KC_NUHS), S(KC_NUHS)})),
@@ -852,7 +959,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 *  CTL           ALT           NO            PgUp/Ctrl     PgDn/WIN      Del/Alt       Tab/L2        Enter/L1      Space/Shift   Space/Shift   Space/L2      OSL L4        Left                       Down          Right
 */
 [0] = LAYOUT_planck_mit(    
-                                         TD(TD_ESC),          TD(TD_Q),        TD(TD_W), TD(TD_E), TD(TD_R),      TD(TD_J), TD(TD_Z),    TD(TD_U_UML),    TD(TD_I_BS),    TD(TD_O_UML),               KC_P,                KC_BSPC,
+                                         TD(TD_ESC),          TD(TD_Q),        TD(TD_W), TD(TD_E),     KC_R,          KC_J, TD(TD_Z),    TD(TD_U_UML),    TD(TD_I_BS),    TD(TD_O_UML),               KC_P,                KC_BSPC,
                                MT(MOD_LCTL ,KC_TAB),      TD(TD_A_UML),   TD(TD_SS_UML), TD(TD_D), TD(TD_F),      TD(TD_G), TD(TD_H),        TD(TD_N),       TD(TD_T),        TD(TD_L),     TD(TD_KOE_ALT),    MT(MOD_LCTL,KC_ENT),
                                       OSM(MOD_LSFT),          TD(TD_Y),        TD(TD_X), TD(TD_C), TD(TD_V),      TD(TD_B), TD(TD_M),     TD(TD_COMM),     TD(TD_DOT),     TD(TD_DASH),              KC_UP,          OSM(MOD_LSFT),
                               MT(MOD_LCTL, KC_PGUP), MT(MOD_LGUI, KC_PGDN),
