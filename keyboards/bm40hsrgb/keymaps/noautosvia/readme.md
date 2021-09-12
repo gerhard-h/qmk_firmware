@@ -1,9 +1,9 @@
 # an autosymbol keymap for bm40hsrgb
-no VIA, it conflicts with the large amount of tap dances
-best used with German keyboard layout 
-no autoshift but hold does autosymbol
+instead of autoshift uses a tap dance hold based autosymbol approach
+for use with German keyboard layout 
 
 features:
+VIA
 tap dance
-macros 
+custom keycodes 
 rgb per layer

@@ -1,4 +1,4 @@
-/* Copyright 2020 gerhard-h
+/* Copyright 2021 gerhard-h
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -805,23 +805,26 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 ==============================================
  52(50) keys pysical keys 47
 *
-* single-hold for r p j is not realized by tap dance, but in matrix_scan_user and process_record_user
+* single-hold for r p j b is not realized by tap dance, but in matrix_scan_user and process_record_user 
 * 
 * todos
 * 
-* dbl tap esc sends ^ as dead key instead of custom key CIRCUMFL dance_dbltap_ could check for keycodex element of enum custom custom_keycodes
+* dbl tap esc sends ^ as dead key instead of custom key CIRCUMFL dance_dbltap_ could check "is keycode element of enum custom_keycodes?" than call that code
 *
 * light_control if OSM(modifier) is locked
 * light intensity controls are inactive -> search solution in oryx keymap code
 *
 * shift + non shiftable key (e.g. A(C(KC_E))) outputs shift+€=nothing instead of ignoring the shift, but ignoring the shift in general does not work either
 * 
-* bug dance_hold mods must be pressed one after the other
+* bug L4 alt + 4hold is not alt+F4 
+*
+* (bug) dance_hold mods must be pressed one after the other > workaround swap + and pipe because + is a not shifted key 
+*
 * bug tap dance inside OSL only works if OSL key is held down | process_record_user  all OSM set status-flag on down and clear status-flag on up 
 * if tap_dance_each senses !status-flag & OSL active: OSL clear, permanent layer move...
 * ...tap dance continues ... on tapdance reset layer move 0
 * 
-* combos are there use cases
+* combos - are there use cases?
 * qw = esc better than tapdance qq?,<<,<<,,<    <<;<<<,,<;;<,<<;<>>>
 * ,<<:;;>>>>
 
@@ -830,6 +833,7 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 * reevaluate copy paste undo: xx cc vv zz
 * reevaluate alt-tab: kk vs L2z
 * reevaluate alt-shift-tab: L2p
+* reevaluate 1=v on numpad
 *
 * feature: single key alt tab {KC_LCTL,KC_LALT,KC_TAB}
 * single hold & modus==OFF: alt + ctrl + tab & modus=ON 
@@ -839,9 +843,9 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 * Alt+F4: Ctl+(W+W) or (C+W)+W or C+(W+Q) or wq
 *
 *numberpad 2.0
-* €456:
+* €456-
 * 3210.
-* -789,
+* /789,
 *
 * leader key  combos? are they compatible with tapdance keys? F keys
 * always send KC_LEAD after ESC or up ?
@@ -915,9 +919,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* L4
  */
 [_L4] = LAYOUT_planck_mit(
-    KC_TRNS,         TD(TD_1),               TD(TD_2),       TD(TD_3),              TD(TD_10),       KC_SLSH,     KC_EXLM,     KC_LBRC,        CTLSFTF,       KC_MINS,        KC_PSCR,       KC_TRNS,
-    KC_TRNS,         TD(TD_4),               TD(TD_5),       TD(TD_6),               TD(TD_0),        KC_DOT,     KC_UNDS,   PICKFIRST,        PICK2ND,       PICK3RD,        KC_LALT,       KC_TRNS,
-    KC_TRNS,         TD(TD_7),               TD(TD_8),       TD(TD_9),              TD(TD_12),       KC_COMM,  S(KC_RBRC),     KC_COMM,     KC_MS_BTN2,       KC_LGUI,        KC_VOLU,       KC_TRNS,
+    KC_TRNS,         TD(TD_1),               TD(TD_2),       TD(TD_3),              TD(TD_10),   TD(TD_DASH),     KC_EXLM,     KC_LBRC,        CTLSFTF,       KC_MINS,        KC_PSCR,       KC_TRNS,
+    KC_TRNS,         TD(TD_4),               TD(TD_5),       TD(TD_6),               TD(TD_0),    TD(TD_DOT),     KC_UNDS,   PICKFIRST,        PICK2ND,       PICK3RD,        KC_LALT,       KC_TRNS,
+    KC_TRNS,         TD(TD_7),               TD(TD_8),       TD(TD_9),              TD(TD_12),   TD(TD_COMM),  S(KC_RBRC),     KC_COMM,     KC_MS_BTN2,       KC_LGUI,        KC_VOLU,       KC_TRNS,
     KC_TRNS,          KC_TRNS,      MT(MOD_LALT,KC_0),        KC_TRNS,                KC_TRNS,       KC_TRNS,                  KC_TRNS,        KC_TRNS,       KC_TRNS,        KC_VOLD,       KC_TRNS
   ),    
 
