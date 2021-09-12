@@ -35,10 +35,10 @@
 #define DISABLE_RGB_MATRIX_SOLID_SPLASH
 #define DISABLE_RGB_MATRIX_SOLID_MULTISPLASH
 
-#define TAPPING_TERM 200
+#define TAPPING_TERM 180
 #define MOD_CODE_DELAY 0
 // # define TAP_CODE_DELAY 10 //will not fix Remotedesktop timings
-#define USB_POLLING_INTERVAL_MS 1
+//#define USB_POLLING_INTERVAL_MS 1
 //#define AUTO_SHIFT_TIMEOUT 140
 //#define AUTO_SHIFT_NO_AUTO_REPEAT
 //#define NO_AUTO_SHIFT_NUMERIC
@@ -54,3 +54,4 @@
 #define ONESHOT_TIMEOUT 5000  /* Time (in ms) before the one shot key is released */
 //#define LEADER_TIMEOUT 500
 //#define COMBO_COUNT 2
+#define RGB_MATRIX_STARTUP_SPD 60
