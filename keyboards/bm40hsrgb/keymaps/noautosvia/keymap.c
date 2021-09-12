@@ -138,6 +138,11 @@ static key_hold_data_t r_hold = {
         .is_key_hold_active = false,
         .key_hold_keycode = 0
         };
+static key_hold_data_t b_hold = {
+        .key_hold_timer = 0,
+        .is_key_hold_active = false,
+        .key_hold_keycode = 0
+        };
 
 void matrix_scan_user(void) {
         if (p_hold.is_key_hold_active) {
@@ -156,6 +161,12 @@ void matrix_scan_user(void) {
            if (timer_elapsed(r_hold.key_hold_timer) > TAPPING_TERM) {
                r_hold.is_key_hold_active = false;    
                register_code16(r_hold.key_hold_keycode);
+           }
+        }
+        if (b_hold.is_key_hold_active) {
+           if (timer_elapsed(b_hold.key_hold_timer) > TAPPING_TERM) {
+               b_hold.is_key_hold_active = false;    
+               register_code16(b_hold.key_hold_keycode);
            }
         }
 }
@@ -184,11 +195,12 @@ bool process_record_hold_key(uint16_t keycode, keyrecord_t *record, uint16_t key
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-    //implement differnt key on hold feature case KC_A...KC_Z:
-    // safe tapdances are J R other good candidates, keys have autorepeat 
+    // this is an alternate key on hold feature case KC_A...KC_Z:
+    // keys have autorepeat on the hold key (wich can be the shifted first key shifted)
     case KC_P: return process_record_hold_key(keycode, record, A(C(KC_RBRC)), &p_hold);	break;
     case KC_J: return process_record_hold_key(keycode, record, KC_PERC, &j_hold);	break;
     case KC_R: return process_record_hold_key(keycode, record, A(C(KC_9)), &r_hold);	break;
+    case KC_B: return process_record_hold_key(keycode, record, KC_RBRC, &b_hold);	break;
     case PICKFIRST:
         if (record->event.pressed) {
             // when keycode PICKFIRST is pressed
@@ -368,7 +380,7 @@ enum {
   TD_X,
   TD_C,
   TD_V,
-  TD_B,
+//  TD_B,
   TD_G,
   TD_J,
   TD_W,
@@ -381,6 +393,7 @@ enum {
   TD_R,
   TD_P,
   TD_T,
+  TD_BSP,
 };
 
 // L4 makro layer seems to be more flexible than leader key 
@@ -569,6 +582,34 @@ void dance_dbltap_reset(qk_tap_dance_state_t *state, void *user_data) {
     atap_state.state = TD_NONE;
 }
 
+// bsp end bsp bsp...
+void dance_holdautorepeat_each(qk_tap_dance_state_t *state, void *user_data) {
+        uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
+        if (state->count > 1) tap_code16(keycode);
+    }
+void dance_holdautorepeat_finished(qk_tap_dance_state_t *state, void *user_data) {
+    atap_state.state = cur_dance(state);
+    uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
+    uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
+    switch (atap_state.state) {
+        case TD_SINGLE_TAP: register_code16(keycode); break;
+        case TD_SINGLE_HOLD:
+                register_code16(keycode2); break;
+        default: 
+            register_code16(keycode);
+        break;
+    }
+}
+void dance_holdautorepeat_reset(qk_tap_dance_state_t *state, void *user_data) {
+    uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
+    uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
+    switch (atap_state.state) {
+        case TD_SINGLE_HOLD: unregister_code16(keycode2); break;
+        default: unregister_code16(keycode); break;
+    }
+    atap_state.state = TD_NONE;
+}
+
 // ::: *** /// ...... ------ ____. triple tap for autorepeat keycode, no autorepeat on DTH
 void dance_autorepeat_finished(qk_tap_dance_state_t *state, void *user_data) {
     atap_state.state = cur_dance(state);
@@ -732,9 +773,9 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_Y] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_dbltap_finished, dance_dbltap_reset, &((dance_user_data_t){KC_Z, C(KC_Z), C(KC_Z)})),
     [TD_Z] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_dbltap_finished, dance_dbltap_reset, &((dance_user_data_t){KC_Y, KC_EXLM,  C(KC_Y)})),
     [TD_G] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, dance_hold_reset, &((dance_user_data_t){KC_G, KC_RPRN})),
-    [TD_B] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, dance_hold_reset, &((dance_user_data_t){KC_B, KC_RBRC})),
+    //[TD_B] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, dance_hold_reset, &((dance_user_data_t){KC_B, KC_RBRC})),
     [TD_M] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_autorepeat_finished, dance_autorepeat_reset, &((dance_user_data_t){KC_M, S(KC_RBRC), S(KC_RBRC)})), //tap (tripple tap hold for AutoRepeat), hold (with AR), double_hold (without AR)
-    //P J R are disabled to free up space in this array
+    //P J R B are disabled to free up space in this array
     //[TD_J] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_dbltap_finished, dance_dbltap_reset, &((dance_user_data_t){KC_J, KC_PERC, KC_PERC})),
     [TD_U_UML] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_dbltap_finished, dance_dbltap_reset, &((dance_user_data_t){KC_U, KC_LBRC, KC_LBRC})),
     [TD_A_UML] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, dance_hold_reset, &((dance_user_data_t){KC_A, KC_QUOT})),
@@ -776,6 +817,7 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_H] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_dbltap_finished, dance_dbltap_reset, &((dance_user_data_t){KC_H, KC_UNDS, KC_UNDS})),
     [TD_DQUOT] = ACTION_TAP_DANCE_FN_ADVANCED_USER( curly_dance_each, curly_dance_finished, curly_dance_reset, &((dance_user_data_t){KC_AT, KC_AT})),
     [TD_SQU] = ACTION_TAP_DANCE_FN_ADVANCED_USER( curly_dance_each, curly_dance_finished, curly_dance_reset, &((dance_user_data_t){A(C(KC_8)), A(C(KC_9))})),
+    [TD_BSP] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_holdautorepeat_each, dance_holdautorepeat_finished, dance_holdautorepeat_reset, &((dance_user_data_t){KC_BSPC, KC_END})),
 };
 /*
  23 x hold (autosymbol),
@@ -787,10 +829,12 @@ qk_tap_dance_action_t tap_dance_actions[] = {
   2 x mod_tap emulation with extra double tap,
 ==============================================
  52(50) keys pysical keys 47
-
-* todo
+*
+* single-hold for r p j is not realized by tap dance, but in matrix_scan_user and process_record_user
 * 
-* tap dance hold autorepeat
+* todos
+* 
+* tap dance hold autorepeat e.g. bsp end
 *
 * light_control if OSM(modifier) is locked
 * light intensity controls are inactive -> search solution in oryx keymap code
@@ -834,9 +878,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 *  CTL           ALT           NO            PgUp/Ctrl     PgDn/WIN      Del/Alt       Tab/L2        Enter/L1      Space/Shift   Space/Shift   Space/L2      OSL L4        Left                       Down          Right
 */
 [0] = LAYOUT_planck_mit(    
-                                         TD(TD_ESC),          TD(TD_Q),        TD(TD_W), TD(TD_E),     KC_R,          KC_J, TD(TD_Z),    TD(TD_U_UML),    TD(TD_I_BS),    TD(TD_O_UML),               KC_P,                KC_BSPC,
+                                         TD(TD_ESC),          TD(TD_Q),        TD(TD_W), TD(TD_E),     KC_R,          KC_J, TD(TD_Z),    TD(TD_U_UML),    TD(TD_I_BS),    TD(TD_O_UML),               KC_P,             TD(TD_BSP),
                                MT(MOD_LCTL ,KC_TAB),      TD(TD_A_UML),   TD(TD_SS_UML), TD(TD_D), TD(TD_F),      TD(TD_G), TD(TD_H),        TD(TD_N),       TD(TD_T),        TD(TD_L),     TD(TD_KOE_ALT),    MT(MOD_LCTL,KC_ENT),
-                                      OSM(MOD_LSFT),          TD(TD_Y),        TD(TD_X), TD(TD_C), TD(TD_V),      TD(TD_B), TD(TD_M),     TD(TD_COMM),     TD(TD_DOT),     TD(TD_DASH),              KC_UP,          OSM(MOD_LSFT),
+                                      OSM(MOD_LSFT),          TD(TD_Y),        TD(TD_X), TD(TD_C), TD(TD_V),          KC_B, TD(TD_M),     TD(TD_COMM),     TD(TD_DOT),     TD(TD_DASH),              KC_UP,          OSM(MOD_LSFT),
                               MT(MOD_LCTL, KC_PGUP), MT(MOD_LGUI, KC_PGDN),
                                                                      MT(MOD_LALT,KC_DEL),
                                                                                  TD(TD_TAB_ENT),
