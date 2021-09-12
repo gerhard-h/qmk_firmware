@@ -250,14 +250,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             break;
         }
         break;
-/*        
-#   ifdef AUTO_SHIFT_ENABLE
-    case L0AUTOS:
-        layer_move(_L0);
-            autoshift_enable();
-        break;
-#   endif
-*/
     }
     return true;
 };
@@ -498,11 +490,7 @@ void shortcut_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
         break;
         case TD_SINGLE_HOLD:
              if (get_mods() & (MOD_MASK_GUI | MOD_MASK_ALT | MOD_MASK_CTRL)) {tap_code16(keycode); break;}
-#            ifdef AUTO_SHIFT_ENABLE
-                 tap_code16(keycode2);
-#            else
                  tap_code16(keycode3);
-#            endif
         break;
         case TD_SINGLE_TAP: tap_code16(keycode); break;
         case TD_DOUBLE_TAP:
@@ -553,21 +541,9 @@ void dance_dbltap_finished(qk_tap_dance_state_t *state, void *user_data) {
         case TD_SINGLE_TAP: tap_code(keycode); break;
         case TD_SINGLE_HOLD:
              if (get_mods() & (MOD_MASK_GUI | MOD_MASK_ALT | MOD_MASK_CTRL)) {tap_code16(keycode); break;}
-#            ifdef AUTO_SHIFT_ENABLE
-                 if (get_autoshift_state()) {
-                     tap_code16(keycode2); break;
-                 }
-                 tap_code(keycode); break;
-#            else
                  tap_code16(keycode2); break;
-#            endif
         case TD_DOUBLE_TAP:
         case TD_DOUBLE_SINGLE_TAP:
-#            ifdef AUTO_SHIFT_ENABLE
-                 if (!get_autoshift_state()) {
-                     tap_code16(keycode);tap_code16(keycode); break;
-                 }
-#            endif
         case TD_DOUBLE_HOLD: tap_code16(keycode3); break;
         case TD_TRIPLE_TAP:
         case TD_TRIPLE_HOLD:
@@ -637,7 +613,6 @@ void dance_autorepeat_finished(qk_tap_dance_state_t *state, void *user_data) {
 void dance_autorepeat_reset(qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
     uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
-    //uint16_t keycode3 = ((dance_user_data_t*)user_data)->keycode3;
     switch (atap_state.state) {
         case TD_SINGLE_TAP: unregister_code16(keycode); break;
         case TD_SINGLE_HOLD: unregister_code16(keycode2); break;
@@ -834,15 +809,17 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 * 
 * todos
 * 
-* tap dance hold autorepeat e.g. bsp end
+* dbl tap esc sends ^ as dead key instead of custom key CIRCUMFL dance_dbltap_ could check for keycodex element of enum custom custom_keycodes
 *
 * light_control if OSM(modifier) is locked
 * light intensity controls are inactive -> search solution in oryx keymap code
 *
-* shift + non shiftable key (e.g. A(C(KC_E))) outputs nothing instead of ignoring the shift, maybe this can be checked automatically
+* shift + non shiftable key (e.g. A(C(KC_E))) outputs shift+€=nothing instead of ignoring the shift, but ignoring the shift in general does not work either
 * 
 * bug dance_hold mods must be pressed one after the other
-* bug tap dance inside OSL only works if OSL key is held down
+* bug tap dance inside OSL only works if OSL key is held down | process_record_user  all OSM set status-flag on down and clear status-flag on up 
+* if tap_dance_each senses !status-flag & OSL active: OSL clear, permanent layer move...
+* ...tap dance continues ... on tapdance reset layer move 0
 * 
 * combos are there use cases
 * qw = esc better than tapdance qq?,<<,<<,,<    <<;<<<,,<;;<,<<;<>>>
