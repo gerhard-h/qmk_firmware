@@ -111,8 +111,6 @@ enum custom_keycodes {
     CTLSFTF,
     CIRCUMFL,
     TICKTICK,
-//    L0AUTOS,
-//    ALT_TAB
 };
 
 /*static bool is_alt_tab_active = false;
@@ -152,49 +150,17 @@ static key_hold_data_t t_hold = {
 static key_hold_data_t *hold_array[] = {&p_hold, &j_hold, &r_hold, &b_hold, &t_hold };
 
 void matrix_scan_user(void) {
-        for (int i=0; i<5; i++) {
+        for (int i=0; i<5; i++) { // ATTENTION adjust array bounds
             if (hold_array[i]->is_key_hold_active) {
                if (timer_elapsed(hold_array[i]->key_hold_timer) > TAPPING_TERM) {
                    if (hold_array[i]->permit_up == true)  {
-                   hold_array[i]->is_key_hold_active = false;    
-                   register_code16(hold_array[i]->key_hold_keycode);
-                   hold_array[i]->permit_up = false;
+                       hold_array[i]->is_key_hold_active = false;    
+                       tap_code16(hold_array[i]->key_hold_keycode);
+                       hold_array[i]->permit_up = false;
                    }
                }
             }
         }
-        /*
-        if (p_hold.is_key_hold_active) {
-           if (timer_elapsed(p_hold.key_hold_timer) > TAPPING_TERM) {
-               p_hold.is_key_hold_active = false;    
-               register_code16(p_hold.key_hold_keycode);
-           }
-        }
-        if (j_hold.is_key_hold_active) {
-           if (timer_elapsed(j_hold.key_hold_timer) > TAPPING_TERM) {
-               j_hold.is_key_hold_active = false;    
-               register_code16(j_hold.key_hold_keycode);
-           }
-        }
-        if (r_hold.is_key_hold_active) {
-           if (timer_elapsed(r_hold.key_hold_timer) > TAPPING_TERM) {
-               r_hold.is_key_hold_active = false;    
-               register_code16(r_hold.key_hold_keycode);
-           }
-        }
-        if (b_hold.is_key_hold_active) {
-           if (timer_elapsed(b_hold.key_hold_timer) > TAPPING_TERM) {
-               b_hold.is_key_hold_active = false;    
-               register_code16(b_hold.key_hold_keycode);
-           }
-        }
-        if (t_hold.is_key_hold_active) {
-           if (timer_elapsed(t_hold.key_hold_timer) > TAPPING_TERM) {
-               t_hold.is_key_hold_active = false;    
-               register_code16(t_hold.key_hold_keycode);
-           }
-        }
-        */
 }
 
 bool process_record_hold_key(uint16_t keycode, keyrecord_t *record, uint16_t keycode2, key_hold_data_t *hold_status ){
@@ -209,9 +175,8 @@ bool process_record_hold_key(uint16_t keycode, keyrecord_t *record, uint16_t key
                 hold_status->permit_up = true;
                 return false;              // return false to keep keycode from being sent yet
         } else { 
-                //if   hold_status->permit_up ???
                 if (timer_elapsed(hold_status->key_hold_timer) > TAPPING_TERM) { // If key was held ans no mods
-                        unregister_code16(hold_status->key_hold_keycode);
+                        //unregister_code16(hold_status->key_hold_keycode);
                         hold_status->is_key_hold_active = false;
                 } else if (hold_status->is_key_hold_active){                       
                         tap_code16(keycode);// if key was tapped
@@ -225,7 +190,7 @@ bool process_record_hold_key(uint16_t keycode, keyrecord_t *record, uint16_t key
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
     // this is an alternate key on hold feature case KC_A...KC_Z:
-    // keys have autorepeat on the hold key (wich can be the shifted first key shifted)
+    // keys have no autorepeat
     case KC_P: return process_record_hold_key(keycode, record, A(C(KC_RBRC)), &p_hold);	break;
     case KC_J: return process_record_hold_key(keycode, record, KC_PERC, &j_hold);	break;
     case KC_R: return process_record_hold_key(keycode, record, A(C(KC_9)), &r_hold);	break;
@@ -857,7 +822,9 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 ==============================================
  52(50) keys pysical keys 47
 *
-* single-hold for r p j b t  is not realized by tap dance, but in matrix_scan_user and process_record_user 
+* tap and single-hold for r p j b t  is not realized by tap dance, but in matrix_scan_user and process_record_user because tap_dance_array overflows
+* DBL_TAP_HOLD is handled as SINGLE_TAP  SINGLE_HOLD modifiers are applied for both keys
+* 
 * 
 * todos
 * 
@@ -868,8 +835,6 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 *
 * shift + non shiftable key (e.g. A(C(KC_E))) outputs shift+€=nothing instead of ignoring the shift, but ignoring the shift in general does not work either
 * 
-* bug L4 alt + 4hold is not alt+F4 
-*
 * (bug) dance_hold mods must be pressed one after the other > workaround swap + and pipe because + is a not shifted key 
 *
 * bug tap dance inside OSL only works if OSL key is held down | process_record_user  all OSM set status-flag on down and clear status-flag on up 
