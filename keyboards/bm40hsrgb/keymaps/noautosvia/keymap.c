@@ -119,38 +119,20 @@ typedef struct {
     uint16_t key_hold_timer;
     bool is_key_hold_active;
     uint16_t key_hold_keycode;
+    uint16_t key_tap_keycode;
     bool permit_up;
 } key_hold_data_t;
 // each key needs its own set of status variables
-static key_hold_data_t p_hold = {
-        .key_hold_timer = 0,
-        .is_key_hold_active = false,
-        .key_hold_keycode = 0, .permit_up = false
-        };
-static key_hold_data_t j_hold = {
-        .key_hold_timer = 0,
-        .is_key_hold_active = false,
-        .key_hold_keycode = 0, .permit_up = false
-        };
-static key_hold_data_t r_hold = {
-        .key_hold_timer = 0,
-        .is_key_hold_active = false,
-        .key_hold_keycode = 0, .permit_up = false
-        };
-static key_hold_data_t b_hold = {
-        .key_hold_timer = 0,
-        .is_key_hold_active = false,
-        .key_hold_keycode = 0, .permit_up = false
-        };
-static key_hold_data_t t_hold = {
-        .key_hold_timer = 0,
-        .is_key_hold_active = false,
-        .key_hold_keycode = 0, .permit_up = false
-        };
-static key_hold_data_t *hold_array[] = {&p_hold, &j_hold, &r_hold, &b_hold, &t_hold };
+static key_hold_data_t p_hold = {0};
+static key_hold_data_t j_hold = {0};
+static key_hold_data_t r_hold = {0};
+static key_hold_data_t b_hold = {0};
+static key_hold_data_t t_hold = {0};
+#define HOLD_STAT_USER 5   // ATTENTION adjust array bounds
+static key_hold_data_t *hold_array[HOLD_STAT_USER] = {&p_hold, &j_hold, &r_hold, &b_hold, &t_hold };
 
 void matrix_scan_user(void) {
-        for (int i=0; i<5; i++) { // ATTENTION adjust array bounds
+        for (int i=0; i<HOLD_STAT_USER; i++) { 
             if (hold_array[i]->is_key_hold_active) {
                if (timer_elapsed(hold_array[i]->key_hold_timer) > TAPPING_TERM) {
                    if (hold_array[i]->permit_up == true)  {
@@ -822,11 +804,16 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 ==============================================
  52(50) keys pysical keys 47
 *
-* tap and single-hold for r p j b t  is not realized by tap dance, but in matrix_scan_user and process_record_user because tap_dance_array overflows
-* DBL_TAP_HOLD is handled as SINGLE_TAP  SINGLE_HOLD modifiers are applied for both keys
-* 
-* 
-* todos
+* tap and single-hold for r p j b t  is not realized by tap dance, but in matrix_scan_user and process_record_user because tap_dance array overflows
+* DBL_TAP_HOLD is handled as SINGLE_TAP if modifiers are active SHIFT + r_hold > R instead of S(])
+* DBL_TAP_HOLD is now b+ p~ r] t) instead of 'autocorretion' gg ss oo  
+*
+* TAP Dance Problems
+* DBL_TAP_HOLD is sometimes surprising m>* u>ü bsp>autorepeat
+* shift + SINGLE_HOLD s > ? instead of S, d > nothing n > (, i > ẞ, KOMMA > >instead of < modifies the wrong key
+* shift + SINGLE_HOLD for q>S(END) Ä Ü Ö works correct (> /)?
+* alt + hold_4  works rr
+* L1/L4 hold r = F10 instead of DELETE/€, 0=F11  is sometimes confusing
 * 
 * dbl tap esc sends ^ as dead key instead of custom key CIRCUMFL dance_dbltap_ could check "is keycode element of enum custom_keycodes?" than call that code
 *
