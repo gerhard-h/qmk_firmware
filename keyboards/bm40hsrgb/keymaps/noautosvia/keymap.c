@@ -125,10 +125,10 @@ typedef struct {
 
 
 // each key needs its own set of status variables
-#define HOLD_STAT_USER 5   // ATTENTION adjust array bounds
+#define HOLD_STAT_USER 9   // ATTENTION adjust array bounds
 static key_hold_data_t hold_array[HOLD_STAT_USER] = {0};
 static uint16_t key_hold_lastkey = 0;
-static uint16_t key_hold_dbltap_timer = 0;
+static uint16_t key_hold_dbltap_timer = 0;                                          
 static int hold_active_array[HOLD_STAT_USER];
 static int hold_active_max = -1;
 void hold_active_clear_at(int index) {
@@ -161,9 +161,13 @@ void matrix_scan_user(void) {
              if (timer_elapsed(hold_array[i].key_hold_timer) > TAPPING_TERM) {
                    if (hold_array[i].permit_up == true)  {  // todo check if permit_up is needed to prevent autorepeat
                        hold_array[i].is_key_hold_active = false;
-                       hold_active_clear_at(j);
+                       hold_active_clear_at(j); 
                        if (hold_array[i].key_tap_keycode == key_hold_lastkey) {
-                               tap_code16(hold_array[i].key_tap_keycode); //todo timer with reset here and in process_record_hold_key missing
+                               if (timer_elapsed(key_hold_dbltap_timer) < (2 * TAPPING_TERM)) {
+                                        tap_code16(hold_array[i].key_tap_keycode); //todo timer with reset here and in process_record_hold_key missing
+                               } else {
+                                        tap_code16(hold_array[i].key_hold_keycode);
+                               }
                        } else {                               
                                tap_code16(hold_array[i].key_hold_keycode);
                        }
@@ -199,6 +203,7 @@ bool process_record_hold_key(uint16_t keycode, keyrecord_t *record, uint16_t key
                 } else {                       
                         hold_array[hold_status].key_hold_keycode = keycode2;
                 }
+                key_hold_dbltap_timer = timer_read();
                 hold_array[hold_status].key_hold_timer = timer_read();  // start the timer
                 hold_array[hold_status].is_key_hold_active = true;
                 hold_active_add(hold_status);
@@ -222,6 +227,7 @@ bool process_record_hold_key(uint16_t keycode, keyrecord_t *record, uint16_t key
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if ((key_hold_lastkey != keycode) || (timer_elapsed(key_hold_dbltap_timer) > (2 * TAPPING_TERM))) key_hold_lastkey = KC_NO;
     switch (keycode) {
     // this is an alternate key on hold feature case KC_A...KC_Z:
     // keys have no autorepeat
@@ -230,6 +236,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case KC_R: return process_record_hold_key(keycode, record, A(C(KC_9)), 2);	break;
     case KC_B: return process_record_hold_key(keycode, record, KC_RBRC, 3);	break;
     case KC_T: return process_record_hold_key(keycode, record, S(KC_9), 4);	break;
+    case KC_F: return process_record_hold_key(keycode, record, S(KC_4), 5);	break;
+    case KC_G: return process_record_hold_key(keycode, record, KC_RPRN, 6);	break;
+    case KC_D: return process_record_hold_key(keycode, record, A(C(KC_NUBS)), 7);	break;
+    case KC_S: return process_record_hold_key(keycode, record, KC_MINS, 8);	break;
     case PICKFIRST:
         if (record->event.pressed) {
             // when keycode PICKFIRST is pressed
@@ -361,9 +371,9 @@ td_state_t mod_dance(qk_tap_dance_state_t *state) {
 enum {
   TD_A_UML,
   TD_O_UML,
-  TD_F,
+//  TD_F,
   TD_U_UML,
-  TD_SS_UML,
+//  TD_SS_UML,
   TD_DASH,
   TD_DOT,
   TD_PAR,
@@ -402,17 +412,17 @@ enum {
   TD_C,
   TD_V,
 //  TD_B,
-  TD_G,
-  TD_J,
+//  TD_G,
+//  TD_J,
   TD_W,
   TD_N,
-  TD_D,
+//  TD_D,
   TD_E,
   TD_L,
   TD_ESC,
   TD_DEL10,
-  TD_R,
-  TD_P,
+//  TD_R,
+//  TD_P,
 //  TD_T,
   TD_BSP,
 };
@@ -537,8 +547,8 @@ void shortcut_dance_reset (qk_tap_dance_state_t *state, void *user_data) {
     atap_state.state = TD_NONE;
 }
 
-// ö ß ä
-/*for when DOUBLE_TAP should behave like TD_DOUBLE_SINGLE_TAP */
+// ö ä 
+/*for when DOUBLE_TAP should behave like 2 x SINGLE_TAP and S(SINGLE_HOLD) is allowed ÄÖ */
 void dance_hold_each(qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
     if (state->count > 1) tap_code16(keycode);
@@ -792,13 +802,13 @@ void noshift_each(qk_tap_dance_state_t *state, void *user_data) {
 qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_ESC] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_dbltap_finished, dance_dbltap_reset, &((dance_user_data_t){KC_ESC, KC_HOME, KC_GRV})), // tap, hold, double_tap 
     [TD_Q] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_dbltap_finished, dance_dbltap_reset, &((dance_user_data_t){KC_Q, KC_END, A(C(KC_Q))})), 
-    [TD_F] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, dance_hold_reset, &((dance_user_data_t){KC_F, S(KC_4)})), // tap, hold
+    //[TD_F] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, dance_hold_reset, &((dance_user_data_t){KC_F, S(KC_4)})), // tap, hold
     [TD_X] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_dbltap_finished, dance_dbltap_reset, &((dance_user_data_t){KC_X, S(KC_6), C(KC_X)})),
     [TD_C] = ACTION_TAP_DANCE_FN_ADVANCED_USER(shortcut_dance_each, shortcut_dance_finished, shortcut_dance_reset, &((dance_user_data_t){KC_C, C(KC_C), A(C(KC_7)), A(C(KC_0))})), // tap, double tap key or KC_NO for 2xtap, hold, double_hold autoclose for "" '' () []...
     [TD_V] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_dbltap_finished, dance_dbltap_reset, &((dance_user_data_t){KC_V, A(C(KC_0)), C(KC_V)})),
     [TD_Y] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_dbltap_finished, dance_dbltap_reset, &((dance_user_data_t){KC_Z, C(KC_Z), C(KC_Z)})),
     [TD_Z] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_dbltap_finished, dance_dbltap_reset, &((dance_user_data_t){KC_Y, KC_EXLM,  C(KC_Y)})),
-    [TD_G] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, dance_hold_reset, &((dance_user_data_t){KC_G, KC_RPRN})),
+    //[TD_G] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, dance_hold_reset, &((dance_user_data_t){KC_G, KC_RPRN})),
     //[TD_B] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, dance_hold_reset, &((dance_user_data_t){KC_B, KC_RBRC})),
     [TD_M] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_autorepeat_finished, dance_autorepeat_reset, &((dance_user_data_t){KC_M, S(KC_RBRC), S(KC_RBRC)})), //tap (tripple tap hold for AutoRepeat), hold (with AR), double_hold (without AR)
     //P J R B are disabled to free up space in this array
@@ -809,7 +819,7 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     //[TD_R] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, dance_hold_reset, &((dance_user_data_t){KC_R, A(C(KC_9))})),
     //[TD_P] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, dance_hold_reset, &((dance_user_data_t){KC_P, A(C(KC_RBRC))})),
     //[TD_T] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, dance_hold_reset, &((dance_user_data_t){KC_T, S(KC_9)})),
-    [TD_SS_UML] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, dance_hold_reset, &((dance_user_data_t){KC_S, KC_MINS})),
+    //[TD_SS_UML] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, dance_hold_reset, &((dance_user_data_t){KC_S, KC_MINS})),
     [TD_DOT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_autorepeat_finished, dance_autorepeat_reset, &((dance_user_data_t){KC_DOT, S(KC_DOT), S(KC_NUBS)})),  // tap(repeated on tripple tap), hold(repeated), double_hold (not repeated)
     [TD_DASH] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_autorepeat_finished, dance_autorepeat_reset, &((dance_user_data_t){KC_SLSH, S(KC_SLSH), S(KC_7)})),
     [TD_I_BS] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_dbltap_finished, dance_dbltap_reset, &((dance_user_data_t){KC_I, A(C(KC_MINS)), S(KC_7)})),
@@ -824,7 +834,7 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_W] = ACTION_TAP_DANCE_FN_ADVANCED_USER(shortcut_dance_each, shortcut_dance_finished, shortcut_dance_reset, &((dance_user_data_t){KC_W, KC_NO, KC_AT, KC_AT})),
     [TD_L] = ACTION_TAP_DANCE_FN_ADVANCED_USER(shortcut_dance_each, shortcut_dance_finished, shortcut_dance_reset, &((dance_user_data_t){KC_L, KC_NO, S(KC_NUHS), S(KC_NUHS)})),
     [TD_E] = ACTION_TAP_DANCE_FN_ADVANCED_USER(shortcut_dance_each, shortcut_dance_finished, shortcut_dance_reset, &((dance_user_data_t){KC_E, KC_NO, A(C(KC_8)), A(C(KC_9))})),
-    [TD_D] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, dance_hold_reset, &((dance_user_data_t){KC_D, A(C(KC_NUBS))})),
+    //[TD_D] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, dance_hold_reset, &((dance_user_data_t){KC_D, A(C(KC_NUBS))})),
     [TD_N] = ACTION_TAP_DANCE_FN_ADVANCED_USER(shortcut_dance_each, shortcut_dance_finished, shortcut_dance_reset, &((dance_user_data_t){KC_N, KC_NO, S(KC_8), S(KC_9)})),
     [TD_1] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_holdwmod_each, dance_holdwmod_finished, dance_holdwmod_reset, &((dance_user_data_t){KC_1, KC_F1})),
     [TD_2] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_holdwmod_each, dance_holdwmod_finished, dance_holdwmod_reset, &((dance_user_data_t){KC_2, KC_F2})),
@@ -917,7 +927,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 */
 [0] = LAYOUT_planck_mit(    
                                          TD(TD_ESC),          TD(TD_Q),        TD(TD_W), TD(TD_E),     KC_R,          KC_J, TD(TD_Z),    TD(TD_U_UML),    TD(TD_I_BS),    TD(TD_O_UML),               KC_P,             TD(TD_BSP),
-                               MT(MOD_LCTL ,KC_TAB),      TD(TD_A_UML),   TD(TD_SS_UML), TD(TD_D), TD(TD_F),      TD(TD_G), TD(TD_H),        TD(TD_N),           KC_T,        TD(TD_L),     TD(TD_KOE_ALT),    MT(MOD_LCTL,KC_ENT),
+                               MT(MOD_LCTL ,KC_TAB),      TD(TD_A_UML),            KC_S,     KC_D,     KC_F,          KC_G, TD(TD_H),        TD(TD_N),           KC_T,        TD(TD_L),     TD(TD_KOE_ALT),    MT(MOD_LCTL,KC_ENT),
                                       OSM(MOD_LSFT),          TD(TD_Y),        TD(TD_X), TD(TD_C), TD(TD_V),          KC_B, TD(TD_M),     TD(TD_COMM),     TD(TD_DOT),     TD(TD_DASH),              KC_UP,          OSM(MOD_LSFT),
                               MT(MOD_LCTL, KC_PGUP), MT(MOD_LGUI, KC_PGDN),
                                                                      MT(MOD_LALT,KC_DEL),
