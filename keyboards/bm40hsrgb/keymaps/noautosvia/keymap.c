@@ -122,49 +122,101 @@ typedef struct {
     uint16_t key_tap_keycode;
     bool permit_up;
 } key_hold_data_t;
-// each key needs its own set of status variables
-static key_hold_data_t p_hold = {0};
-static key_hold_data_t j_hold = {0};
-static key_hold_data_t r_hold = {0};
-static key_hold_data_t b_hold = {0};
-static key_hold_data_t t_hold = {0};
-#define HOLD_STAT_USER 5   // ATTENTION adjust array bounds
-static key_hold_data_t *hold_array[HOLD_STAT_USER] = {&p_hold, &j_hold, &r_hold, &b_hold, &t_hold };
 
+
+// each key needs its own set of status variables
+#define HOLD_STAT_USER 5   // ATTENTION adjust array bounds
+static key_hold_data_t hold_array[HOLD_STAT_USER] = {0};
+static uint16_t key_hold_lastkey = 0;
+static uint16_t key_hold_dbltap_timer = 0;
+static int hold_active_array[HOLD_STAT_USER];
+static int hold_active_max = -1;
+void hold_active_clear_at(int index) {
+        for(int i = index; i < hold_active_max; i++) {
+               hold_active_array[i] = hold_active_array[i+1];
+        }
+        hold_active_max--;
+        if (hold_active_max < -1) hold_active_max = -1;
+}
+void hold_active_clear(int hold_active_index) {
+        for(int i = 0; i <= hold_active_max; i++) {
+               if(hold_active_array[i] == hold_active_index) hold_active_clear_at(i);
+        }
+}
+void hold_active_add(int index) {
+        hold_active_max++;
+        hold_active_array[hold_active_max] = index;
+}
 void matrix_scan_user(void) {
+        // a for loop over all status could be speed improved by putting is_key_hold_active indices in a list
+        // control variables: hold_active_array [10] because number of fingers  or HOLD_STAT_USER,  int hold_active_max (highest used element of list)
+        // add: 1. hold_active_max++ 2. hold_active_array[hold_active_max] = me_pointer   
+        // clear: 1. find_me in hold_active_array shift higher array elements one index down 2. hold_active_max--  
+        // 2a. find_me in matrix_scan_user is obvious because we are in an hign to low loop of hold_active_array
+        // 2a. find_me in process_record_hold_key: linear search in hold_active_array
+        // instead of &hold_array[1] process_record_hold_key  should use the index
+        
+        for (int j=hold_active_max; j >= 0; j--){
+             int i = hold_active_array[j];
+             if (timer_elapsed(hold_array[i].key_hold_timer) > TAPPING_TERM) {
+                   if (hold_array[i].permit_up == true)  {  // todo check if permit_up is needed to prevent autorepeat
+                       hold_array[i].is_key_hold_active = false;
+                       hold_active_clear_at(j);
+                       if (hold_array[i].key_tap_keycode == key_hold_lastkey) {
+                               tap_code16(hold_array[i].key_tap_keycode); //todo timer with reset here and in process_record_hold_key missing
+                       } else {                               
+                               tap_code16(hold_array[i].key_hold_keycode);
+                       }
+                       key_hold_lastkey = hold_array[i].key_tap_keycode;
+                       hold_array[i].permit_up = false;
+                   }
+               }   
+        }
+        /*
         for (int i=0; i<HOLD_STAT_USER; i++) { 
-            if (hold_array[i]->is_key_hold_active) {
-               if (timer_elapsed(hold_array[i]->key_hold_timer) > TAPPING_TERM) {
-                   if (hold_array[i]->permit_up == true)  {
-                       hold_array[i]->is_key_hold_active = false;    
-                       tap_code16(hold_array[i]->key_hold_keycode);
-                       hold_array[i]->permit_up = false;
+            if (hold_array[i].is_key_hold_active) { 
+               if (timer_elapsed(hold_array[i].key_hold_timer) > TAPPING_TERM) {
+                   if (hold_array[i].permit_up == true)  {  // todo check if permit_up is needed to prevent autorepeat
+                       hold_array[i].is_key_hold_active = false;
+                       if (hold_array[i].key_tap_keycode == key_hold_lastkey) {
+                               tap_code16(hold_array[i].key_tap_keycode); //todo timer with reset here and in process_record_hold_key missing
+                       } else {                               
+                               tap_code16(hold_array[i].key_hold_keycode);
+                       }
+                       key_hold_lastkey = hold_array[i].key_tap_keycode;
+                       hold_array[i].permit_up = false;
                    }
                }
             }
-        }
+        }*/
 }
 
-bool process_record_hold_key(uint16_t keycode, keyrecord_t *record, uint16_t keycode2, key_hold_data_t *hold_status ){
+bool process_record_hold_key(uint16_t keycode, keyrecord_t *record, uint16_t keycode2, int hold_status ){
     if (record->event.pressed) {
+                hold_array[hold_status].key_tap_keycode =  keycode;
                 if (get_mods() | get_oneshot_mods()) { // If key was held ans no mods
-                        hold_status->key_hold_keycode =  keycode;
+                        hold_array[hold_status].key_hold_keycode =  keycode;
                 } else {                       
-                        hold_status->key_hold_keycode = keycode2;
+                        hold_array[hold_status].key_hold_keycode = keycode2;
                 }
-                hold_status->key_hold_timer = timer_read();  // start the timer
-                hold_status->is_key_hold_active = true;
-                hold_status->permit_up = true;
+                hold_array[hold_status].key_hold_timer = timer_read();  // start the timer
+                hold_array[hold_status].is_key_hold_active = true;
+                hold_active_add(hold_status);
+                hold_array[hold_status].permit_up = true;
                 return false;              // return false to keep keycode from being sent yet
         } else { 
-                if (timer_elapsed(hold_status->key_hold_timer) > TAPPING_TERM) { // If key was held ans no mods
+                if (timer_elapsed(hold_array[hold_status].key_hold_timer) > TAPPING_TERM) { // If key was held and no mods
+                        key_hold_lastkey = keycode2;
                         //unregister_code16(hold_status->key_hold_keycode);
-                        hold_status->is_key_hold_active = false;
-                } else if (hold_status->is_key_hold_active){                       
+                        hold_array[hold_status].is_key_hold_active = false;
+                        hold_active_clear(hold_status);
+                } else if (hold_array[hold_status].is_key_hold_active){                       
                         tap_code16(keycode);// if key was tapped
-                        hold_status->is_key_hold_active = false;
+                        key_hold_lastkey = keycode;
+                        hold_array[hold_status].is_key_hold_active = false;
+                        hold_active_clear(hold_status);
                 }
-                hold_status->permit_up = false;
+                hold_array[hold_status].permit_up = false;
                 return false;
     	}    
 }
@@ -173,11 +225,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
     // this is an alternate key on hold feature case KC_A...KC_Z:
     // keys have no autorepeat
-    case KC_P: return process_record_hold_key(keycode, record, A(C(KC_RBRC)), &p_hold);	break;
-    case KC_J: return process_record_hold_key(keycode, record, KC_PERC, &j_hold);	break;
-    case KC_R: return process_record_hold_key(keycode, record, A(C(KC_9)), &r_hold);	break;
-    case KC_B: return process_record_hold_key(keycode, record, KC_RBRC, &b_hold);	break;
-    case KC_T: return process_record_hold_key(keycode, record, S(KC_9), &t_hold);	break;
+    case KC_P: return process_record_hold_key(keycode, record, A(C(KC_RBRC)), 0);	break;
+    case KC_J: return process_record_hold_key(keycode, record, KC_PERC, 1);	break;
+    case KC_R: return process_record_hold_key(keycode, record, A(C(KC_9)), 2);	break;
+    case KC_B: return process_record_hold_key(keycode, record, KC_RBRC, 3);	break;
+    case KC_T: return process_record_hold_key(keycode, record, S(KC_9), 4);	break;
     case PICKFIRST:
         if (record->event.pressed) {
             // when keycode PICKFIRST is pressed
@@ -794,6 +846,7 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_BSP] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_holdautorepeat_each, dance_holdautorepeat_finished, dance_holdautorepeat_reset, &((dance_user_data_t){KC_BSPC, KC_END})),
 };
 /*
+ tapdance usage before custom  
  23 x hold (autosymbol),
  11 x hold+dbltap,
   3 x hold+dbltap+dblhold,
