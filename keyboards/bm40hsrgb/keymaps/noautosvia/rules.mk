@@ -7,5 +7,5 @@ EXTRAKEY_ENABLE = yes
 # -flto saves ~14% on firmware size
 EXTRAFLAGS += -flto
 CONSOLE_ENABLE = no
-#COMBO_ENABLE = yes
+COMBO_ENABLE = no
 NKRO_ENABLE = no 

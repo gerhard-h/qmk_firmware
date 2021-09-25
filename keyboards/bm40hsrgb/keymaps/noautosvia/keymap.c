@@ -125,7 +125,7 @@ typedef struct {
 
 
 // each key needs its own set of status variables
-#define HOLD_STAT_USER 9   // ATTENTION adjust array bounds
+#define HOLD_STAT_USER 10   // ATTENTION adjust array bounds
 static key_hold_data_t hold_array[HOLD_STAT_USER] = {0};
 static uint16_t key_hold_lastkey = 0;
 static uint16_t key_hold_dbltap_timer = 0;                                          
@@ -148,7 +148,7 @@ void hold_active_add(int index) {
         hold_active_array[hold_active_max] = index;
 }
 void matrix_scan_user(void) {
-        // a for loop over all status could be speed improved by putting is_key_hold_active indices in a list
+        // instead of a for loop over all status, processing is improved by putting is_key_hold_active indices in a list and only iterate over that
         // control variables: hold_active_array [10] because number of fingers  or HOLD_STAT_USER,  int hold_active_max (highest used element of list)
         // add: 1. hold_active_max++ 2. hold_active_array[hold_active_max] = me_pointer   
         // clear: 1. find_me in hold_active_array shift higher array elements one index down 2. hold_active_max--  
@@ -176,23 +176,6 @@ void matrix_scan_user(void) {
                    }
                }   
         }
-        /*
-        for (int i=0; i<HOLD_STAT_USER; i++) { 
-            if (hold_array[i].is_key_hold_active) { 
-               if (timer_elapsed(hold_array[i].key_hold_timer) > TAPPING_TERM) {
-                   if (hold_array[i].permit_up == true)  {  // todo check if permit_up is needed to prevent autorepeat
-                       hold_array[i].is_key_hold_active = false;
-                       if (hold_array[i].key_tap_keycode == key_hold_lastkey) {
-                               tap_code16(hold_array[i].key_tap_keycode); //todo timer with reset here and in process_record_hold_key missing
-                       } else {                               
-                               tap_code16(hold_array[i].key_hold_keycode);
-                       }
-                       key_hold_lastkey = hold_array[i].key_tap_keycode;
-                       hold_array[i].permit_up = false;
-                   }
-               }
-            }
-        }*/
 }
 
 bool process_record_hold_key(uint16_t keycode, keyrecord_t *record, uint16_t keycode2, int hold_status ){
@@ -240,6 +223,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case KC_G: return process_record_hold_key(keycode, record, KC_RPRN, 6);	break;
     case KC_D: return process_record_hold_key(keycode, record, A(C(KC_NUBS)), 7);	break;
     case KC_S: return process_record_hold_key(keycode, record, KC_MINS, 8);	break;
+    case KC_H: return process_record_hold_key(keycode, record, KC_UNDS, 9);	break;
     case PICKFIRST:
         if (record->event.pressed) {
             // when keycode PICKFIRST is pressed
@@ -405,7 +389,7 @@ enum {
   TD_Q,
   TD_TAB_ENT,
   TD_M,
-  TD_H,
+//  TD_H,
   TD_Z,
   TD_Y,
   TD_X,
@@ -753,7 +737,7 @@ void modifier_dbldance_each(qk_tap_dance_state_t *state, void *user_data) {
     if (state->count > 2) {
             tap_code(keycode);
     }
-        if (state->count == 3) {
+    if (state->count == 3) {
             tap_code(keycode);
     }
 };
@@ -824,7 +808,7 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_I_BS] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, dance_dbltap_finished, atap_state_reset, &((dance_user_data_t){KC_I, A(C(KC_MINS)), S(KC_7)})),
     [TD_DOL_CTL] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_mod_finished, dance_mod_reset, &((dance_user_data_t){S(KC_4), KC_LCTL})), // only one KC_LCTL and KC_LSFT definition are currently supported
     [TD_PIPE_SFT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_mod_finished, dance_mod_reset, &((dance_user_data_t){A(C(KC_NUBS)), KC_LSFT})),
-    [TD_KOE_ALT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, modifier_dbldance_finished, modifier_dbldance_reset, &((dance_user_data_t){KC_K, KC_LALT, A(KC_TAB)})),// only one KC_LALT and KC_LCTL definition are currently supported
+   // unused because of bug [TD_KOE_ALT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, modifier_dbldance_finished, modifier_dbldance_reset, &((dance_user_data_t){KC_K, KC_LALT, A(KC_TAB)})),// only one KC_LALT and KC_LCTL definition are currently supported
     [TD_ANG] = ACTION_TAP_DANCE_FN_ADVANCED_USER( curly_dance_each, curly_dance_finished, curly_dance_reset, &((dance_user_data_t){KC_NUBS, S(KC_NUBS)})),
     [TD_QUOT] = ACTION_TAP_DANCE_FN_ADVANCED_USER( curly_dance_each, curly_dance_finished, curly_dance_reset, &((dance_user_data_t){S(KC_NUHS), S(KC_NUHS)})),
     [TD_PAR] = ACTION_TAP_DANCE_FN_ADVANCED_USER( curly_dance_each, curly_dance_finished, curly_dance_reset, &((dance_user_data_t){S(KC_8), S(KC_9)})),
@@ -849,7 +833,7 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_10] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_holdwmod_finished, atap_state_reset, &((dance_user_data_t){A(C(KC_E)), KC_F10})),
     [TD_DEL10] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_holdwmod_finished, atap_state_reset, &((dance_user_data_t){KC_DEL, KC_F10})),
     [TD_TAB_ENT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, modifier_dbldance_finished, modifier_dbldance_reset, &((dance_user_data_t){KC_TAB, KC_LCTL, KC_ENT})),
-    [TD_H] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, dance_dbltap_finished, atap_state_reset, &((dance_user_data_t){KC_H, KC_UNDS, KC_UNDS})),
+//    [TD_H] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, dance_dbltap_finished, atap_state_reset, &((dance_user_data_t){KC_H, KC_UNDS, KC_UNDS})),
     [TD_DQUOT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(curly_dance_each, curly_dance_finished, curly_dance_reset, &((dance_user_data_t){KC_AT, KC_AT})),
     [TD_SQU] = ACTION_TAP_DANCE_FN_ADVANCED_USER(curly_dance_each, curly_dance_finished, curly_dance_reset, &((dance_user_data_t){A(C(KC_8)), A(C(KC_9))})),
     [TD_BSP] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_holdautorepeat_finished, dance_holdautorepeat_reset, &((dance_user_data_t){KC_BSPC, KC_END, KC_DEL})),
@@ -868,9 +852,6 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 
 * ` backtick is only available as Shift(tick) on L2
 * # is only available on L1
-*
-* shift + backspace > delete check each function
-*
 * 
 now 9 x custom single_hold solution rjpsdfgtb
 some numbers 12347891 could also get a custom solution with different modifier handling 
@@ -878,31 +859,43 @@ some numbers 12347891 could also get a custom solution with different modifier h
 *
 * u h have will do/loose the same on dbltap and hold,  Auufer Buchhalter nachher 
 *
-* / is most inconvinient frequent symbol h=/ p=? ---H=~
+* shift + backspace > delete not working (sends SFT(KC_DEL))
 *
-* tap and single-hold for r p j b t  is not realized by tap dance, but in matrix_scan_user and process_record_user because tap_dance array overflows
+* h and u will now work on dbltap in Auufer, Buchhalter, nachher,... 
+*
+* / is most inconvinient frequent symbol: h=/ p=? --hold=~
+*
+* tap and single-hold for r p j b t s d f g h  is not realized by tap dance, but in matrix_scan_user and process_record_user because tap_dance array overflows
 * DBL_TAP_HOLD is handled as SINGLE_TAP if modifiers are active SHIFT + r_hold > R instead of S(])
-* DBL_TAP_HOLD is now b+ p~ r] t) instead of 'autocorretion' gg ss oo  
+* DBL_TAP_HOLD is autocorreted to bb pp rr tt  instead of b+ p~ r] t)
 *
-* TAP Dance Problems
-* DBL_TAP_HOLD is sometimes surprising m>*(only has autorepeat * on Single_Hold),  bsp>autorepeat on dbl_hold
-* shift + SINGLE_HOLD n > (, i > ẞ, KOMMA > >instead of < modifies the wrong key
-* shift + SINGLE_HOLD for q>S(END) Ä Ü Ö works correct (> /)?
+* TAP Dance Problems/Inconsistencies
+* DBL_TAP_HOLD m has autorepeat **** but DBL_TAP_HOLD * has no autorepeat
+* DBL_TAP_HOLD bsp has autorepeat
+* shift + SINGLE_HOLD n > (,
+* shift + KOMMA > > instead of < modifies the wrong key 
+* BUT shift + SINGLE_HOLD i > I, 
+* shift + SINGLE_HOLD q > Q instead of S(END)
+* Ä Ü Ö  works only shift neeeds to be passed through
+* shift + SINGLE_HOLD . > correct >
+* shift + SINGLE_HOLD - > correct /
 * alt + hold_4  works
-* L1/L4 hold r = F10 instead of DELETE/€, F11 instead of 0  is sometimes confusing
+* F10-12 only on L4 not L1 hold r = F10 instead of DELETE/€, F11 instead of 0  is sometimes confusing
 *
-* äüö needs only shift to be passed through to single hold ESC/Home needs maybe more mods passed through 
-* u>ü dbl_tap unused
+* ESC/Home BSP/End needs all mods passed through 
+*
 * _each and _reset funtions are often the same and therefore shared between declarations
 * 
-* dbl tap esc sends ^ as dead key instead of custom key CIRCUMFL dance_dbltap_ could check "is keycode element of enum custom_keycodes?" than call that code
+* dbl tap esc does not sends ^ not even as dead key instead of custom key CIRCUMFL dance_dbltap_ could check "is keycode element of enum custom_keycodes?" than call that code
 *
 * light_control if OSM(modifier) is locked
 * light intensity controls are inactive -> search solution in oryx keymap code
 *
 * shift + non shiftable key (e.g. A(C(KC_E))) outputs shift+€=nothing instead of ignoring the shift, but ignoring the shift in general does not work either
 * 
-* (bug) dance_hold mods must be pressed one after the other > workaround swap + and | because + is a not shifted key wich could use MT
+* (bug) dance_mod_finished mods must be pressed one after the other > workaround swap + and | because + is a not shifted key wich could use MT
+*
+* (bug) modifier_dbldance_finished when interupted outputs the modifier instead of key. workaround: use MT 
 *
 * bug tap dance inside OSL only works if OSL key is held down | process_record_user  all OSM set status-flag on down and clear status-flag on up 
 * if tap_dance_each senses !status-flag & OSL active: OSL clear, permanent layer move...
@@ -918,12 +911,14 @@ some numbers 12347891 could also get a custom solution with different modifier h
 * dot diacrit ., > ä .n > ü .l > ö .- > ß/alt
 * dot mix ., > ü .- > ö. ,. .. ä ,- > ß
 
-* home row mods?
+* home row mods? F, N ~ SFT
 *
 * reevaluate copy paste undo: xx cc vv zz
-* reevaluate alt-tab: kk vs L2z
+* reevaluate alt-tab: kk vs L2z stick to kk
 * reevaluate alt-shift-tab: L2p
-* reevaluate 1=v on numpad
+* reevaluate 1=v on numpad1
+* reevaluate del key positioin RSFT L2DOT L1R LALT
+* reevaluate q END
 *
 * feature: single key alt tab {KC_LCTL,KC_LALT,KC_TAB}
 * single hold & modus==OFF: alt + ctrl + tab & modus=ON 
@@ -950,9 +945,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 */
 [0] = LAYOUT_planck_mit(    
                                          TD(TD_ESC),          TD(TD_Q),        TD(TD_W), TD(TD_E),     KC_R,          KC_J, TD(TD_Z),    TD(TD_U_UML),    TD(TD_I_BS),    TD(TD_O_UML),               KC_P,             TD(TD_BSP),
-                               MT(MOD_LCTL ,KC_TAB),      TD(TD_A_UML),            KC_S,     KC_D,     KC_F,          KC_G, TD(TD_H),        TD(TD_N),           KC_T,        TD(TD_L),     TD(TD_KOE_ALT),    MT(MOD_LCTL,KC_ENT),
-                                      OSM(MOD_LSFT),          TD(TD_Y),        TD(TD_X), TD(TD_C), TD(TD_V),          KC_B, TD(TD_M),     TD(TD_COMM),     TD(TD_DOT),     TD(TD_DASH),              KC_UP,          OSM(MOD_LSFT),
-                              MT(MOD_LCTL, KC_PGUP), MT(MOD_LGUI, KC_PGDN),
+                               MT(MOD_LCTL ,KC_TAB),      TD(TD_A_UML),            KC_S,     KC_D,     KC_F,          KC_G,     KC_H,        TD(TD_N),           KC_T,        TD(TD_L),     MT(MOD_LALT, KC_K),    MT(MOD_LCTL,KC_ENT),
+                                      OSM(MOD_LSFT),          TD(TD_Y),        TD(TD_X), TD(TD_C), TD(TD_V),          KC_B, TD(TD_M),     TD(TD_COMM),     TD(TD_DOT),     TD(TD_DASH),              KC_UP,    MT(MOD_LSFT,KC_DEL),
+                              MT(MOD_LCTL, KC_PGUP),           KC_LGUI,
                                                                      MT(MOD_LALT,KC_DEL),
                                                                                  TD(TD_TAB_ENT),
                                                                                                  OSL(_L1),
@@ -967,7 +962,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 */
 [1] = LAYOUT_planck_mit(
 
-                                                         KC_TRNS,         TD(TD_1),             TD(TD_2),                    TD(TD_3),          TD(TD_DEL10),       KC_BSPC,     KC_EXLM,    KC_LBRC,        KC_QUOT,       KC_SCLN,        KC_MINS,       KC_TRNS,
+                                                         KC_TRNS,         TD(TD_1),             TD(TD_2),                    TD(TD_3),          TD(TD_DEL10),       KC_BSPC,     KC_EXLM,    KC_LBRC,        DE_BSLS,       KC_SCLN,        DE_TILD,       KC_TRNS,
                                                          KC_TRNS,         TD(TD_4),             TD(TD_5),                    TD(TD_6),              TD(TD_0),    TD(TD_DOT),     KC_UNDS, TD(TD_PAR),        KC_LPRN,   TD(TD_QUOT),        KC_NUHS,       KC_TRNS,
                                                          KC_TRNS,         TD(TD_7),              TD(TD_8),                   TD(TD_9),             TD(TD_12),   TD(TD_COMM),  S(KC_RBRC), TD(TD_ANG),     S(KC_NUBS),       KC_AMPR,          KC_UP,       KC_TRNS,
                                                          KC_TRNS,          KC_TRNS,     MT(MOD_LALT,KC_0),                    KC_TRNS,               KC_TRNS,       KC_TRNS,                 MO(_L2),        KC_TRNS,       KC_TRNS,        KC_TRNS,       KC_TRNS
@@ -980,7 +975,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 */
 [2] = LAYOUT_planck_mit(
                                                 CIRCUMFL,  ALGR(KC_Q),            TD(TD_DQUOT),            TD(TD_SQU),             ALGR(KC_9),              KC_PERC,                A(KC_TAB),      KC_HOME,        KC_UP,    KC_END,   A(S(KC_TAB)),     KC_BSPC,
-                                                 KC_TRNS,     KC_QUOT,    MT(MOD_LALT,KC_MINS),       TD(TD_PIPE_SFT),         TD(TD_DOL_CTL),              KC_RPRN,                  KC_HOME,      KC_LEFT,      KC_DOWN,    KC_RGHT,        KC_END,     KC_TRNS,
+                                                 KC_TRNS,     KC_QUOT,    MT(MOD_LALT,KC_MINS),       TD(TD_PIPE_SFT),         TD(TD_DOL_CTL),              KC_RPRN,             A(S(KC_TAB)),      KC_LEFT,      KC_DOWN,    KC_RGHT,       KC_PGDN,     KC_TRNS,
                                                  KC_TRNS,    TICKTICK,                 KC_CIRC,            TD(TD_CUR),             ALGR(KC_0),              KC_RBRC,                   KC_ESC,      KC_ENT,        KC_DEL,    KC_BSPC,       KC_TRNS,     KC_TRNS,
                                                  KC_TRNS,     KC_LGUI,     MT(MOD_LALT,KC_DEL),               KC_TRNS,                MO(_L1),              KC_TRNS,                                KC_TRNS,      KC_TRNS,    KC_TRNS,       KC_TRNS,     KC_TRNS
   ),
@@ -999,7 +994,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * 
  */
 [3] = LAYOUT_planck_mit(
-    KC_F1, RESET,             DEBUG,      RGB_TOG,       RGB_MOD, RGB_HUI, RGB_HUD, KC_MS_BTN1,    KC_MS_UP,   KC_MS_BTN2,   KC_MS_WH_UP,               KC_ASTG,
+    KC_F1, RESET,             DEBUG,      RGB_TOG,       RGB_MOD, RGB_HUI, RGB_HUD, KC_MS_BTN1,    KC_MS_UP,   KC_MS_BTN2,   KC_MS_WH_UP,               CMB_TOG,
     KC_F2, KC_F5,      KC_MS_ACCEL0, KC_MS_ACCEL1,  KC_MS_ACCEL2, RGB_SAI, RGB_SAD, KC_MS_LEFT,  KC_MS_DOWN,  KC_MS_RIGHT, KC_MS_WH_DOWN,               KC_TRNS,
     KC_F3, KC_F6,             KC_F8,       KC_F10,        KC_F12, RGB_VAI, RGB_VAD, KC_MS_BTN1,  KC_MS_BTN2,   KC_MS_BTN3,       _______,               _______,
     KC_F4, KC_F7,MT(MOD_LALT,KC_F9),       KC_F11,       _______, _______,             _______,     _______,      _______,       _______,  MT(MOD_RALT, KC_RGHT)
@@ -1040,11 +1035,29 @@ void oneshot_layer_changed_user(uint8_t layer) {
 }
 */
 
-/* COMBOS will deaktivate Autoshift not tested with autosymbol so far
-const uint16_t PROGMEM altf4_combo[] = {TD(TD_TAB_ENT), KC_W, KC_E, COMBO_END};
-const uint16_t PROGMEM re_combo[] = {KC_R, KC_E, COMBO_END};
+/* COMBOS will deaktivate Autoshift not complex Tapdances also break it
+tap dance callbacks fireing on default might be a Problem
+{KC_LEFT, KC_RGHT, COMBO_END} works
+{TD(TD_COMM), TD(TD_A_UML), COMBO_END}; , > k, ,a > ,fa comma_hold > ;kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+TD(TD_H), KC_R  > 4hr  4 = unsc4hift F$
+TD(TD_U_UML), TD(TD_O_UML) uao 
+
+interesting:
+With #define COMBO_ONLY_FROM_LAYER _LAYER_A the combos' keys are always checked from layer _LAYER_A even though the active layer would be _LAYER_B.
+
+using autohotkey
+; eventmethode (se) plus raw()) (ist compatible mit qmk firmware
+#Hotstring se
+:*:,a::ä
+:*:;A::Ä
+:*:,s::ß
+:*:,u::ü
+:*:,o::ö
+:*:,f::$
+
+const uint16_t PROGMEM altf4_combo[] = {TD(TD_KOE_ALT), TD(TD_A_UML), COMBO_END};
+const uint16_t PROGMEM re_combo[] = {TD(TD_U_UML), TD(TD_O_UML), COMBO_END};
 combo_t key_combos[COMBO_COUNT] = {
     COMBO(altf4_combo, KC_F),
-    COMBO(re_combo, LALT(KC_F4))
-}; 
-*/
+    COMBO(re_combo, KC_A)
+}; */
