@@ -7,6 +7,7 @@ VIA
 tap dance
 custom keycodes 
 rgb per layer
+
 todo Holding Numbers for F key is suboptimal: own Layer activated by L1/L2+L4, L1/L4+V, L4+O  
 
 info tapdance usage before custom   
@@ -38,10 +39,10 @@ info / is most inconvinient frequent symbol: h=/ p=? --hold=~  also AHK ,t and ,
 info
 tap and single-hold for r p j b t s d f g h  is not realized by tap dance, but in matrix_scan_user and process_record_user because of tap_dance array overflows
 some numbers 1234__7891 could also get a custom solution with different modifier handling 
-Ã¤Ã¼Ã¶ behave similar to these numbers
+äüö behave similar to these numbers
 DBL_TAP_HOLD is handled as SINGLE_TAP if modifiers are active SHIFT + r_hold > R instead of S(])
 DBL_TAP_HOLD is autocorreted to bb pp rr tt  instead of b+ p~ r] t)
-AHK does aÃ¤ > Ã¤ ... autocorrection
+AHK does aä > ä ... autocorrection
 *
 TAP Dance Problems/Inconsistencies
 DBL_TAP_HOLD m has autorepeat **** but DBL_TAP_HOLD * has no autorepeat
@@ -50,10 +51,10 @@ shift + SINGLE_HOLD n > (  vs N - not an issue if N~SFT
 shift + DBL_TAP KOMMA > gives S(<) = > instead of < (maybe correct)
 BUT shift + SINGLE_HOLD i > I, shift + DBL_HOLD i > /
 shift + SINGLE_HOLD q > Q instead of S(END)
-Ã„ Ãœ Ã–  works only shift neeeds to be passed through
+Ä Ü Ö  works only shift neeeds to be passed through
 shift + SINGLE_HOLD . > : correct DBL_TAP_HOLD > correct
 shift + SINGLE_HOLD - > _ correct DBL_TAP_HOLD / correct
-F10-12 only on L4 not L1 hold r = F10 instead of DELETE/â‚¬, F11 instead of 0  is sometimes confusing
+F10-12 only on L4 not L1 hold r = F10 instead of DELETE/€, F11 instead of 0  is sometimes confusing
 dbl_tap_hold ESC sends ^ as dead key (instead of custom key CIRCUMFL) dance_dbltap_ could check "is keycode element of enum custom_keycodes?" than call that code
 or put it on q @ ^
 *
@@ -64,7 +65,8 @@ info _each and _reset funtions are often the same and therefore shared between d
 todo light_control if OSM(modifier) is locked
 todo light intensity controls are inactive -> search solution in oryx keymap code
 *
-info shift + non shiftable key (e.g. A(C(KC_E))) outputs shift+â‚¬=nothing instead of ignoring the shift, but ignoring the shift in general does not work either  
+info shift + non shiftable key (e.g. A(C(KC_E))) outputs shift+€=nothing instead of ignoring the shift, but ignoring the shift in general does not work either
+  
 
 bug dance_mod_finished mods must be pressed one after the other 
 else first key registers a tap instead of hold
@@ -74,7 +76,8 @@ else first key registers a tap instead of hold
 *
 bug tap dance inside OSL only works if OSL key is held down | process_record_user  all OSM set status-flag on down and clear status-flag on up 
 if tap_dance_each senses !status-flag & OSL active: OSL clear, permanent layer move...
-...tap dance continues ... on tapdance reset layer move 0  
+...tap dance continues ... on tapdance reset layer move 0
+  
 
 COMBOS - are there use cases? do combos conflict with tap dance ... yes they do but autohotkey can be used
 combo starters: ,<alpha> q<alpha_minus_ulm> jf cv vc vz vd jz wt wd wf wz tricky: .<alpha> uu ii uv 
@@ -82,18 +85,20 @@ c + L1 > enter
 qw = esc better than tapdance qq? ,k > # 
 comma - combos ,q > 1 ,w > 2 ... ,. >  ,- > 
 ,esc > F1 ,q > F2 ,bsp > F12 
-comma diacrit opposit ,a > Ã¤ ,s > ÃŸ ,d > Ã¶ ,f > Ã¼
+comma diacrit opposit ,a > ä ,s > ß ,d > ö ,f > ü
 G = LT(1,KC_G)  H = LT(1,KC_H) 
-dot diacrit ., > Ã¤ .n > Ã¼ .l > Ã¶ .- > ÃŸ/alt
-dot mix ., > Ã¼ .- > Ã¶. ,. .. Ã¤ ,- > ÃŸ
+dot diacrit ., > ä .n > ü .l > ö .- > ß/alt
+dot mix ., > ü .- > ö. ,. .. ä ,- > ß
 *
-speed test: rÃ¤te kÃ¤fig RÃ¤te KÃ¤fig dÃ¼fte DÃ¼fte rÃ¶hre RÃ¶hre
+speed test: räte käfig Räte Käfig düfte Düfte röhre Röhre
 comma           a       o       u
 thumb layer     a       o       u
 hold 150ms      a       o       u
-dot                     ,       -  
+dot                     ,       -
+  
 
-(re)evaluate home row mods? F, N ~ SFT ... D, T ~ CTL ... G, H ~ L2/L1  
+(re)evaluate home row mods? F, N ~ SFT ... D, T ~ CTL ... G, H ~ L2/L1
+  
 
 reevaluate u h have will have no dbltap enabling:  Auufer Buchhalter nachher
 reevaluate copy paste undo: xx cc vv zz
@@ -111,10 +116,11 @@ single hold & modus==ON: modus==ON & Space
 Alt+F4: Ctl+(W+W) or (C+W)+W or C+(W+Q) or wq currenly L4 + K + A
 *
 *numberpad 2.0
-â‚¬456-
+€456-
 3210.
 /789,
 *
 leader key  combos? are they compatible with tapdance keys? F keys
 always send KC_LEAD after ESC or up ?
 *
+
