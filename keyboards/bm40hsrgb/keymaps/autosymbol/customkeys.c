@@ -107,16 +107,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
     // this is an alternate key on hold feature case KC_A...KC_Z:
     // keys have no autorepeat
-    case KC_P: return process_record_hold_key(keycode, record, ALGR(KC_RBRC), 0);	break;
+    case KC_P: return process_record_hold_key(keycode, record, DE_QUES, 0);	break;
     case KC_J: return process_record_hold_key(keycode, record, KC_PERC, 1);	break;
-    case KC_R: return process_record_hold_key(keycode, record, ALGR(KC_9), 2);	break;
-    case KC_B: return process_record_hold_key(keycode, record, KC_RBRC, 3);	break;
-    case KC_T: return process_record_hold_key(keycode, record, S(KC_9), 4);	break;
-    case KC_F: return process_record_hold_key(keycode, record, S(KC_4), 5);	break;
-    case KC_G: return process_record_hold_key(keycode, record, KC_RPRN, 6);	break;
-    case KC_D: return process_record_hold_key(keycode, record, ALGR(KC_NUBS), 7);	break;
-    case KC_S: return process_record_hold_key(keycode, record, KC_MINS, 8);	break;
-    case KC_H: return process_record_hold_key(keycode, record, KC_UNDS, 9);	break;
+    case KC_R: return process_record_hold_key(keycode, record, DE_RBRC, 2);	break;
+    case KC_B: return process_record_hold_key(keycode, record, DE_PLUS, 3);	break;
+    //case KC_T: return process_record_hold_key(keycode, record, DE_RPRN, 4);	break;
+    //case KC_F: return process_record_hold_key(keycode, record, S(KC_4), 5);	break;
+    case KC_G: return process_record_hold_key(keycode, record, DE_EQL, 6);	break;
+    //case KC_D: return process_record_hold_key(keycode, record, ALGR(KC_NUBS), 7);	break;
+    case KC_S: return process_record_hold_key(keycode, record, DE_SS, 8);	break;
+    case KC_H: return process_record_hold_key(keycode, record, DE_SLSH, 9);	break;
     case PICKFIRST:
         if (record->event.pressed) {
             // when keycode PICKFIRST is pressed

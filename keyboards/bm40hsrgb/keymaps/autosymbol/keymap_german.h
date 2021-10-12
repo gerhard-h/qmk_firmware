@@ -18,6 +18,17 @@
 
 #include "keymap.h"
 
+#define DE_1 KC_1
+#define DE_2 KC_2
+#define DE_3 KC_3
+#define DE_4 KC_4
+#define DE_5 KC_5
+#define DE_6 KC_6
+#define DE_7 KC_7
+#define DE_8 KC_8
+#define DE_9 KC_9
+#define DE_0 KC_0
+
 // clang-format off
 
 /*
@@ -107,12 +118,12 @@
 #define DE_RCBR ALGR(DE_0)    // }
 #define DE_BSLS ALGR(DE_SS)   // (backslash)
 // Row 2
-#define DE_AT   ALGR(DE_Q)    // @
-#define DE_EURO ALGR(DE_E)    // €
+#define DE_AT   ALGR(KC_Q)    // @
+#define DE_EURO ALGR(KC_E)    // €
 #define DE_TILD ALGR(DE_PLUS) // ~
 // Row 4
 #define DE_PIPE ALGR(DE_LABK) // |
-#define DE_MICR ALGR(DE_M)    // µ
+#define DE_MICR ALGR(KC_M)    // µ
 
 // DEPRECATED
 #define DE_UE   DE_UDIA
