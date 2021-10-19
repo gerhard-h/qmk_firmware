@@ -35,7 +35,7 @@
 #define DISABLE_RGB_MATRIX_SOLID_SPLASH
 #define DISABLE_RGB_MATRIX_SOLID_MULTISPLASH
 
-#define TAPPING_TERM 180
+#define TAPPING_TERM 140
 #define MOD_CODE_DELAY 0
 // # define TAP_CODE_DELAY 10 //will not fix Remotedesktop timings
 //#define USB_POLLING_INTERVAL_MS 1

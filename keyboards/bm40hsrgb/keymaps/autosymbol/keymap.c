@@ -93,7 +93,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_L4] = LAYOUT_planck_mit(
     KC_TRNS,         TD(TD_1),               TD(TD_2),       TD(TD_3),              TD(TD_10),   TD(TD_DASH),     KC_PGUP,     KC_MENU,        CTLSFTF,       KC_RALT,        KC_PSCR,       KC_TRNS,
     KC_TRNS,         TD(TD_4),               TD(TD_5),       TD(TD_6),               TD(TD_0),    TD(TD_DOT),     KC_PGDN,   PICKFIRST,        PICK2ND,       PICK3RD,        KC_LALT,       KC_TRNS,
-    KC_TRNS,         TD(TD_7),               TD(TD_8),       TD(TD_9),              TD(TD_12),   TD(TD_COMM),  S(KC_RBRC),     KC_COMM,     KC_MS_BTN2,       KC_LGUI,        KC_VOLU,       KC_TRNS,
+    KC_TRNS,         TD(TD_7),               TD(TD_8),       TD(TD_9),              TD(TD_12),   TD(TD_COMM),  S(KC_RBRC),      KC_APP,     KC_MS_BTN2,       KC_LGUI,        KC_VOLU,       KC_TRNS,
     KC_TRNS,          KC_TRNS,      MT(MOD_LALT,KC_0),        KC_TRNS,                KC_TRNS,       KC_TRNS,                  KC_TRNS,        KC_TRNS,       KC_TRNS,        KC_VOLD,       KC_TRNS
   ),    
 
