@@ -14,7 +14,7 @@ typedef struct {
     bool is_key_hold_active;
     uint16_t key_hold_keycode;
     uint16_t key_tap_keycode;
-    bool permit_up;
+    bool permit_up; // used to prevent autorepeat
 } key_hold_data_t;
 
 // each key needs its own set of status variables
@@ -110,6 +110,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case KC_P: return process_record_hold_key(keycode, record, DE_QUES, 0);	break;
     case KC_J: return process_record_hold_key(keycode, record, KC_PERC, 1);	break;
     case KC_R: return process_record_hold_key(keycode, record, DE_RBRC, 2);	break;
+    case KC_I: return process_record_hold_key(keycode, record, DE_BSLS, 4);	break;
     case KC_B: return process_record_hold_key(keycode, record, DE_PLUS, 3);	break;
     //case KC_T: return process_record_hold_key(keycode, record, DE_RPRN, 4);	break;
     //case KC_F: return process_record_hold_key(keycode, record, S(KC_4), 5);	break;
