@@ -10,6 +10,12 @@ rgb per layer
 
 todo: F keys - Holding Numbers is suboptimal: own Layer activated by L1/L2+L4, L1/L4+V, L4+O  or using L3
 
+todo: Key Overrides may help  with shift-backspace / F-Keys / Layer 3
+
+todo: get_tapping_term in combination with custom keycodes TT_PLUS, TT_MINUS, TT_OFF, TT_ON would make TAPPING_TERM configurable on the fly
+
+todo: gaming layer: process_record_user ignore alphas, don't use TD, F-keys how to do it with via
+
 info tapdance usage before custom   
  23 x hold (autosymbol),  
  11 x hold+dbltap,  
@@ -20,6 +26,9 @@ info tapdance usage before custom
   2 x mod_tap emulation with extra double tap,  
 ***********************************************
  52(50) keys pysical keys 47  
+
+train use numpad blind (onhand  left)
+train use L2 navigation 
 
 info backtick \` is only available as Shift(tick) on L2  or ahk ,y  
 
@@ -113,6 +122,7 @@ reevaluate alt-shift-tab: L2p
 reevaluate 1=v on numpad1
 reevaluate del key positioin RSFT L2_DOT L1_R LALT ,r
 reevaluate qq > @  ,q > ^
+reevaluate / and ~ position L2 ... L2+k can be reused 
 
 feature idea: single key alt tab {KC_LCTL,KC_LALT,KC_TAB}
 single hold & modus==OFF: alt + ctrl + tab & modus=ON 
