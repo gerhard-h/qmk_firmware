@@ -105,12 +105,14 @@ dot                     ,       -
 ;solution 2: exsample Send Mit freundlichen Grüßen {Enter} - space before {enter}  and text on the same line  as Enters
 
 -reevaluate home row mods? F, N ~ SFT ... D, T ~ CTL ... [G, H ~ L2/L1] -> no
-reevaluate copy paste undo: xx cc vv zz
+reevaluate copy paste undo: xx cc vv zz -> seems unecessary when home row mods are active
+reevaluate ctl-tab-enter vs tab-L2
+reevaluate one shot layer
 -reevaluate alt-tab: kk vs L2z ->. removed kk in favor of MT()
 reevaluate alt-shift-tab: L2p
 reevaluate 1=v on numpad1
-reevaluate del key positioin RSFT L2DOT L1R LALT ,r
-reevaluate qq > @
+reevaluate del key positioin RSFT L2_DOT L1_R LALT ,r
+reevaluate qq > @  ,q > ^
 
 feature idea: single key alt tab {KC_LCTL,KC_LALT,KC_TAB}
 single hold & modus==OFF: alt + ctrl + tab & modus=ON 

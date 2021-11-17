@@ -49,8 +49,11 @@
 
 
 //#define TAPPING_FORCE_HOLD // gives the hold behavior priority over the keyrepeat behavior. eg. to get dünn instead of ddun with LT(1,KC_D)
+
+/* enable home row mods */
 #define IGNORE_MOD_TAP_INTERRUPT
 #define PERMISSIVE_HOLD
+
 #define ONESHOT_TAP_TOGGLE 2  /* Tapping this number of times holds the key until tapped once again. */
 #define ONESHOT_TIMEOUT 5000  /* Time (in ms) before the one shot key is released */
 //#define LEADER_TIMEOUT 500
