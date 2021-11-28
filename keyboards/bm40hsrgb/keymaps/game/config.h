@@ -36,10 +36,10 @@
 #define DISABLE_RGB_MATRIX_SOLID_MULTISPLASH
 
 #define TAPPING_TERM_PER_KEY
-#define TAPPING_TERM 210
+#define TAPPING_TERM 200
 #define MOD_CODE_DELAY 0
 // # define TAP_CODE_DELAY 10 //will not fix Remotedesktop timings
-// #define USB_POLLING_INTERVAL_MS 10 # tried 1 and 10 both resourceheavy or it's just NKRO
+//#define USB_POLLING_INTERVAL_MS 1
 //#define AUTO_SHIFT_TIMEOUT 140
 //#define AUTO_SHIFT_NO_AUTO_REPEAT
 //#define NO_AUTO_SHIFT_NUMERIC
@@ -54,7 +54,7 @@
 #define IGNORE_MOD_TAP_INTERRUPT
 #define PERMISSIVE_HOLD
 
-#define ONESHOT_TAP_TOGGLE 3  /* Tapping this number of times holds the key until tapped once again. */
+#define ONESHOT_TAP_TOGGLE 2  /* Tapping this number of times holds the key until tapped once again. */
 #define ONESHOT_TIMEOUT 5000  /* Time (in ms) before the one shot key is released */
 //#define LEADER_TIMEOUT 500
 ///#define EXTRA_SHORT_COMBOS // Defining EXTRA_SHORT_COMBOS combines a combo's internal state into just one byte. This can, in some cases, save some memory. If it doesn't, no point using it.

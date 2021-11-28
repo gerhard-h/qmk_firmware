@@ -481,43 +481,56 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 *             ________      TO(_L2)       ________      ________      1             2             3             €             .             !             ü             \             ö             ~             ________
 *             ________      ________      ________      ________      4             5             6             0             :             ?             (             )             '             #             ________
 *             ________      ________      ________      ________      7             8             9             1             ,             =             <             >             /             ________      ________
-*             ________      ________      ________      ________      ________      0/Alt         ________      ________      ________      ________      ________      TG(_L2)       ________      ________      ________
+*             ________      ________      ________      ________      ________      0/Alt         TO(2)      ________      ________      ________      ________      TG(_L2)       ________      ________      ________
 */
  [1] = LAYOUT_ortho_5x15(
     KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_F12,         KC_F1,                    KC_F2,                       KC_F3,                  KC_F4,         KC_F5,    KC_F6,    KC_F7,          KC_F8,         KC_F9,         KC_F10,        KC_F11,
     KC_TRNS,     TO(_L2),        KC_TRNS,       KC_TRNS,      TD(TD_1),                TD(TD_2),                    TD(TD_3),             ALGR(KC_E),        KC_DOT,  KC_EXLM,  KC_LBRC,  ALGR(KC_MINS),       KC_SCLN,  ALGR(KC_RBRC),       KC_TRNS,
     KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_TRNS,         TD(TD_4),              TD(TD_5),                    TD(TD_6),              TD(TD_0),         KC_GT,  KC_UNDS, TD(TD_PAR),        KC_LPRN, TD(TD_QUOT),    TD(TD_HASH),       KC_TRNS,
     KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_TRNS,         TD(TD_7),               TD(TD_8),                   TD(TD_9),               TD(TD_1),       KC_COMM,  KC_RPRN, TD(TD_ANG),     S(KC_NUBS),    KC_AMPR,          KC_UP,       KC_TRNS,
-    KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_TRNS,      KC_TRNS,  MT(MOD_LALT,KC_0),                KC_TRNS,                KC_TRNS,       KC_TRNS,  KC_TRNS,  KC_TRNS,                   TG(_L2),       KC_TRNS,        KC_TRNS,       KC_TRNS
+    KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_TRNS,      KC_TRNS,  MT(MOD_LALT,KC_0),                TO(2),                KC_TRNS,       KC_TRNS,  KC_TRNS,  KC_TRNS,                   TG(_L2),       KC_TRNS,        KC_TRNS,       KC_TRNS
   ),
 /*  ________      ________      ________      ________      ________      ________      ________      ________      ________      ________      ________      ________      ________      ________      ________
 *   ________      TG(_L1)       ________      ^             @             "             [             ]             %             -             CTL+SFT+F     UP            ö             ________      ________
 *   ________      ________      ________      ________      ä             ß/alt         |/Shift       $/Ctrl        +             HOME          LEFT          DOWN          RGHT          END           ________
 *   ________      ________      ________      ________      TD(TD_TICK)   CIRC          TD(TD_CUR)    ALGR(0)       S(RBRC)       ESC           Backspc       DEL           ENT           ________      Home/Shift
-*   ________      ________      ________      ________      WIN           Del/Alt       ________      ________      ________      ________      ________      ________      ________      ________      ________
+*   ________      ________      ________      ________      WIN           Del/Alt          TG(1)      ________      ________      ________      ________      ________      ________      ________      ________
 */
  [2] = LAYOUT_ortho_5x15(
     KC_TRNS, KC_TRNS, KC_TRNS,       KC_TRNS,     KC_TRNS,                 KC_TRNS,              KC_TRNS,                 KC_TRNS,              KC_TRNS,                  KC_TRNS,      KC_TRNS,      KC_TRNS,    KC_TRNS,      KC_TRNS,      KC_TRNS,
     KC_TRNS, TG(_L1), KC_TRNS, TD(TD_CIRCUM),  ALGR(KC_Q),            TD(TD_DQUOT),           TD(TD_SQU),              ALGR(KC_9),              KC_PERC,                  KC_SLSH,      CTLSFTF,      KC_UP,      KC_SCLN,      KC_TRNS,      KC_BSPC,
     KC_TRNS, KC_TRNS, KC_TRNS,       KC_TRNS,     KC_QUOT,    MT(MOD_LALT,KC_MINS),       TD(TD_PIPE_SFT),         TD(TD_DOL_CTL),              KC_RBRC,                  KC_HOME,      KC_LEFT,      KC_DOWN,    KC_RGHT,      KC_END,       KC_TRNS,
     KC_TRNS, KC_TRNS, KC_TRNS,       KC_TRNS, TD(TD_TICK),                 KC_CIRC,            TD(TD_CUR),             ALGR(KC_0),           S(KC_RBRC),                   KC_ESC,      KC_BSPC,      KC_DEL,     KC_ENT,       KC_TRNS,      MT(MOD_LSFT,KC_HOME),
-    KC_TRNS, KC_TRNS, KC_TRNS,       KC_TRNS,     KC_LGUI,      MT(MOD_LALT,KC_DEL),              KC_TRNS,              KC_TRNS,                KC_TRNS,                  KC_TRNS,      KC_TRNS,      KC_TRNS,    KC_TRNS,      KC_TRNS,      KC_TRNS
+    KC_TRNS, KC_TRNS, KC_TRNS,       KC_TRNS,     KC_LGUI,      MT(MOD_LALT,KC_DEL),              TG(1),              KC_TRNS,                KC_TRNS,                  KC_TRNS,      KC_TRNS,      KC_TRNS,    KC_TRNS,      KC_TRNS,      KC_TRNS
   ),
 
+/* L3
+ *                      v------------------------RGB CONTROL--------------------v
+ * ,-----------------------------------------------------------------------------------.
+ * |  F1  | Reset|AutoS | RGB  |RGBMOD| HUE+ | HUE- |lclick| ms-u |rclick|ms-w+ | TO(0)|
+ * |------+------+------+------+------+------+------+------+------+------+------+------|
+ * |  F2  |  F5  |ACCEL0|ACCEL1|ACCEL2| SAT+ | SAT- | ms-l | ms-d | ms-r |ms-w- |      |
+ * |------+------+------+------+------+------+------+------+------+------+------+------|
+ * |  F3  |  F6  |  F8  |  F10 |  F12 |BRGTH+|BRGTH-|lclick|mclick|rclick|      |      |
+ * |------+------+------+------+------+------+------+------+------+------+------+------|
+ * |  F4  |  F7  |  F9  |  F11 |  F12 |             |      |      |      |      |      |
+ * `-----------------------------------------------------------------------------------'
+ * 
+ */
  [3] = LAYOUT_ortho_5x15(
     RESET,      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,           KC_TRNS,      KC_TRNS,      KC_TRNS, KC_TRNS, KC_TRNS,    KC_TRNS,     KC_TRNS,      KC_TRNS,       KC_TRNS,              KC_TRNS,
-    KC_TRNS,    TO(_L4), KC_TRNS, KC_F1,     RESET,             DEBUG,      RGB_TOG,      RGB_MOD, RGB_HUI, RGB_HUD, KC_MS_BTN1,    KC_MS_UP,   KC_MS_BTN2,   KC_MS_WH_UP,                TO(0),
+    KC_TRNS,    TO(_L4), KC_TRNS, KC_F1,     RESET,             DEBUG,      RGB_TOG,      RGB_MOD, RGB_HUI, RGB_HUD, KC_MS_BTN1,    KC_MS_UP,   KC_MS_BTN2,   KC_MS_WH_UP,              KC_ASTG,
     KC_TRNS,    KC_TRNS, KC_TRNS, KC_F2,     KC_F5,      KC_MS_ACCEL0, KC_MS_ACCEL1, KC_MS_ACCEL2, RGB_SAI, RGB_SAD, KC_MS_LEFT,  KC_MS_DOWN,  KC_MS_RIGHT, KC_MS_WH_DOWN,              KC_TRNS,
     KC_TRNS,    KC_TRNS, KC_TRNS, KC_F3,     KC_F6,             KC_F8,       KC_F10,       KC_F12, RGB_VAI, RGB_VAD, KC_MS_BTN1,   KC_MS_BTN2,  KC_MS_BTN2,    KC_MS_BTN3,              _______,
-    KC_ASTG ,   KC_TRNS, KC_TRNS, KC_F4,     KC_F7, MT(MOD_LALT,KC_F9),      KC_F11,       KC_F12, KC_TRNS, KC_TRNS,    KC_TRNS,      KC_TRNS,     KC_VOLD,       KC_VOLU, MT(MOD_RALT, RGB_TOG)
+    KC_ASTG ,   KC_TRNS, KC_TRNS, KC_F4,     KC_F7, MT(MOD_LALT,KC_F9),      KC_F11,      KC_TRNS, KC_TRNS, KC_TRNS,    KC_TRNS,      KC_TRNS,     KC_TRNS,       KC_TRNS, MT(MOD_RALT, KC_RGHT)
   ),
 
  [4] = LAYOUT_ortho_5x15(
     KC_TRNS,     KC_TRNS,        KC_TRNS,       KC_F12,             KC_F1,                  KC_F2,          KC_F3,                  KC_F4,         KC_F5,    KC_F6,      KC_F7,          KC_F8,         KC_F9,         KC_F10,        KC_F11,
-    KC_TRNS,     TO(_L5),        KC_TRNS,       KC_TRNS,         TD(TD_1),               TD(TD_2),       TD(TD_3),             ALGR(KC_E),        KC_DOT,  KC_EXLM,    KC_LBRC,  ALGR(KC_MINS),       KC_SCLN,  ALGR(KC_RBRC),       KC_TRNS,
-    KC_ASDN,     KC_ASUP,        KC_TRNS,       KC_TRNS,         TD(TD_4),               TD(TD_5),       TD(TD_6),               TD(TD_0),         KC_GT,  KC_UNDS,   PICKFIRST,      PICK2ND,        PICK3RD,    TD(TD_HASH),       KC_TRNS,
-    KC_ASON,    KC_ASOFF,        KC_TRNS,       KC_TRNS,         TD(TD_7),               TD(TD_8),       TD(TD_9),               TD(TD_1),       KC_COMM,  KC_RPRN,  TD(TD_ANG),     S(KC_NUBS),      KC_AMPR,        KC_VOLU,       KC_TRNS,
-    KC_ASTG,     KC_ASRP,        KC_TRNS,       KC_TRNS,          KC_TRNS,      MT(MOD_LALT,KC_0),        KC_TRNS,                KC_TRNS,       KC_TRNS,  KC_TRNS,    KC_TRNS,        TG(_L2),       KC_TRNS,        KC_VOLD,       KC_TRNS
+    KC_TRNS,     TO(_L5),        KC_TRNS,       KC_TRNS,         TD(TD_1),               TD(TD_2),       TD(TD_3),             ALGR(KC_E),        KC_DOT,  KC_EXLM,    KC_LBRC,  ALGR(KC_MINS),       KC_SCLN,  ALGR(KC_RBRC),       KC_VOLU,
+    KC_ASDN,     KC_ASUP,        KC_TRNS,       KC_TRNS,         TD(TD_4),               TD(TD_5),       TD(TD_6),               TD(TD_0),         KC_GT,  KC_UNDS,   PICKFIRST,       PICK2ND,       PICK3RD,    TD(TD_HASH),       KC_VOLD,
+    KC_ASON,    KC_ASOFF,        KC_TRNS,       KC_TRNS,         TD(TD_7),               TD(TD_8),       TD(TD_9),               TD(TD_1),       KC_COMM,  KC_RPRN,  TD(TD_ANG),    S(KC_NUBS),       KC_AMPR,        KC_VOLU,       KC_TRNS,
+    KC_ASTG,     KC_ASRP,        KC_TRNS,       KC_TRNS,          KC_TRNS,      MT(MOD_LALT,KC_0),        KC_TRNS,                KC_TRNS,       KC_TRNS,  KC_TRNS,     KC_TRNS,       KC_TRNS,       KC_TRNS,        KC_VOLD,       KC_TRNS
   ),
 
  [5] = LAYOUT_ortho_5x15(

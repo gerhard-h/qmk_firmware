@@ -12,11 +12,11 @@ todo: F keys - Holding Numbers is suboptimal: own Layer activated by L1/L2+L4, L
 
 todo: Key Overrides may help  with shift-backspace / F-Keys / Layer 3
 
-todo: get_tapping_term in combination with new custom keycodes TT_PLUS, TT_MINUS, TT_OFF, TT_ON would make TAPPING_TERM configurable on the fly
+todo: get_tapping_term in combination with custom keycodes TT_PLUS, TT_MINUS, TT_OFF, TT_ON would make TAPPING_TERM configurable on the fly
 
-todo: gaming layer: process_record_user ignore alphas on gaming layer, don't use TapDance, Numbers and F-keys,  how to do it with via and the Layer Limit, find goog keys for shift and space
+todo: gaming layer: process_record_user ignore alphas, don't use TD, F-keys how to do it with via
 
-info tapdance usage before custom process_record_user 
+info tapdance usage before custom   
  23 x hold (autosymbol),  
  11 x hold+dbltap,  
   3 x hold+dbltap+dblhold,  
@@ -27,28 +27,6 @@ info tapdance usage before custom process_record_user
 ***********************************************
  52(50) keys pysical keys 47  
 
-L1 > NUM + NAV
-L2 > NUM/F-KEY + MAKRO
-SPACE -> SYMBOL
-
-L1 > NUM + NAV
-L2 > SYMBOL
-L5 > F-Key + Makros
-L4 > 
-SPACE ->
-
-reconsider a basic consideration was that using the cursor keys is a "one hand" operation thus L2 must activate home row navigation
-reconsider but having dedicated cursorkeys makes this unnecessary and L1 -> NAV is more comfortable
-reconsider L1 -> NAV + Numbers or L1 -> NAV + F-Keys
-                 means focus on one hand number input
-                 NAV Layer needs extra Modifier support(k->ALT,dash/up WIN,v->enter, . or r for delete , j->€) for numbers 
-                                        also missing modifier support for F-Keys
-reconsider L2 -> All Symbols or Numbers + Makros or Left Symbols + Makros
-                 using one hand for right symbols is fine
-                 
-reconsider L2 -> NAV+NUM ,L2 tap -> OSL-Symbol? or OSL-L4 or anything, L1-> L4, L4 ->  F-Keys   SPACE-> SYMBOL(or no Symbol-Layer),
-           L1 -> NAV  L2 -> NUM+MAKRO L4 -> F-Keys SPACE -> Symbol
-           SPACE -> NAV+NUM  L1 -> MAKRO + F-Keys L2 -> Symbol 
 train use numpad blind (onhand  left)
 train use L2 navigation 
 
