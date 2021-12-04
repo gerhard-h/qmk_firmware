@@ -30,7 +30,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 */       
 [0] = LAYOUT_planck_mit(    
                                              TD(TD_ESC),          TD(TD_Q),        TD(TD_W),          TD(TD_E),              KC_R,          KC_J,      TD(TD_Z),      TD(TD_U_UML),               KC_I,    TD(TD_O_UML),               KC_P,                KC_BSPC,
-                                   MT(MOD_LCTL ,KC_TAB),      TD(TD_A_UML),   TD(TD_SS_UML), MT(MOD_LCTL,KC_D), MT(MOD_LSFT,KC_F),          KC_G,          KC_H, MT(MOD_LSFT,KC_N),  MT(MOD_LCTL,KC_T),        TD(TD_L), MT(MOD_LALT, KC_K),    MT(MOD_LCTL,KC_ENT),
+                                   MT(MOD_LCTL ,KC_TAB),      TD(TD_A_UML),   TD(TD_SS_UML),          TD(TD_D),          TD(TD_F),          KC_G,          KC_H,          TD(TD_N),           TD(TD_T),        TD(TD_L), MT(MOD_LALT, KC_K),    MT(MOD_LCTL,KC_ENT),
                                           OSM(MOD_LSFT),          TD(TD_Y),        TD(TD_X),          TD(TD_C),          TD(TD_V),          KC_B,      TD(TD_M),       TD(TD_COMM),         TD(TD_DOT),     TD(TD_DASH),              KC_UP,    MT(MOD_LSFT,KC_DEL),
                                   MT(MOD_LCTL, KC_PGUP),           KC_LGUI,
                                                                          MT(MOD_LALT,KC_DEL),
@@ -60,7 +60,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 * SYMBOL*/
 [2] = LAYOUT_planck_mit(
                                                 CIRCUMFL,     DE_EXLM,            TD(TD_DQUOT),            TD(TD_SQU),             ALGR(KC_9),              KC_PERC,               DE_AMPR,     DE_UDIA,        DE_BSLS,       DE_ODIA,        DE_QUES,       KC_TRNS,
-                                                 KC_TRNS,     DE_ADIA,    MT(MOD_LALT,KC_MINS),  MT(MOD_LCTL,KC_NUHS),         TD(TD_DOL_SFT),              KC_RPRN,               DE_SLSH,  TD(TD_PAR),        KC_LPRN,   TD(TD_QUOT),        DE_TILD,       KC_TRNS,
+                                                 KC_TRNS,     DE_ADIA,                 KC_MINS,               KC_NUHS,                 KC_DLR,              KC_RPRN,               DE_SLSH,  TD(TD_PAR),        KC_LPRN,   TD(TD_QUOT),        DE_TILD,       KC_TRNS,
                                                  KC_TRNS,    TICKTICK,                 DE_PIPE,            TD(TD_CUR),             ALGR(KC_0),              KC_RBRC,               DE_ASTR,  TD(TD_ANG),     S(KC_NUBS),       DE_TILD,          KC_UP,       KC_TRNS,
                                                  KC_TRNS,     KC_LGUI,     MT(MOD_LALT,KC_DEL),               KC_TRNS,                MO(_L1),              KC_TRNS,                            KC_TRNS,        KC_TRNS,       KC_TRNS,        KC_TRNS,       KC_TRNS
   ),

@@ -8,9 +8,7 @@ tap dance
 custom keycodes 
 rgb per layer
 
-todo: F keys - Holding Numbers is suboptimal: own Layer activated by L1/L2+L4, L1/L4+V, L4+O  or using L3
-
-todo: Key Overrides may help  with shift-backspace / F-Keys / Layer 3
+todo: Key Overrides may help  with shift-backspace / Layer 3
 
 todo: get_tapping_term in combination with new custom keycodes TT_PLUS, TT_MINUS, TT_OFF, TT_ON would make TAPPING_TERM configurable on the fly
 
@@ -54,11 +52,11 @@ train use L2 navigation
 
 info backtick \` is only available as Shift(tick) on L2  or ahk ,y  
 
-info # $ () ~ are only available on L1/L2 or ( ~ per double_tap_hold -) 
+info # $ () > ~ are only available on SYMBOL-Layer or per double_tap_hold
 
 info [ and { are not working in windows terminal when done as CTL(ALT()) always use ALGR()  
 
-info shift + backspace > delete did not work (sends SFT(KC_DEL))  
+info shift + backspace > delete did not work (sends SFT(KC_DEL)) it can be doE with an new feature 
 
 info i, h and u will not use dbl_tap any more to allow words like: Auufer, Buchhalter, nachher,...   
 
@@ -66,10 +64,9 @@ info slash / was the most inconvinient frequent symbol: idea 1: remap h=/ p=? --
 info some symbols are only available through dbl_tap: @
 info TAPPING_TERM 140 is good for typing äöüß but most keys should have longer timeouts, fixed by using TAPPING_TERM per key
 
-info tap and single-hold for r i p j b t s d f g h  is not realized by tap dance, but in matrix_scan_user and process_record_user because of tap_dance array overflows d,f,t are now used for home row mods
-info some numbers 1234__7891 could also get a custom solution with different modifier handling 
-info äüö behave similar to these numbers
-info DBL_TAP_HOLD is handled as SINGLE_TAP if modifiers are active SHIFT + r_hold > R instead of S(])
+info custom autosymbol funtionality
+info tap and single-hold for r i p j b s g h  is not realized by tap dance, but in matrix_scan_user and process_record_user because of tap_dance array overflow, with the removal of NumToFKey this is maybe not necessary anymore
+info TAP_HOLD is handled as SINGLE_TAP if modifiers are active e.g. SHIFT + r_hold > R instead of S(])
 info DBL_TAP_HOLD is autocorreted to bb pp rr tt  instead of b+ p~ r] t)
 info AHK does aä > ä ... autocorrection
 
@@ -98,32 +95,23 @@ todo light intensity controls are inactive -> search solution in oryx keymap cod
 info shift + non shiftable key (e.g. A(C(KC_E))) outputs shift+€=nothing instead of ignoring the shift, but ignoring the shift in general does not work either
   
 
-(bug) dance_mod_finished mods must be pressed one after the other, otherwise first key registers a tap instead of hold 
-- workaround: swap # and | because # is a not shifted key wich could use MT
+(bug unused) dance_mod_finished mods must be pressed one after the other, otherwise first key registers a tap instead of hold 
+- workaround1: swap # and | because # is a not shifted key wich could use MT
+- workaround2: use modifier_dbldance_finished instead as it doesn't have that problem
 
-(bug) modifier_dbldance_finished when interupted outputs the modifier instead of key (only with ALT).
-- workaround: use MT 
 
 bug tap dance inside OSL only works if OSL key is held down | process_record_user  all OSM set status-flag on down and clear status-flag on up 
 if tap_dance_each senses !status-flag & OSL active: OSL clear, permanent layer move...
 ...tap dance continues ... on tapdance reset layer move 0
+- workaround: using autosymbol or not using OSL
 
-COMBOS - are there use cases? do combos conflict with tap dance ... yes they do but autohotkey can be used
-combo starters: ,<alpha> q<alpha_minus_ulm> jf cv vc vz vd jz wt wd wf wz tricky: .<alpha> uu ii uv 
-c + L1 > enter
-qw = esc better than tapdance qq? ,k > # 
+COMBOS - conflict with tap dance / autosymbol - autohotkey can be used
+combo starters: ,<alpha> q<alpha_minus_ulm> jf cv vc vz vd jz wt wd wf wz
+qw = esc better than tapdance qq
 comma - combos ,q > 1 ,w > 2 ... ,. >  ,- > 
-,esc > F1 ,q > F2 ,bsp > F12 
-comma diacrit opposit ,a > ä ,s > ß ,d > ö ,f > ü
 G = LT(1,KC_G)  H = LT(1,KC_H) 
 dot diacrit ., > ä .n > ü .l > ö .- > ß/alt
 dot mix ., > ü .- > ö. ,. .. ä ,- > ß
-
-speed test: räte käfig Räte Käfig düfte Düfte röhre Röhre
-comma           a       o       u
-thumb layer     a       o       u
-hold 150ms      a       o       u
-dot                     ,       -
 
 ;autohotkey QMK compatibility
 ;SP seemed not to work at all use(default) #Hotstring SI  or #Hotstring SE
@@ -135,23 +123,19 @@ dot                     ,       -
 ;solution 1: try a raw ()-block  use space before CRLF (only usefull if the final character does not obey the rules a-c )
 ;solution 2: exsample Send Mit freundlichen Grüßen {Enter} - space before {enter}  and text on the same line  as Enters
 
--reevaluate home row mods? F, N ~ SFT ... D, T ~ CTL ... [G, H ~ L2/L1] -> no
-reevaluate copy paste undo: xx cc vv zz -> seems unecessary when home row mods are active
-reevaluate ctl-tab-enter vs tab-L2
+-reevaluate home row mods [G, H ~ L2/L1] -> no
+-reevaluate copy paste undo: xx cc vv zz -> seems unecessary when home row mods are active
 reevaluate one shot layer
--reevaluate alt-tab: kk vs L2z ->. removed kk in favor of MT()
-reevaluate alt-shift-tab: L2p
-reevaluate 1=v on numpad1
+reevaluate alt-shift-tab: L1h / L1z
+-reevaluate 1=v on numpad1
 reevaluate del key positioin RSFT L2_DOT L1_R LALT ,r
 reevaluate qq > @  ,q > ^
-reevaluate / and ~ position L2 ... L2+k can be reused 
+reevaluate L2+k can be reused 
 
 feature idea: single key alt tab {KC_LCTL,KC_LALT,KC_TAB}
 single hold & modus==OFF: alt + ctrl + tab & modus=ON 
 tap & modus==ON: tab
 single hold & modus==ON: modus==ON & Space  
-      
-Alt+F4: Ctl+(W+W) or (C+W)+W or C+(W+Q) or wq currenly L4 + K + A
 
 *numberpad 2.0
 €456-

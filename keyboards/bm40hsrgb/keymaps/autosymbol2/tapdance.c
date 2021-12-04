@@ -77,7 +77,8 @@ td_state_t mod_dance(qk_tap_dance_state_t *state) {
 enum {
   TD_A_UML,
   TD_O_UML,
-//  TD_F,
+  TD_F,
+  TD_D,
   TD_U_UML,
   TD_SS_UML,
   TD_DASH,
@@ -92,7 +93,7 @@ enum {
   //TD_CIRCUM,
   //TD_TICK,
   TD_COMM,
-  TD_DOL_SFT,
+  //TD_DOL_SFT,
   //TD_PIPE_SFT,
   //TD_KOE_ALT,
   //TD_1,
@@ -121,15 +122,14 @@ enum {
 //  TD_G,
 //  TD_J,
   TD_W,
-//  TD_N,
-//  TD_D,
+  TD_N,
   TD_E,
   TD_L,
   TD_ESC,
 //  TD_DEL10,
 //  TD_R,
 //  TD_P,
-//  TD_T,
+  TD_T,
   TD_BSP,
 };
 
@@ -348,7 +348,9 @@ void dance_autorepeat_reset(qk_tap_dance_state_t *state, void *user_data) {
     }
     atap_state.state = TD_NONE;
 }
-
+/*
+// unused
+// can be used as replacement of MT() with shifted keys
 // mod tap as tap dance only these functions need individual state variables
 static td_tap_t dance_ctl = {
     .is_press_action = true,
@@ -358,6 +360,7 @@ static td_tap_t dance_sft = {
     .is_press_action = true,
     .state = TD_NONE
 };
+// (bug) dance_mod_finished mods must be pressed one after the other, otherwise first key registers a tap instead of hold 
 void dance_mod_finished(qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
     uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
@@ -369,7 +372,6 @@ void dance_mod_finished(qk_tap_dance_state_t *state, void *user_data) {
         default: register_code16(keycode); break;
     }
 }
-
 void dance_mod_reset(qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
     uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
@@ -381,52 +383,89 @@ void dance_mod_reset(qk_tap_dance_state_t *state, void *user_data) {
     }
     ctap_state->state = TD_NONE;
 }
+*/
 
-// mod tap as dbl tap dance kk~220
-static td_tap_t ctap_state_dbl = {
+// mod tap with D_DOUBLE_HOLD
+static td_tap_t c1tap_state_dbl = {
     .is_press_action = true,
     .state = TD_NONE
 };
-static td_tap_t atap_state_dbl = { 
+static td_tap_t c2tap_state_dbl = {
     .is_press_action = true,
     .state = TD_NONE
 };
+// static td_tap_t atap_state_dbl = { 
+//     .is_press_action = true,
+//     .state = TD_NONE
+// };
+static td_tap_t s1tap_state_dbl = { 
+    .is_press_action = true,
+    .state = TD_NONE
+};
+static td_tap_t s2tap_state_dbl = { 
+    .is_press_action = true,
+    .state = TD_NONE
+};
+//(bug - not verified lately ) modifier_dbldance_finished when interupted outputs the modifier instead of key (only with ALT).
+// Enhance MT() with TD_DOUBLE_HOLD
 void modifier_dbldance_finished (qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
-    uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
+    uint16_t keycode2param = ((dance_user_data_t*)user_data)->keycode2;
     uint16_t keycode3 = ((dance_user_data_t*)user_data)->keycode3;
-    /* selecting the state based on the keycode works fine, as
-    * long as that modifier/dance_function combination is just used once */
-    td_tap_t *ctap_state = (keycode2 == KC_LALT) ? &atap_state_dbl : &ctap_state_dbl; 
+    uint16_t keycode2;
+    switch (keycode2param) {
+        case 11 :
+        case 12 :  keycode2 = KC_LSFT; break;
+        case 22 :
+        case 21 :  keycode2 = KC_LCTL; break;
+        default :  keycode2 = KC_LALT; break;
+    }
+    td_tap_t *ctap_state = (keycode2param == 11) ? &s1tap_state_dbl : (keycode2param == 12) ? &s2tap_state_dbl : (keycode2param == 21) ? &c1tap_state_dbl : &c2tap_state_dbl; 
     ctap_state->state = mod_dance(state);
     switch (ctap_state->state) {
+        case TD_SINGLE_TAP: register_code16(keycode); break;
         case TD_SINGLE_HOLD: register_code16(keycode2); break;
-        case TD_DOUBLE_HOLD:
+        case TD_DOUBLE_HOLD: register_code16(keycode3); break;
         case TD_DOUBLE_TAP:
-        case TD_DOUBLE_SINGLE_TAP: tap_code16(keycode3); break;
-        default: register_code(keycode); break;
+        case TD_DOUBLE_SINGLE_TAP:tap_code16(keycode);register_code16(keycode); break;
+        default: register_code16(keycode); break;
     }
 }
 void modifier_dbldance_each(qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
-    if (state->count > 2) {
+    if (state->count == 3) {
+            tap_code(keycode);
             tap_code(keycode);
     }
-    if (state->count == 3) {
+    else if (state->count > 3) {
             tap_code(keycode);
     }
 };
 void modifier_dbldance_reset (qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
-    uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
-    td_tap_t *ctap_state = (keycode2 == KC_LALT) ? &atap_state_dbl : &ctap_state_dbl;
-    switch (ctap_state->state) {
-        case TD_SINGLE_HOLD: unregister_code16(keycode2); break;
-        case TD_DOUBLE_HOLD:
-        case TD_DOUBLE_TAP:
-        case TD_DOUBLE_SINGLE_TAP: break;
-        default: unregister_code(keycode); break;
+    uint16_t keycode2param = ((dance_user_data_t*)user_data)->keycode2;
+    uint16_t keycode2;
+    uint16_t keycode3 = ((dance_user_data_t*)user_data)->keycode3;
+    switch (keycode2param) {
+        case 11 :
+        case 12 :  keycode2 = KC_LSFT; break;
+        case 22 :
+        case 21 :  keycode2 = KC_LCTL; break;
+        default :  keycode2 = KC_LALT; break;
     }
+    td_tap_t *ctap_state = (keycode2param == 11) ? &s1tap_state_dbl : (keycode2param == 12) ? &s2tap_state_dbl : (keycode2param == 21) ? &c1tap_state_dbl : &c2tap_state_dbl; 
+    switch (ctap_state->state) {
+        case TD_SINGLE_TAP: unregister_code16(keycode); break;
+        case TD_SINGLE_HOLD: unregister_code16(keycode2); break;
+        case TD_DOUBLE_HOLD: unregister_code16(keycode3);break;
+        case TD_DOUBLE_TAP:
+        case TD_DOUBLE_SINGLE_TAP:
+        default: unregister_code16(keycode); break;
+    }
+    //s1tap_state_dbl.state = TD_NONE;
+    //s2tap_state_dbl.state = TD_NONE;
+    //c1tap_state_dbl.state = TD_NONE;
+    //c2tap_state_dbl.state = TD_NONE;
     ctap_state->state = TD_NONE;
 }
 
@@ -481,14 +520,13 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_O_UML] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, atap_state_reset, &((dance_user_data_t){KC_O, KC_SCLN})),
     //[TD_R] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, atap_state_reset, &((dance_user_data_t){KC_R, A(C(KC_9))})),
     //[TD_P] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, atap_state_reset, &((dance_user_data_t){KC_P, A(C(KC_RBRC))})),
-    //[TD_T] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, atap_state_reset, &((dance_user_data_t){KC_T, S(KC_9)})),
     [TD_SS_UML] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_ss_finished, atap_state_reset, &((dance_user_data_t){KC_S, KC_MINS})),
     [TD_DOT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_autorepeat_finished, dance_autorepeat_reset, &((dance_user_data_t){KC_DOT, S(KC_DOT), S(KC_NUBS)})),  // tap(repeated on tripple tap), hold(repeated), double_hold (not repeated)
     [TD_DASH] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_autorepeat_finished, dance_autorepeat_reset, &((dance_user_data_t){KC_SLSH, S(KC_SLSH), DE_TILD})),
     //[TD_I_BS] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, dance_dbltap_finished, atap_state_reset, &((dance_user_data_t){KC_I, DE_BSLS, S(KC_7)})),
-    [TD_DOL_SFT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_mod_finished, dance_mod_reset, &((dance_user_data_t){S(KC_4), KC_LSFT})), // only one KC_LCTL and KC_LSFT definition are currently supported
-   //[TD_PIPE_SFT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_mod_finished, dance_mod_reset, &((dance_user_data_t){A(C(KC_NUBS)), KC_LSFT})),
-   // unused because of bug [TD_KOE_ALT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, modifier_dbldance_finished, modifier_dbldance_reset, &((dance_user_data_t){KC_K, KC_LALT, A(KC_TAB)})),// only one KC_LALT and KC_LCTL definition are currently supported
+    //[TD_DOL_SFT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_mod_finished, dance_mod_reset, &((dance_user_data_t){S(KC_4), KC_LSFT})), // only one KC_LCTL and KC_LSFT definition are currently supported
+    //[TD_PIPE_SFT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_mod_finished, dance_mod_reset, &((dance_user_data_t){A(C(KC_NUBS)), KC_LSFT})),
+    // unused because of bug [TD_KOE_ALT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, modifier_dbldance_finished, modifier_dbldance_reset, &((dance_user_data_t){KC_K, KC_LALT, A(KC_TAB)})),// only one KC_LALT and KC_LCTL definition are currently supported
     [TD_ANG] = ACTION_TAP_DANCE_FN_ADVANCED_USER( curly_dance_each, curly_dance_finished, curly_dance_reset, &((dance_user_data_t){KC_NUBS, S(KC_NUBS)})),
     [TD_QUOT] = ACTION_TAP_DANCE_FN_ADVANCED_USER( curly_dance_each, curly_dance_finished, curly_dance_reset, &((dance_user_data_t){S(KC_NUHS), S(KC_NUHS)})),
     [TD_PAR] = ACTION_TAP_DANCE_FN_ADVANCED_USER( curly_dance_each, curly_dance_finished, curly_dance_reset, &((dance_user_data_t){S(KC_8), S(KC_9)})),
@@ -497,8 +535,6 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_W] = ACTION_TAP_DANCE_FN_ADVANCED_USER(shortcut_dance_each, shortcut_dance_finished, atap_state_reset, &((dance_user_data_t){KC_W, KC_NO, KC_AT, KC_AT})),
     [TD_L] = ACTION_TAP_DANCE_FN_ADVANCED_USER(shortcut_dance_each, shortcut_dance_finished, atap_state_reset, &((dance_user_data_t){KC_L, KC_NO, S(KC_NUHS), S(KC_NUHS)})),
     [TD_E] = ACTION_TAP_DANCE_FN_ADVANCED_USER(shortcut_dance_each, shortcut_dance_finished, atap_state_reset, &((dance_user_data_t){KC_E, KC_NO, ALGR(KC_8), ALGR(KC_9)})),
-    //[TD_D] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, atap_state_reset, &((dance_user_data_t){KC_D, A(C(KC_NUBS))})),
-    //[TD_N] = ACTION_TAP_DANCE_FN_ADVANCED_USER(shortcut_dance_each, shortcut_dance_finished, atap_state_reset, &((dance_user_data_t){KC_N, KC_NO, S(KC_8), S(KC_9)})),
     //[TD_1] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_holdwmod_finished, atap_state_reset, &((dance_user_data_t){KC_1, KC_F1})),
     //[TD_2] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_holdwmod_finished, atap_state_reset, &((dance_user_data_t){KC_2, KC_F2})),
     //[TD_3] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_holdwmod_finished, atap_state_reset, &((dance_user_data_t){KC_3, KC_F3})),
@@ -512,11 +548,14 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     //[TD_12] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_holdwmod_finished, atap_state_reset, &((dance_user_data_t){KC_1, KC_F12})),
     //[TD_10] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_holdwmod_finished, atap_state_reset, &((dance_user_data_t){DE_EURO, KC_F10})),
 //    [TD_DEL10] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_holdwmod_finished, atap_state_reset, &((dance_user_data_t){KC_DEL, KC_F10})),
-//    [TD_TAB_ENT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, modifier_dbldance_finished, modifier_dbldance_reset, &((dance_user_data_t){KC_TAB, KC_LCTL, KC_ENT})),
+    [TD_F] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, modifier_dbldance_finished, modifier_dbldance_reset, &((dance_user_data_t){KC_F, 11, KC_DLR})),
+    [TD_D] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, modifier_dbldance_finished, modifier_dbldance_reset, &((dance_user_data_t){KC_D, 21, DE_HASH})),
+    [TD_N] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, modifier_dbldance_finished, modifier_dbldance_reset, &((dance_user_data_t){KC_N, 12, DE_LPRN})),
+    [TD_T] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, modifier_dbldance_finished, modifier_dbldance_reset, &((dance_user_data_t){KC_T, 22, DE_RPRN})),
 //    [TD_H] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, dance_dbltap_finished, atap_state_reset, &((dance_user_data_t){KC_H, KC_UNDS, KC_UNDS})),
     [TD_DQUOT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(curly_dance_each, curly_dance_finished, curly_dance_reset, &((dance_user_data_t){KC_AT, KC_AT})),
     [TD_SQU] = ACTION_TAP_DANCE_FN_ADVANCED_USER(curly_dance_each, curly_dance_finished, curly_dance_reset, &((dance_user_data_t){ALGR(KC_8), ALGR(KC_9)})),
-    [TD_BSP] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_holdautorepeat_finished, dance_holdautorepeat_reset, &((dance_user_data_t){KC_BSPC, KC_END})),
+//    [TD_BSP] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_holdautorepeat_finished, dance_holdautorepeat_reset, &((dance_user_data_t){KC_BSPC, KC_END})),
 };
 /* delete or get working
 void oneshot_layer_changed_user(uint8_t layer) {
