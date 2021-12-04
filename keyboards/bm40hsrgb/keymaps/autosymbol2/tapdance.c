@@ -55,7 +55,7 @@ td_state_t cur_dance(qk_tap_dance_state_t *state) {
         else return TD_TRIPLE_HOLD;
     } else return TD_UNKNOWN;
 }
-/*general td state evaluation*/
+/* td state evaluation ignoring interrupted */
 td_state_t mod_dance(qk_tap_dance_state_t *state) {
     if (state->count == 1) {
         if (!state->pressed) return TD_SINGLE_TAP;
@@ -421,7 +421,11 @@ void modifier_dbldance_finished (qk_tap_dance_state_t *state, void *user_data) {
         default :  keycode2 = KC_LALT; break;
     }
     td_tap_t *ctap_state = (keycode2param == 11) ? &s1tap_state_dbl : (keycode2param == 12) ? &s2tap_state_dbl : (keycode2param == 21) ? &c1tap_state_dbl : &c2tap_state_dbl; 
-    ctap_state->state = mod_dance(state);
+    switch (keycode2) { 
+        case KC_LSFT : ctap_state->state = mod_dance(state); break; // fast mod activation 
+        case KC_LCTL : ctap_state->state = cur_dance(state); break; // slow mod activation
+    }   
+
     switch (ctap_state->state) {
         case TD_SINGLE_TAP: register_code16(keycode); break;
         case TD_SINGLE_HOLD: register_code16(keycode2); break;
