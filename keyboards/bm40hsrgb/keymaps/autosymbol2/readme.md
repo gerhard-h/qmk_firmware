@@ -35,6 +35,10 @@ L5 > F-Key + Makros
 L4 > 
 SPACE ->
 
+reconsider () instead of DBL_TAP_HOLD + n t could be mapped to DBL_TAP_HOLD + u i also  DBL_TAP_HOLD u > () + LEFT
+reconsider how to aktivate L3 ? if Space becomes SFT again
+reconsider is N-Shift too slow compared to F-Shift? playing with get_tapping_term TD(TD_N) ?!
+
 reconsider a basic consideration was that using the cursor keys is a "one hand" operation thus L2 must activate home row navigation
 reconsider but having dedicated cursorkeys makes this unnecessary and L1 -> NAV is more comfortable
 reconsider L1 -> NAV + Numbers or L1 -> NAV + F-Keys

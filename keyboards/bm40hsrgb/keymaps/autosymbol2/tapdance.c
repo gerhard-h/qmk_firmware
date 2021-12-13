@@ -421,9 +421,15 @@ void modifier_dbldance_finished (qk_tap_dance_state_t *state, void *user_data) {
         default :  keycode2 = KC_LALT; break;
     }
     td_tap_t *ctap_state = (keycode2param == 11) ? &s1tap_state_dbl : (keycode2param == 12) ? &s2tap_state_dbl : (keycode2param == 21) ? &c1tap_state_dbl : &c2tap_state_dbl; 
+    /*
+    // einen ohne become eiEn ohE with  mod_dance()
     switch (keycode2) { 
         case KC_LSFT : ctap_state->state = mod_dance(state); break; // fast mod activation 
         case KC_LCTL : ctap_state->state = cur_dance(state); break; // slow mod activation
+    }*/
+    switch (keycode2param) {
+        case 11 : ctap_state->state = mod_dance(state); break; // fast mod activation
+        default : ctap_state->state = cur_dance(state); break; // slow mod activation
     }   
 
     switch (ctap_state->state) {
@@ -576,6 +582,8 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
             case TD(TD_O_UML):
             case TD(TD_U_UML):
             case TD(TD_SS_UML):
+                return 140;
+            case TD(TD_N):
                 return 140;
             default:
                 return TAPPING_TERM;
