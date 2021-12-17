@@ -406,7 +406,12 @@ static td_tap_t s2tap_state_dbl = {
     .is_press_action = true,
     .state = TD_NONE
 };
-//(bug - not verified lately ) modifier_dbldance_finished when interupted outputs the modifier instead of key (only with ALT).
+// (bug) modifier_dbldance_finished with cur_dance() when interupted outputs the key instead of the modifier
+// (workaround) 
+//             a) press mods one after the other, 
+//             b) place multimods on the keymap,
+//             c) use Tab-Ctl or Enter-Ctl instead, 
+//             d) don't use TD_DOUBLE_HOLD on Homerow mods alltogether
 // Enhance MT() with TD_DOUBLE_HOLD
 void modifier_dbldance_finished (qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
@@ -428,14 +433,15 @@ void modifier_dbldance_finished (qk_tap_dance_state_t *state, void *user_data) {
         case KC_LCTL : ctap_state->state = cur_dance(state); break; // slow mod activation
     }*/
     switch (keycode2param) {
-        case 11 : ctap_state->state = mod_dance(state); break; // fast mod activation
+        case 22 :                                              // fast mod activation for T - test this
+        case 11 : ctap_state->state = mod_dance(state); break; // fast mod activation for F 
         default : ctap_state->state = cur_dance(state); break; // slow mod activation
     }   
 
     switch (ctap_state->state) {
         case TD_SINGLE_TAP: register_code16(keycode); break;
         case TD_SINGLE_HOLD: register_code16(keycode2); break;
-        case TD_DOUBLE_HOLD: register_code16(keycode3); break;
+        case TD_DOUBLE_HOLD: tap_code16(keycode3); break;
         case TD_DOUBLE_TAP:
         case TD_DOUBLE_SINGLE_TAP:tap_code16(keycode);register_code16(keycode); break;
         default: register_code16(keycode); break;
@@ -455,7 +461,6 @@ void modifier_dbldance_reset (qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
     uint16_t keycode2param = ((dance_user_data_t*)user_data)->keycode2;
     uint16_t keycode2;
-    uint16_t keycode3 = ((dance_user_data_t*)user_data)->keycode3;
     switch (keycode2param) {
         case 11 :
         case 12 :  keycode2 = KC_LSFT; break;
@@ -467,7 +472,7 @@ void modifier_dbldance_reset (qk_tap_dance_state_t *state, void *user_data) {
     switch (ctap_state->state) {
         case TD_SINGLE_TAP: unregister_code16(keycode); break;
         case TD_SINGLE_HOLD: unregister_code16(keycode2); break;
-        case TD_DOUBLE_HOLD: unregister_code16(keycode3);break;
+        case TD_DOUBLE_HOLD: break;
         case TD_DOUBLE_TAP:
         case TD_DOUBLE_SINGLE_TAP:
         default: unregister_code16(keycode); break;
