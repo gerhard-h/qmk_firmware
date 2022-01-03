@@ -17,12 +17,12 @@
 #include "action_tapping.h"
 
 // ********** OBSOLETE DEFINES, STOP USING! (pls?) **********
-// Shift / paren setup
+// Shift / paren setup germanized
 #ifndef LSPO_KEY
-#    define LSPO_KEY KC_9
+#    define LSPO_KEY KC_8
 #endif
 #ifndef RSPC_KEY
-#    define RSPC_KEY KC_0
+#    define RSPC_KEY KC_9
 #endif
 
 // Shift / Enter setup

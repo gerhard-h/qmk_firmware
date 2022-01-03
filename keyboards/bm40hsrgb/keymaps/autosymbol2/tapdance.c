@@ -433,8 +433,8 @@ void modifier_dbldance_finished (qk_tap_dance_state_t *state, void *user_data) {
         case KC_LCTL : ctap_state->state = cur_dance(state); break; // slow mod activation
     }*/
     switch (keycode2param) {
-        case 22 :                                              // fast mod activation for T - test this
-        case 11 : ctap_state->state = mod_dance(state); break; // fast mod activation for F 
+//        case 22 :                                            // fast mod activation for T does not work de lets try with tapping term 140
+        case 11 : ctap_state->state = mod_dance(state); break; // fast mod activation for F - asuming that f+* will be typed relativly slowly
         default : ctap_state->state = cur_dance(state); break; // slow mod activation
     }   
 
@@ -588,6 +588,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
             case TD(TD_U_UML):
             case TD(TD_SS_UML):
                 return 140;
+            case TD(TD_T):
             case TD(TD_N):
                 return 140;
             default:
