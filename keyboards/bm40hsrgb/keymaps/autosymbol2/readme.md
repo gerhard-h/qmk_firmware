@@ -8,6 +8,8 @@ tap dance
 custom keycodes
 rgb per layer
 
+git branch firmware202107
+
 todo light_control if OSM(modifier) is locked
 
 todo light intensity controls are inactive -> search solution in oryx keymap code
