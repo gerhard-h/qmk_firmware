@@ -17,7 +17,7 @@
 #include QMK_KEYBOARD_H
 //#include "muse.h"
 #include "keymap_german.h"
-#include "rgb.c"
+//#include "rgb.c"
 enum layers { _L0, _L1, _L2, _L3, _L4 };
 #include "customkeys.c"
 #include "tapdance.c"
@@ -48,10 +48,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 * NUM NAV*/
 [1] = LAYOUT_planck_mit(
 
-                                                         KC_TRNS,    TD(TD_DASH),     KC_1,              KC_2,                 KC_3,                  KC_BSPC,     A(S(KC_TAB)),      KC_HOME,        KC_UP,     KC_END,  MT(MOD_LGUI,KC_PGUP),     KC_BSPC,
+                                                         KC_TRNS,    TD(TD_DASH),              KC_1,              KC_2,              KC_3, KC_BSPC,     A(S(KC_TAB)),      KC_HOME,        KC_UP,     KC_END,  MT(MOD_LGUI,KC_PGUP),     KC_BSPC,
                                                          KC_TRNS,     TD(TD_DOT), MT(MOD_LALT,KC_4), MT(MOD_LCTL,KC_5), MT(MOD_LSFT,KC_6),    KC_0,        A(KC_TAB),      KC_LEFT,      KC_DOWN,    KC_RGHT,  MT(MOD_LALT,KC_PGDN),     KC_TRNS,
-                                                         KC_TRNS,    TD(TD_COMM),     KC_7,              KC_8,                 KC_9,                   KC_ENT,           KC_ESC,      KC_BSPC,       KC_DEL,     KC_ENT,               KC_TRNS,     KC_TRNS,
-                                                         KC_TRNS,        KC_TRNS, MT(MOD_LALT,KC_0),  KC_TRNS,               KC_TRNS,                  KC_TRNS,                       MO(_L2),       KC_TRNS,   KC_TRNS,               KC_TRNS,     KC_TRNS
+                                                         KC_TRNS,    TD(TD_COMM),              KC_7,              KC_8,              KC_9,  KC_ENT,           KC_ESC,      KC_BSPC,       KC_DEL,     KC_ENT,               KC_TRNS,     KC_TRNS,
+                                                         KC_TRNS,        KC_TRNS, MT(MOD_LALT,KC_0),           KC_TRNS,           KC_TRNS, KC_TRNS,                        MO(_L2),       KC_TRNS,   KC_TRNS,               KC_TRNS,     KC_TRNS
   ),
 /* 
 *   ________      TG(_L1)       ________      ^             @                        "                     [                       ]                         %                        A(TAB)        HOME          UP            END        PGUP          ________
@@ -69,7 +69,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* L3
  *                      v------------------------RGB CONTROL--------------------v
  * ,-----------------------------------------------------------------------------------.
- * |  F1  | Reset|AutoS | RGB  |RGBMOD| HUE+ | HUE- |lclick| ms-u |rclick|ms-w+ | ASTG |
+ * |  F1  | Reset|AutoS | RGB  |RGBMOD| HUE+ | HUE- |lclick| ms-u |rclick|ms-w+ | BACKLIT |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * |  F2  |  F5  |ACCEL0|ACCEL1|ACCEL2| SAT+ | SAT- | ms-l | ms-d | ms-r |ms-w- |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
@@ -80,7 +80,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * 
  */
 [3] = LAYOUT_planck_mit(
-    KC_F1, RESET,             DEBUG,      RGB_TOG,       RGB_MOD, RGB_HUI, RGB_HUD, KC_MS_BTN1,    KC_MS_UP,   KC_MS_BTN2,   KC_MS_WH_UP,               CMB_TOG,
+    KC_F1, RESET,             DEBUG,      RGB_TOG,       RGB_MOD, RGB_HUI, RGB_HUD, KC_MS_BTN1,    KC_MS_UP,   KC_MS_BTN2,   KC_MS_WH_UP,               BACKLIT,
     KC_F2, KC_F5,      KC_MS_ACCEL0, KC_MS_ACCEL1,  KC_MS_ACCEL2, RGB_SAI, RGB_SAD, KC_MS_LEFT,  KC_MS_DOWN,  KC_MS_RIGHT, KC_MS_WH_DOWN,               KC_TRNS,
     KC_F3, KC_F6,             KC_F8,       KC_F10,        KC_F12, RGB_VAI, RGB_VAD, KC_MS_BTN1,  KC_MS_BTN2,   KC_MS_BTN3,       _______,               _______,
     KC_F4, KC_F7,MT(MOD_LALT,KC_F9),       KC_F11,       _______, _______,             _______,     _______,      _______,       _______,  MT(MOD_LALT, KC_RGHT)
