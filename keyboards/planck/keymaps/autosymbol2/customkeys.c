@@ -25,6 +25,7 @@ static uint16_t key_hold_lastkey = 0;
 static uint16_t key_hold_dbltap_timer = 0;                                          
 static int hold_active_array[HOLD_STAT_USER];
 static int hold_active_max = -1;
+static int hold_feature_active = 1;
 void hold_active_clear_at(int index) {
         for(int i = index; i < hold_active_max; i++) {
                hold_active_array[i] = hold_active_array[i+1];
@@ -104,6 +105,7 @@ bool process_record_hold_key(uint16_t keycode, keyrecord_t *record, uint16_t key
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if (!hold_feature_active) return true;  
     if ((key_hold_lastkey != keycode) || (timer_elapsed(key_hold_dbltap_timer) > (2 * TAPPING_TERM))) key_hold_lastkey = KC_NO;
     switch (keycode) {
     // this is an alternate key on hold feature case KC_A...KC_Z:

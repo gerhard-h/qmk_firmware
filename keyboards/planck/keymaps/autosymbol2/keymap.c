@@ -18,7 +18,7 @@
 //#include "muse.h"
 #include "keymap_german.h"
 //#include "rgb.c"
-enum layers { _L0, _L1, _L2, _L3, _L4 };
+enum layers { _L0, _L1, _L2, _L3, _L4, _GAME};
 #include "customkeys.c"
 #include "tapdance.c"
 
@@ -48,7 +48,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 * NUM NAV*/
 [1] = LAYOUT_planck_mit(
 
-                                                         KC_TRNS,    TD(TD_DASH),              KC_1,              KC_2,              KC_3, KC_BSPC,     A(S(KC_TAB)),      KC_HOME,        KC_UP,     KC_END,  MT(MOD_LGUI,KC_PGUP),     KC_BSPC,
+                                                         KC_TRNS,    TD(TD_DASH),              KC_1,              KC_2,              KC_3,  KC_INS,     A(S(KC_TAB)),      KC_HOME,        KC_UP,     KC_END,  MT(MOD_LGUI,KC_PGUP),     KC_BSPC,
                                                          KC_TRNS,     TD(TD_DOT), MT(MOD_LALT,KC_4), MT(MOD_LCTL,KC_5), MT(MOD_LSFT,KC_6),    KC_0,        A(KC_TAB),      KC_LEFT,      KC_DOWN,    KC_RGHT,  MT(MOD_LALT,KC_PGDN),     KC_TRNS,
                                                          KC_TRNS,    TD(TD_COMM),              KC_7,              KC_8,              KC_9,  KC_ENT,           KC_ESC,      KC_BSPC,       KC_DEL,     KC_ENT,               KC_TRNS,     KC_TRNS,
                                                          KC_TRNS,        KC_TRNS, MT(MOD_LALT,KC_0),           KC_TRNS,           KC_TRNS, KC_TRNS,                        MO(_L2),       KC_TRNS,   KC_TRNS,               KC_TRNS,     KC_TRNS
@@ -105,9 +105,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_TRNS,       KC_TRNS,             KC_TRNS,     KC_TRNS,             KC_TRNS,       KC_TRNS,                  KC_TRNS,        KC_TRNS,       KC_TRNS,        KC_VOLD,       KC_TRNS
   ),    
 
+
+[_GAME] = LAYOUT_planck_mit(    
+     KC_ESC,     KC_Q,        KC_W,          KC_E,          KC_R,          KC_J,           KC_Y,              KC_U,           KC_I,        KC_O,               KC_P,    KC_BSPC,
+     KC_TAB,     KC_A,        KC_S,          KC_D,          KC_F,          KC_G,           KC_H,              KC_N,           KC_T,        KC_L,               KC_K,    KC_ENT,
+    KC_LSFT,     KC_Z,        KC_X,          KC_C,          KC_V,          KC_B,           KC_M,           KC_COMM,         KC_DOT,     KC_SLASH,              KC_UP,    KC_RSFT,
+    KC_LCTL,  KC_LALT,     KC_LSFT,        KC_SPC,        KC_SPC, LT(_L2,KC_SPC),         OSL(_L1),       OSL(_L4),     KC_LEFT,            KC_DOWN,    KC_RGHT
+ )
+
 };
 
 layer_state_t layer_state_set_user(layer_state_t state) {
+    switch (get_highest_layer(state)) {
+    case _L0:
+        hold_feature_active = 1;
+        break;
+    case _GAME:
+        hold_feature_active = 0;
+        break;
+    }
   return update_tri_layer_state(state, _L1, _L2, _L3);
 }
 
