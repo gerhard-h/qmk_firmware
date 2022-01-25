@@ -125,7 +125,6 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     switch (get_highest_layer(state)) {
     case _L0:
         rgblight_sethsv_noeeprom(HSV_PURPLE);
-        hold_feature_active = 1;
         break;
     case _L1:
         rgblight_sethsv_noeeprom(HSV_YELLOW);
