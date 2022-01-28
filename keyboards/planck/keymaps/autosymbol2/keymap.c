@@ -35,10 +35,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                           OSM(MOD_LSFT),          TD(TD_Y),        TD(TD_X),          TD(TD_C),          TD(TD_V),          KC_B,      TD(TD_M),       TD(TD_COMM),         TD(TD_DOT),     TD(TD_DASH),              KC_UP,    MT(MOD_LSFT,KC_DEL),
                                   MT(MOD_LCTL, KC_PGUP),           KC_LGUI,
                                                                          MT(MOD_LALT,KC_DEL),
-                                                                                    OSL(_L4),
-                                                                                                     OSL(_LNAV),
-                                                                                                                     LT(_LSYM,KC_SPC),
-                                                                                                                                                                         OSL(_LNAV),            OSL(_L4),         KC_LEFT,              KC_DOWN,                KC_RGHT
+                                                                                                      OSL(_L4),
+                                                                                                                        OSL(_LNAV),
+                                                                                                                                 LT(_LSYM,KC_SPC),
+                                                                                                                                                                          MO(_LNAV),    LT(_L4,KC_DEL),         KC_LEFT,              KC_DOWN,                KC_RGHT
  ),
  
 [_GAME] = LAYOUT_planck_mit(    
