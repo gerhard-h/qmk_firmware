@@ -320,7 +320,15 @@ void dance_autorepeat_finished(qk_tap_dance_state_t *state, void *user_data) {
         case TD_SINGLE_HOLD:
                 if (get_mods() & (MOD_MASK_GUI | MOD_MASK_ALT | MOD_MASK_CTRL)) {tap_code16(keycode); break;}
                 register_code16(keycode2); break;
-        case TD_DOUBLE_HOLD: tap_code16(keycode3); break;
+        case TD_DOUBLE_HOLD:
+            if (keycode3 == KC_GRV) { // dead key handling for ^
+                if ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT) {tap_code16(S(KC_GRV)); break;}
+                    tap_code(KC_GRV);
+                    tap_code(KC_SPC);
+            } else {
+                tap_code16(keycode3);
+            }    
+            break;
         case TD_DOUBLE_TAP:
         case TD_DOUBLE_SINGLE_TAP:
         case TD_TRIPLE_TAP:
@@ -591,6 +599,8 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
             case TD(TD_T):
             case TD(TD_N):
                 return 140;
+            case TD(TD_Y):
+                return 250;
             default:
                 return TAPPING_TERM;
         }
