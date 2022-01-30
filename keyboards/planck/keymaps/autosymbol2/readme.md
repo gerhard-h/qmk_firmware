@@ -1,5 +1,5 @@
  # an autosymbol keymap for plank (Rev 6)
-similar to autoshift uses key_hold to produce an alternativ key
+similar to autoshift uses key_hold to produce an alternativ key -> a symbol
 for use with German keyboard layout
 
 features:
@@ -9,7 +9,7 @@ custom keycodes
 no rgb per layer but adjustable underglow
 gaming layer:   must be a lower number than NAV and SYM-Layer, 
                 process_record_user ignore alphas on gaming layer,
-                don 't use TapDance, 
+                don 't uses TapDance on gaming layer, 
                 find goog keys for shift and space for WASD
                 DF() doesn't do the trick if you want an callback, so I just use TG() on _L3
 

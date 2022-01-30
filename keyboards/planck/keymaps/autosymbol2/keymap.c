@@ -40,7 +40,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                                                                  LT(_LSYM,KC_SPC),
                                                                                                                                                                           MO(_LNAV),    LT(_L4,KC_DEL),         KC_LEFT,              KC_DOWN,                KC_RGHT
  ),
- 
 [_GAME] = LAYOUT_planck_mit(    
      KC_ESC,     KC_Q,        KC_W,          KC_E,          KC_R,          KC_J,           KC_Y,              KC_U,           KC_I,        KC_O,               KC_P,    KC_BSPC,
      KC_TAB,     KC_A,        KC_S,          KC_D,          KC_F,          KC_G,           KC_H,              KC_N,           KC_T,        KC_L,               KC_K,    KC_ENT,
@@ -59,7 +58,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                          KC_TRNS,    TD(TD_DASH),              KC_1,              KC_2,              KC_3,  KC_INS,     A(S(KC_TAB)),      KC_HOME,        KC_UP,     KC_END,  MT(MOD_LGUI,KC_PGUP),     KC_BSPC,
                                                          KC_TRNS,     TD(TD_DOT), MT(MOD_LALT,KC_4), MT(MOD_LCTL,KC_5), MT(MOD_LSFT,KC_6),    KC_0,        A(KC_TAB),      KC_LEFT,      KC_DOWN,    KC_RGHT,  MT(MOD_LALT,KC_PGDN),     KC_TRNS,
                                                          KC_TRNS,    TD(TD_COMM),              KC_7,              KC_8,              KC_9,  KC_ENT,           KC_ESC,      KC_BSPC,       KC_DEL,     KC_ENT,               KC_TRNS,     KC_TRNS,
-                                                         KC_TRNS,        KC_TRNS, MT(MOD_LALT,KC_0),           KC_TRNS,           KC_TRNS, KC_TRNS,                        MO(_LSYM),       KC_TRNS,   KC_TRNS,               KC_TRNS,     KC_TRNS
+                                                         KC_TRNS,        KC_TRNS,           KC_TRNS,           KC_TRNS,           KC_TRNS, KC_TRNS,                        MO(_LSYM),       KC_TRNS,   KC_TRNS,               KC_TRNS,     KC_TRNS
   ),
 /* 
 *   ________      TG(_LNAV)       ________      ^             @                        "                     [                       ]                         %                        A(TAB)        HOME          UP            END        PGUP          ________
@@ -111,10 +110,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_TRNS,         KC_F5,               KC_F6,       KC_F7,               KC_F8,       KC_LGUI,     KC_PGDN,   PICKFIRST,        PICK2ND,       PICK3RD,        KC_LALT,       KC_TRNS,
     KC_TRNS,         KC_F9,              KC_F10,      KC_F11,              KC_F12,       KC_LCTL,      KC_ESC,     KC_BSPC,     KC_MS_BTN2,       KC_LGUI,        KC_VOLU,       KC_TRNS,
     KC_TRNS,       KC_TRNS,             KC_TRNS,     KC_TRNS,             KC_TRNS,       KC_TRNS,                  KC_TRNS,        KC_TRNS,       KC_TRNS,        KC_VOLD,       KC_TRNS
-  ),    
-
-
-
+  )    
 
 };
 
@@ -125,9 +121,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
         break;
     case _GAME:
         hold_feature_active = 0;
-        //default_layer_set(_GAME);
         break;
     }
   return update_tri_layer_state(state, _LNAV, _LSYM, _L3);
 }
-
