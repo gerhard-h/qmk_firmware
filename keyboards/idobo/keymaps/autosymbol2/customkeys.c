@@ -6,8 +6,7 @@ enum custom_keycodes {
     PICK3RD,
     CTLSFTF,
     CIRCUMFL,
-    TICKTICK,
-    TGGAME,
+    TICKTICK
 };
 
 typedef struct {
@@ -104,17 +103,7 @@ bool process_record_hold_key(uint16_t keycode, keyrecord_t *record, uint16_t key
     	}    
 }
 
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-        case TGGAME:
-                if (record->event.pressed) {
-                        hold_feature_active = 0;
-                        default_layer_set(_GAME);
-                        layer_move(_GAME);
-                        break;
-                }        
-                return true;
-    }    
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {    
     if (!hold_feature_active) return true;  
     if ((key_hold_lastkey != keycode) || (timer_elapsed(key_hold_dbltap_timer) > (2 * TAPPING_TERM))) key_hold_lastkey = KC_NO;
     switch (keycode) {

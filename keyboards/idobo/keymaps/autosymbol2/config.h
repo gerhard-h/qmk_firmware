@@ -34,26 +34,22 @@
 //#define DISABLE_RGB_MATRIX_MULTISPLASH
 //#define DISABLE_RGB_MATRIX_SOLID_SPLASH
 //#define DISABLE_RGB_MATRIX_SOLID_MULTISPLASH
-
-#define TAPPING_TERM_PER_KEY
 //#define RGBLIGHT_ANIMATIONS
 //#define RGBLIGHT_EFFECT_SNAKE
-
 //#define RGBLIGHT_LAYERS
 #define RGBLIGHT_SLEEP
 
+#define TAPPING_TERM_PER_KEY
 #define TAPPING_TERM 210
-#define MOD_CODE_DELAY 0
+//#define MOD_CODE_DELAY 0
 // # define TAP_CODE_DELAY 10 //will not fix Remotedesktop timings
 // #define USB_POLLING_INTERVAL_MS 10 # tried 1 and 10 both resourceheavy or it's just NKRO
 //#define AUTO_SHIFT_TIMEOUT 140
 //#define AUTO_SHIFT_NO_AUTO_REPEAT
 //#define NO_AUTO_SHIFT_NUMERIC
-#define DYNAMIC_KEYMAP_LAYER_COUNT 5
+//#define DYNAMIC_KEYMAP_LAYER_COUNT 5
 #define NO_ACTION_MACRO //disable old-style macro handling using MACRO(), action_get_macro() (deprecated) EXTRAFLAGS += -flto
 #define NO_ACTION_FUNCTION //disable old-style function handling using fn_actions, action_function() (deprecated) EXTRAFLAGS += -flto
-
-
 //#define TAPPING_FORCE_HOLD // gives the hold behavior priority over the keyrepeat behavior. eg. to get dünn instead of ddun with LT(1,KC_D)
 
 /* enable home row mods */
