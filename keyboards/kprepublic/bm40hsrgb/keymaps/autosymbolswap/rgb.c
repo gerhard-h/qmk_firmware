@@ -1,13 +1,20 @@
 void rgb_matrix_indicators_user(void) {
         switch (biton32(layer_state)) {
-        case 0:
+        case _L0:
                 rgb_matrix_set_color_all(0,1,10);
                 rgb_matrix_set_color(34, 70, 10, 10); // cursor keys
                 rgb_matrix_set_color(44, 70, 10, 10);
                 rgb_matrix_set_color(45, 70, 10, 10);
                 rgb_matrix_set_color(46, 70, 10, 10);
                 break;
-        case 1:
+        case _GAME:
+                rgb_matrix_set_color_all(0,1,10);
+                rgb_matrix_set_color(34, 70, 10, 10); // cursor keys
+                rgb_matrix_set_color(44, 70, 10, 10);
+                rgb_matrix_set_color(45, 70, 10, 10);
+                rgb_matrix_set_color(46, 70, 10, 10);
+                break;
+        case _LNAV:
         //      rgb_matrix_set_color_all(0,150,55); // all bright
                 rgb_matrix_set_color_all(0,1,30); 
                 rgb_matrix_set_color(4, 150, 150, 50); // num pad
@@ -29,7 +36,7 @@ void rgb_matrix_indicators_user(void) {
                 rgb_matrix_set_color(45, 100, 10, 10);
                 rgb_matrix_set_color(46, 100, 10, 10);
                 break;
-        case 2:
+        case _LSYM:
                 rgb_matrix_set_color_all(0,1,60);
                 rgb_matrix_set_color(13, 150, 150, 50); // ä
                 rgb_matrix_set_color(14, 150, 150, 50); // ß
@@ -40,7 +47,7 @@ void rgb_matrix_indicators_user(void) {
                 rgb_matrix_set_color(45, 100, 10, 10);
                 rgb_matrix_set_color(46, 100, 10, 10);
         break;
-        case 3:
+        case _L3:
                 rgb_matrix_set_color_all(0,1,30);
                 rgb_matrix_set_color(1, 150, 150, 50); // reset
                 rgb_matrix_set_color(14, 150, 150, 50); // s
@@ -55,7 +62,7 @@ void rgb_matrix_indicators_user(void) {
                 rgb_matrix_set_color(20, 150, 150, 50); // nav
                 rgb_matrix_set_color(21, 150, 150, 50); // nav
                 break;
-        case 4:
+        case _L4:
                 rgb_matrix_set_color_all(0,1,60);
                 rgb_matrix_set_color(1, 150, 150, 50); // num pad
                 rgb_matrix_set_color(2, 150, 150, 50);

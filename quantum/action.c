@@ -28,7 +28,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "action.h"
 #include "wait.h"
 #include "keycode_config.h"
-
 #ifdef BACKLIGHT_ENABLE
 #    include "backlight.h"
 #endif
@@ -273,7 +272,14 @@ void process_action(keyrecord_t *record, action_t action) {
         && !(action.kind.id == ACT_SWAP_HANDS && action.swap.code == OP_SH_ONESHOT)
 #    endif
         && !keymap_config.oneshot_disable) {
-        clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
+// let's diable osl clear globally, test what will happen, and call it manually in our keymap (tapdances/process_record_user...)                 
+// clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
+                switch (action.key.code) {
+                        case KC_A ... KC_F24:
+                        if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
+                        break;               
+                
+                }
         do_release_oneshot = !is_oneshot_layer_active();
     }
 #endif

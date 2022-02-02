@@ -104,6 +104,14 @@ bool process_record_hold_key(uint16_t keycode, keyrecord_t *record, uint16_t key
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+        //if (record->event.pressed) {
+        //        switch (keycode) {
+        //                case KC_1:
+        //                if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
+        //                break;               
+        //        
+        //        }
+        //}
     if (!hold_feature_active) return true;  
     if ((key_hold_lastkey != keycode) || (timer_elapsed(key_hold_dbltap_timer) > (2 * TAPPING_TERM))) key_hold_lastkey = KC_NO;
     switch (keycode) {

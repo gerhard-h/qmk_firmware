@@ -12,6 +12,23 @@ gaming layer:   must be a lower number than NAV and SYM-Layer,
                 don 't uses TapDance on gaming layer, 
                 find goog keys for shift and space for WASD
                 DF() doesn't do the trick if you want an callback, so I just use TG() on _L3
+todo one hand typing
+        maybe   fdnig   jkm'-
+                stheo   ypl.q
+                cwrau   xbv,z
+                - problem existing layer and diacrits clash
+                - combo feature might cause problems 
+        more likely by using the swap hand or new layer qmk feature
+                - new base layer necessary
+                        - without home row mods
+                        - mirroring cursor keys is pointless
+                        - LOWER (or SPACE) becomes OSL MIRROR,
+                        - SPACE_HOLD can be reused, but is to slow for mirror maybe Shift
+                        - one shot mirror and tapdance do not work out
+                        - TAB can become TO(NAV) ... 
+                        - L4 can cycle TO(Num) TO(Macro) TO(FKEY) TO(NAV)?
+                        - Shift can become TO(???) and TO(0)
+                        - alt is on the mouse .. ctrl too?
 
 todo light_control if OSM(modifier) is locked
 

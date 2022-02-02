@@ -173,6 +173,7 @@ void curly_dance_reset (qk_tap_dance_state_t *state, void *user_data) {
         break;
     }
     atap_state.state = TD_NONE;
+    if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
 ///    if (curly_layer > 0) {
 //            layer_move(_L0);
 //            curly_layer = 0;
@@ -216,6 +217,7 @@ void shortcut_dance_each(qk_tap_dance_state_t *state, void *user_data) {
 //general reset function 
 void atap_state_reset (qk_tap_dance_state_t *state, void *user_data) {
     atap_state.state = TD_NONE;
+    if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
 }
 
 // ß 
@@ -307,6 +309,7 @@ void dance_holdautorepeat_reset(qk_tap_dance_state_t *state, void *user_data) {
         default: unregister_code16(keycode); break;
     }
     atap_state.state = TD_NONE;
+    if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
 }
 
 // ::: *** /// ...... ------ ____. triple tap for autorepeat keycode, no autorepeat on DTH
@@ -355,6 +358,7 @@ void dance_autorepeat_reset(qk_tap_dance_state_t *state, void *user_data) {
         default: unregister_code16(keycode); break;
     }
     atap_state.state = TD_NONE;
+    if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
 }
 /*
 // unused
@@ -490,6 +494,7 @@ void modifier_dbldance_reset (qk_tap_dance_state_t *state, void *user_data) {
     //c1tap_state_dbl.state = TD_NONE;
     //c2tap_state_dbl.state = TD_NONE;
     ctap_state->state = TD_NONE;
+    if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
 }
 
 
