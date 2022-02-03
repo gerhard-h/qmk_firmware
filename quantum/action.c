@@ -272,13 +272,12 @@ void process_action(keyrecord_t *record, action_t action) {
         && !(action.kind.id == ACT_SWAP_HANDS && action.swap.code == OP_SH_ONESHOT)
 #    endif
         && !keymap_config.oneshot_disable) {
-// let's diable osl clear globally, test what will happen, and call it manually in our keymap (tapdances/process_record_user...)                 
-// clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
+// let's diable osl clear globally, test what will happen, and call it manually in our keymap (tapdances/process_record_user...)
+// Mod Tap will still clear the oneshot layer
                 switch (action.key.code) {
                         case KC_A ... KC_F24:
-                        if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
-                        break;               
-                
+                                clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
+                        break;            
                 }
         do_release_oneshot = !is_oneshot_layer_active();
     }

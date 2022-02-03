@@ -31,8 +31,6 @@ static td_tap_t atap_state = {
     .state = TD_NONE
 };
 
-//static uint8_t active_osl = 0; //for OSL tap dance
-
 /*general td state evaluation*/
 td_state_t cur_dance(qk_tap_dance_state_t *state) {
     if (state->count == 1) {
@@ -151,15 +149,6 @@ void curly_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
     }
 }
 void curly_dance_each(qk_tap_dance_state_t *state, void *user_data) {
-    if (state->count == 1){
-//        curly_layer = active_osl; //memorize the layer before we start messing around with it
-//
-//        if (curly_layer > 0) {
-//            reset_oneshot_layer();
-//            layer_move(curly_layer);
-//        }
-//
-    }
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
     if (state->count > 1) tap_code16(keycode);
 };
@@ -174,16 +163,7 @@ void curly_dance_reset (qk_tap_dance_state_t *state, void *user_data) {
     }
     atap_state.state = TD_NONE;
     if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
-///    if (curly_layer > 0) {
-//            layer_move(_L0);
-//            curly_layer = 0;
-//    }
-//    layer_move(_L0);
-//    set_oneshot_layer(curly_layer, ONESHOT_START);
-//    tap_code(KC_NO);
-//    clear_oneshot_layer_state(ONESHOT_PRESSED);
-//
-     }
+}
 
 // TD shortcut () <> {} [] "" ''
 void shortcut_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
@@ -424,6 +404,7 @@ static td_tap_t s2tap_state_dbl = {
 //             b) place multimods on the keymap,
 //             c) use Tab-Ctl or Enter-Ctl instead, 
 //             d) don't use TD_DOUBLE_HOLD on Homerow mods alltogether
+
 // Enhance MT() with TD_DOUBLE_HOLD
 void modifier_dbldance_finished (qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
@@ -585,14 +566,6 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_SQU] = ACTION_TAP_DANCE_FN_ADVANCED_USER(curly_dance_each, curly_dance_finished, curly_dance_reset, &((dance_user_data_t){ALGR(KC_8), ALGR(KC_9)})),
 //    [TD_BSP] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_holdautorepeat_finished, dance_holdautorepeat_reset, &((dance_user_data_t){KC_BSPC, KC_END})),
 };
-/* delete or get working
-void oneshot_layer_changed_user(uint8_t layer) {
-    active_osl = layer;
-    if (!layer) {
-        // deregister OSL here  println("Oneshot layer off");
-  }
-}
-*/
 
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         switch (keycode) {

@@ -65,6 +65,7 @@ void matrix_scan_user(void) {
                        } else {                               
                                tap_code16(hold_array[i].key_hold_keycode);
                        }
+                       if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
                        key_hold_lastkey = hold_array[i].key_tap_keycode;
                        hold_array[i].permit_up = false;
                    }
@@ -105,13 +106,14 @@ bool process_record_hold_key(uint16_t keycode, keyrecord_t *record, uint16_t key
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-
+   // first lets handel custom keycodes
    switch (keycode) {
     case PICKFIRST:
         if (record->event.pressed) {
             // when keycode PICKFIRST is pressed
             tap_code(KC_UP);tap_code(KC_ENT);
         } else {
+           // when keycode PICKFIRST is released     
            if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
         }
         break;
@@ -167,7 +169,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
         break;
     }
-
+// second lets handel the KEY_HOLD feature keycodes
     if (!hold_feature_active) return true;  
     if ((key_hold_lastkey != keycode) || (timer_elapsed(key_hold_dbltap_timer) > (2 * TAPPING_TERM))) key_hold_lastkey = KC_NO;
     switch (keycode) {
@@ -184,7 +186,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             //case KC_D: return process_record_hold_key(keycode, record, ALGR(KC_NUBS), 7);	break;
             case KC_S: return process_record_hold_key(keycode, record, DE_SS, 8);	break;
             case KC_H: return process_record_hold_key(keycode, record, DE_SLSH, 9);	break;
-    }        
+    }
+    
     return true;
 };
  
