@@ -65,6 +65,7 @@ void matrix_scan_user(void) {
                        } else {                               
                                tap_code16(hold_array[i].key_hold_keycode);
                        }
+                       if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
                        key_hold_lastkey = hold_array[i].key_tap_keycode;
                        hold_array[i].permit_up = false;
                    }
@@ -99,45 +100,37 @@ bool process_record_hold_key(uint16_t keycode, keyrecord_t *record, uint16_t key
                         hold_active_clear(hold_status);
                 }
                 hold_array[hold_status].permit_up = false;
+                if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
                 return false;
     	}    
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    if (!hold_feature_active) return true;  
-    if ((key_hold_lastkey != keycode) || (timer_elapsed(key_hold_dbltap_timer) > (2 * TAPPING_TERM))) key_hold_lastkey = KC_NO;
+   // first lets handel custom keycodes
     switch (keycode) {
-    // this is an alternate key on hold feature case KC_A...KC_Z:
-    // keys have no autorepeat
-    case KC_P: return process_record_hold_key(keycode, record, DE_QUES, 0);	break;
-    case KC_J: return process_record_hold_key(keycode, record, KC_PERC, 1);	break;
-    case KC_R: return process_record_hold_key(keycode, record, DE_RBRC, 2);	break;
-    case KC_I: return process_record_hold_key(keycode, record, DE_BSLS, 4);	break;
-    case KC_B: return process_record_hold_key(keycode, record, DE_PLUS, 3);	break;
-    //case KC_T: return process_record_hold_key(keycode, record, DE_RPRN, 4);	break;
-    //case KC_F: return process_record_hold_key(keycode, record, S(KC_4), 5);	break;
-    case KC_G: return process_record_hold_key(keycode, record, DE_EQL, 6);	break;
-    //case KC_D: return process_record_hold_key(keycode, record, ALGR(KC_NUBS), 7);	break;
-    case KC_S: return process_record_hold_key(keycode, record, DE_SS, 8);	break;
-    case KC_H: return process_record_hold_key(keycode, record, DE_SLSH, 9);	break;
     case PICKFIRST:
         if (record->event.pressed) {
             // when keycode PICKFIRST is pressed
             tap_code(KC_UP);tap_code(KC_ENT);
         } else {
             // when keycode PICKFIRST is released
+           if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
         }
         break;
 
     case PICK2ND:
         if (record->event.pressed) {
             tap_code(KC_UP);tap_code(KC_RGHT);tap_code(KC_ENT);
+        } else {
+           if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
         }
         break;
 
     case PICK3RD:
         if (record->event.pressed) {
              tap_code(KC_UP);tap_code(KC_RGHT);tap_code(KC_RGHT);tap_code(KC_ENT);
+        } else {
+           if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
         }
         break;
         
@@ -148,6 +141,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
              tap_code(KC_F);             
              unregister_mods(MOD_BIT(KC_LSFT));
              unregister_mods(MOD_BIT(KC_LCTL));
+        } else {
+           if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
         }
         break;
     case CIRCUMFL:
@@ -156,6 +151,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             tap_code(KC_GRV);
             tap_code(KC_SPC);
             break;
+        } else {
+           if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
         }
         break;
     case TICKTICK:
@@ -167,9 +164,30 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             tap_code(KC_SPC);
             break;
+        } else {
+           if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
         }
         break;
     }
+// second lets handel the KEY_HOLD feature keycodes
+    if (!hold_feature_active) return true;  
+    if ((key_hold_lastkey != keycode) || (timer_elapsed(key_hold_dbltap_timer) > (2 * TAPPING_TERM))) key_hold_lastkey = KC_NO;
+    switch (keycode) {
+            // this is an alternate key on hold feature case KC_A...KC_Z:
+            // keys have no autorepeat
+            case KC_P: return process_record_hold_key(keycode, record, DE_QUES, 0);	break;
+            case KC_J: return process_record_hold_key(keycode, record, KC_PERC, 1);	break;
+            case KC_R: return process_record_hold_key(keycode, record, DE_RBRC, 2);	break;
+            case KC_I: return process_record_hold_key(keycode, record, DE_BSLS, 4);	break;
+            case KC_B: return process_record_hold_key(keycode, record, DE_PLUS, 3);	break;
+            //case KC_T: return process_record_hold_key(keycode, record, DE_RPRN, 4);	break;
+            //case KC_F: return process_record_hold_key(keycode, record, S(KC_4), 5);	break;
+            case KC_G: return process_record_hold_key(keycode, record, DE_EQL, 6);	break;
+            //case KC_D: return process_record_hold_key(keycode, record, ALGR(KC_NUBS), 7);	break;
+            case KC_S: return process_record_hold_key(keycode, record, DE_SS, 8);	break;
+            case KC_H: return process_record_hold_key(keycode, record, DE_SLSH, 9);	break;
+    }
+    
     return true;
 };
  

@@ -3,23 +3,66 @@ similar to autoshift uses key_hold to produce an alternativ key -> a symbol
 for use with German keyboard layout
 
 features:
-no VIA because of unknown incomptibilities
-tap dance
-custom keycodes
-no rgb per layer but adjustable underglow
-gaming layer:   must be a lower number than NAV and SYM-Layer, 
+*no VIA because of unknown incomptibilities
+*tap dance
+*custom keycodes
+*no rgb per layer but adjustable underglow
+*gaming layer:   must be a lower number than NAV and SYM-Layer, 
                 process_record_user ignore alphas on gaming layer,
                 don 't uses TapDance on gaming layer, 
                 find goog keys for shift and space for WASD
                 DF() doesn't do the trick if you want an callback, so I just use TG() on _L3
+*one hand typing:
+        maybe   fdnig   jkm'-
+                stheo   ypl.q
+                cwrau   xbv,z
+                - problem existing layer and diacrits clash
+                - combo feature might cause problems
+                - SH_OS onshot fails for  I, P and H
+        more likely by using the swap hand or new layer qmk feature
+                - new base layer necessary
+                        - without home row mods
+                        - mirroring cursor keys is pointless
+                        - mirroring cursor keys in NAV layer is also pointless(mirrored)
+                        - LOWER (or SPACE) becomes OSL MIRROR,
+                        - SPACE_HOLD can be reused, but is to slow for mirror maybe Shift
+                        - one shot mirror and tapdance do not work out
+                        - TAB can become TO(NAV) ... 
+                        - L4 can cycle TO(Num) TO(Macro) TO(FKEY) TO(NAV)?
+                        - Shift can become TO(???) and TO(0)
+                        - alt is on the mouse .. ctrl too?
+* tap dance in one shot layers
+        WARNING this is currently not supported by QMK. solution quantum/action.c must be modified to not clear the one shot status when pressing a custom keycode
+        ```
+        void process_action(
+        ...
+            if (is_oneshot_layer_active() && event.pressed && (action.kind.id == ACT_USAGE || !IS_MOD(action.key.code))
+            #    ifdef SWAP_HANDS_ENABLE
+                    && !(action.kind.id == ACT_SWAP_HANDS && action.swap.code == OP_SH_ONESHOT)
+            #    endif
+                    && !keymap_config.oneshot_disable) {
++                       // let's restrict osl clear globally to standard keys (e.g. A-F24 or whatever you need), and clear it manually in the keymap (tapdances/process_record_user/...)                 
++                       switch (action.key.code) {
++                           case KC_A ... KC_F24:
+                              clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
++                             break;               
++                        }
+            do_release_oneshot = !is_oneshot_layer_active();
+        ...
+        ```
+        after disabling clear_oneshot it can/must be called in custom keycodes (process_record_user) and tapdances
+        for example in all your _dance_reset callbacks
+        ACTION_TAP_DANCE_FN_ADVANCED_USER(..._each_tap, ..._dance_finished, ..._dance_reset, user_user_data)
+        ```
+        if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
+        ```
+        sadly MT() still clears OSL
 
 todo light_control if OSM(modifier) is locked
 
-(todo) light intensity controls are active
+(todo) light intensity controls are active on planck
 
 todo: Key Overrides may help with shift - backspace / Layer 3
-
-(todo): get_tapping_term in combination with new custom keycodes TT_PLUS, TT_MINUS, TT_OFF, TT_ON would make TAPPING_TERM configurable on the fly, but try and error seems to be sufficient
 
 todo: cleanup layer 3 from F-keys
 
@@ -83,12 +126,6 @@ special dbl_tap_hold ESC sends ^ as dead key + SPACE - dance_autorepeat_finished
 special ESC/Home (BSP/End) needs all mods passed through (see dance_autorepeat_)
 
 info _each and _reset funtions are often the same and therefore shared between declarations
-
-bug tap dance inside OSL only works if OSL key is held down 
- - solution: process_record_user all OSM set status - flag on down and clear status - flag on up
-             if tap_dance_each senses!status - flag & OSL active: OSL clear, permanent layer move...
-             ...tap dance continues...on tapdance reset layer move 0
- - workarounds: using autosymbol or not using OSL
 
 COMBOS - conflict with tap dance / autosymbol - autohotkey can be used instead
 combo starters: ,< alpha >  q< alpha_minus_ulm> jf cv vc vz vd jz wt wd wf wz

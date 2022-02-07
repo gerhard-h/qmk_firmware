@@ -12,10 +12,10 @@ void rgb_matrix_indicators_user(void) {
         //_GAME:
                 rgb_matrix_set_color_all(0,1,10);
                 
-                rgb_matrix_set_color(3, 150, 150, 50); // wasd
+                rgb_matrix_set_color(2, 150, 150, 50); // wasd
                 rgb_matrix_set_color(14, 150, 150, 50);
                 rgb_matrix_set_color(15, 150, 150, 50);
-                rgb_matrix_set_color(16, 150, 150, 50);
+                rgb_matrix_set_color(13, 150, 150, 50);
                 
                 rgb_matrix_set_color(34, 70, 10, 10); // cursor keys
                 rgb_matrix_set_color(44, 70, 10, 10);

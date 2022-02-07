@@ -17,7 +17,8 @@ features:
                 stheo   ypl.q
                 cwrau   xbv,z
                 - problem existing layer and diacrits clash
-                - combo feature might cause problems 
+                - combo feature might cause problems
+                - SH_OS onshot fails for  I, P and H
         more likely by using the swap hand or new layer qmk feature
                 - new base layer necessary
                         - without home row mods

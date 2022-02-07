@@ -59,10 +59,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                           OSM(MOD_LSFT),          TD(TD_Y),        TD(TD_X),          TD(TD_C),          TD(TD_V),          KC_B,      TD(TD_M),       TD(TD_COMM),         TD(TD_DOT),     TD(TD_DASH),              KC_UP,    MT(MOD_LSFT,KC_DEL),
                                   KC_LCTL,           KC_LGUI,
                                                                          KC_LALT,
-                                                                                    SH_TG,
+                                                                                    SH_OS,
                                                                                                                         OSL(_LNAV),
                                                                                                                                  LT(_LSYM,KC_SPC),
-                                                                                                                                                                          MO(_LNAV),     SH_TG,     LT(_L4,KC_DEL),                      KC_LGUI,                KC_LCTL
+                                                                                                                                                                          MO(_LNAV),     SH_OS,     LT(_L4,KC_DEL),                      KC_LGUI,                KC_LCTL
  ),
  
 /*           
