@@ -268,7 +268,7 @@ void dance_dbltap_finished(qk_tap_dance_state_t *state, void *user_data) {
     }
 }
 
-// bsp end bsp bsp... ERRROR it is still sending SFT+Del instead of DEL
+/*
 void dance_holdautorepeat_finished(qk_tap_dance_state_t *state, void *user_data) {
     atap_state.state = cur_dance(state);
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
@@ -290,9 +290,9 @@ void dance_holdautorepeat_reset(qk_tap_dance_state_t *state, void *user_data) {
     }
     atap_state.state = TD_NONE;
     if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
-}
+} */
 
-// ::: *** /// ...... ------ ____. triple tap for autorepeat keycode, no autorepeat on DTH
+// ::: *** /// ...... ------ ____. triple tap for autorepeat keycode, no autorepeat on Double_Tap_Hold
 void dance_autorepeat_finished(qk_tap_dance_state_t *state, void *user_data) {
     atap_state.state = cur_dance(state);
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
@@ -333,6 +333,59 @@ void dance_autorepeat_reset(qk_tap_dance_state_t *state, void *user_data) {
         case TD_DOUBLE_HOLD:  break;//unregister_code16(keycode3); break;
         case TD_DOUBLE_TAP:
         case TD_DOUBLE_SINGLE_TAP: 
+        case TD_TRIPLE_TAP:
+        case TD_TRIPLE_HOLD:
+        default: unregister_code16(keycode); break;
+    }
+    atap_state.state = TD_NONE;
+    if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
+}
+
+// esc home end ^ 
+void dance_esc_finished(qk_tap_dance_state_t *state, void *user_data) {
+    atap_state.state = cur_dance(state);
+    uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
+    uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
+    uint16_t keycode3 = ((dance_user_data_t*)user_data)->keycode3;
+    switch (atap_state.state) {
+        case TD_SINGLE_TAP: register_code16(keycode); break;
+        case TD_SINGLE_HOLD:
+                if (get_mods() & (MOD_MASK_GUI | MOD_MASK_ALT | MOD_MASK_CTRL)) {tap_code16(keycode); break;}
+                register_code16(keycode2); break;
+        case TD_DOUBLE_HOLD:
+            if (keycode3 == KC_GRV) { // dead key handling for ^
+                if ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT) {tap_code16(S(KC_GRV)); break;}
+                    tap_code(KC_GRV);
+                    tap_code(KC_SPC);
+            } else {
+                tap_code16(keycode3);
+            }    
+            break;
+        case TD_DOUBLE_TAP:
+        case TD_DOUBLE_SINGLE_TAP:
+                register_code(KC_END);        
+            break;
+        case TD_TRIPLE_TAP:
+        case TD_TRIPLE_HOLD:
+        default: 
+            for (uint8_t i=2; i < state->count; i++) {
+                tap_code16(keycode);
+            };
+            register_code16(keycode);
+        break;
+    }
+}
+void dance_esc_reset(qk_tap_dance_state_t *state, void *user_data) {
+    uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
+    uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
+    switch (atap_state.state) {
+        case TD_SINGLE_TAP: unregister_code16(keycode); break;
+        case TD_SINGLE_HOLD: unregister_code16(keycode2); break;
+        case TD_DOUBLE_HOLD:  break;//unregister_code16(keycode3); break;
+        case TD_DOUBLE_TAP:
+        case TD_DOUBLE_SINGLE_TAP:
+                unregister_code(KC_END);
+                break;
         case TD_TRIPLE_TAP:
         case TD_TRIPLE_HOLD:
         default: unregister_code16(keycode); break;
@@ -469,10 +522,6 @@ void modifier_dbldance_reset (qk_tap_dance_state_t *state, void *user_data) {
         case TD_DOUBLE_SINGLE_TAP:
         default: unregister_code16(keycode); break;
     }
-    //s1tap_state_dbl.state = TD_NONE;
-    //s2tap_state_dbl.state = TD_NONE;
-    //c1tap_state_dbl.state = TD_NONE;
-    //c2tap_state_dbl.state = TD_NONE;
     ctap_state->state = TD_NONE;
     if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
 }
@@ -505,7 +554,7 @@ void noshift_each(qk_tap_dance_state_t *state, void *user_data) {
 
 // Tap Dance definitions - look at the _finished functions names to know what is happening
 qk_tap_dance_action_t tap_dance_actions[] = {
-    [TD_ESC] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_autorepeat_finished, dance_autorepeat_reset, &((dance_user_data_t){KC_ESC, KC_HOME, KC_GRV})), //tap (tripple tap hold for AutoRepeat), hold (with AR), double_hold (without AR), shift passthrough
+    [TD_ESC] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_esc_finished, dance_esc_reset, &((dance_user_data_t){KC_ESC, KC_HOME, KC_GRV})), //tap (tripple tap hold for AutoRepeat), hold (with AR), double_hold (without AR), shift passthrough
     [TD_Q] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, dance_dbltap_finished, atap_state_reset, &((dance_user_data_t){KC_Q, DE_EXLM, DE_AT})), // tap, hold, double_tap 
     //[TD_F] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, atap_state_reset, &((dance_user_data_t){KC_F, S(KC_4)})), // tap, hold
     

@@ -12,7 +12,6 @@ enum custom_keycodes {
 // Initialize variable holding the binary
 // representation of active modifiers.
 uint8_t mod_state;
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 typedef struct {
     uint16_t key_hold_timer;
