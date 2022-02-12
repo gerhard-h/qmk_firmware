@@ -50,23 +50,23 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_GAME] = LAYOUT_planck_mit(    
      KC_ESC,     KC_Q,        KC_W,          KC_E,          KC_R,          KC_J,           KC_Y,              KC_U,           KC_I,        KC_O,               KC_P,    KC_BSPC,
      KC_TAB,     KC_A,        KC_S,          KC_D,          KC_F,          KC_G,           KC_H,              KC_N,           KC_T,        KC_L,               KC_K,    KC_ENT,
-    KC_LSFT,     KC_Z,        KC_X,          KC_C,          KC_V,          KC_B,           KC_M,           KC_COMM,         KC_DOT,     KC_SLASH,              KC_UP,    KC_RSFT,
-    KC_LCTL,  KC_LALT,     KC_LSFT,        KC_SPC,        OSL(_LNAV), LT(_LSYM,KC_SPC),         OSL(_LNAV),       OSL(_L4),     KC_LEFT,            KC_DOWN,    KC_RGHT
+    KC_LSFT,     KC_Z,        KC_X,          KC_C,          KC_V,          KC_B,           KC_M,           KC_COMM,         KC_DOT,    KC_SLASH,              KC_UP,    KC_RSFT,
+    KC_LCTL,  KC_LALT,     KC_LSFT,        KC_SPC,        OSL(_LNAV), LT(_LSYM,KC_SPC),         OSL(_LNAV),               OSL(_L4),     KC_LEFT,            KC_DOWN,    KC_RGHT
  ),
 [_SWAP] = LAYOUT_planck_mit(    
                                              TD(TD_ESC),          TD(TD_Q),        TD(TD_W),          TD(TD_E),              KC_R,          KC_J,      TD(TD_Z),      TD(TD_U_UML),               KC_I,    TD(TD_O_UML),               KC_P,                KC_BSPC,
                                    MT(MOD_LCTL ,KC_TAB),      TD(TD_A_UML),   TD(TD_SS_UML),          TD(TD_D),          TD(TD_F),          KC_G,          KC_H,          TD(TD_N),           TD(TD_T),        TD(TD_L), MT(MOD_LALT, KC_K),    MT(MOD_LCTL,KC_ENT),
                                           OSM(MOD_LSFT),          TD(TD_Y),        TD(TD_X),          TD(TD_C),          TD(TD_V),          KC_B,      TD(TD_M),       TD(TD_COMM),         TD(TD_DOT),     TD(TD_DASH),              KC_UP,    MT(MOD_LSFT,KC_DEL),
-                                  KC_LCTL,           KC_LGUI,
-                                                                         KC_LALT,
-                                                                                    SH_OS,
+                                                KC_LCTL,           KC_LGUI,
+                                                                                    KC_LALT,
+                                                                                                         SH_OS,
                                                                                                                         OSL(_LNAV),
                                                                                                                                  LT(_LSYM,KC_SPC),
-                                                                                                                                                                          MO(_LNAV),     SH_OS,     LT(_L4,KC_DEL),                      KC_LGUI,                KC_LCTL
+                                                                                                                                                                          MO(_LNAV),     SH_OS,     LT(_L4,KC_DEL),                  KC_LGUI,                KC_LCTL
  ),
  
 /*           
-*             ________      TO(_LSYM)       ________      ________          1                     2                            3                     DEL             BSP            &             ü             \             ö               ?            ________
+*             ________      TO(_LSYM)     ________      ________          1                     2                            3                     DEL             BSP            &             ü             \             ö               ?            ________
 *             ________      ________      ________      ________          4                     5                            6                      0               .             /             (             )             '               ~            ________
 *             ________      ________      ________      ________          7                     8                            9                      1               ,             *             <             >             /              ________      ________
 *             ________      ________      ________      ________          ________              0/Alt                    ________               ________        ________      ________      !________      TG(_LSYM)          ________        ________      ________
@@ -75,8 +75,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
                                                          KC_TRNS,    TD(TD_DASH),              KC_1,              KC_2,              KC_3,  KC_INS,     A(S(KC_TAB)),      KC_HOME,        KC_UP,     KC_END,  MT(MOD_LGUI,KC_PGUP),     KC_BSPC,
                                                          KC_TRNS,     TD(TD_DOT), MT(MOD_LALT,KC_4), MT(MOD_LCTL,KC_5), MT(MOD_LSFT,KC_6),    KC_0,        A(KC_TAB),      KC_LEFT,      KC_DOWN,    KC_RGHT,  MT(MOD_LALT,KC_PGDN),     KC_TRNS,
-                                                         KC_TRNS,    TD(TD_COMM),     KC_7,              KC_8,                 KC_9,                   KC_ENT,           KC_ESC,      KC_BSPC,       KC_DEL,     KC_ENT,               KC_TRNS,     KC_TRNS,
-                                                         KC_TRNS,        KC_TRNS,           KC_TRNS,           KC_TRNS,           KC_TRNS, KC_TRNS,                        MO(_LSYM),       KC_TRNS,   KC_TRNS,               KC_TRNS,     KC_TRNS
+                                                         KC_TRNS,    TD(TD_COMM),              KC_7,              KC_8,              KC_9,  KC_ENT,           KC_ESC,      KC_BSPC,       KC_DEL,     KC_ENT,               KC_TRNS,     KC_TRNS,
+                                                         KC_TRNS,        KC_TRNS,           KC_TRNS,           KC_TRNS,         MO(_LSYM), KC_TRNS,                      MO(_LSYM),      KC_TRNS,    KC_TRNS,               KC_TRNS,     KC_TRNS
   ),
 /* 
 *   ________      TG(_LNAV)       ________      ^             @                        "                     [                       ]                         %                        A(TAB)        HOME          UP            END        PGUP          ________

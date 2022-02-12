@@ -470,10 +470,6 @@ void modifier_dbldance_reset (qk_tap_dance_state_t *state, void *user_data) {
         case TD_DOUBLE_SINGLE_TAP:
         default: unregister_code16(keycode); break;
     }
-    //s1tap_state_dbl.state = TD_NONE;
-    //s2tap_state_dbl.state = TD_NONE;
-    //c1tap_state_dbl.state = TD_NONE;
-    //c2tap_state_dbl.state = TD_NONE;
     ctap_state->state = TD_NONE;
     if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
 }
