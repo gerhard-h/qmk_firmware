@@ -66,61 +66,61 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  ),
  
 /*           
-*             ________      TO(_LSYM)     ________      ________          1                     2                            3                     DEL             BSP            &             ü             \             ö               ?            ________
-*             ________      ________      ________      ________          4                     5                            6                      0               .             /             (             )             '               ~            ________
-*             ________      ________      ________      ________          7                     8                            9                      1               ,             *             <             >             /              ________      ________
-*             ________      ________      ________      ________          ________              0/Alt                    ________               ________        ________      ________      !________      TG(_LSYM)          ________        ________      ________
+*             ________      TO(_LSYM)     ________      ________             -                   1                  2                3              INS                 A(TAB)        HOME          UP            END        PGUP          ________
+*             ________      ________      ________      ________             .                   4alt               5ctl             6sft           0win                AS(TAB)       LEFT          DOWN          RGHT       PGD           ________
+*             ________      ________      ________      ________             ,                   7                  8                9              ENT           S(RBRC)                  ESC           BSP           DEL           ENT        ________      ________
+*             ________      ________      ________      ________          ________             _______         ________           ________        ________       ________      TG(_LSYM)          ________        ________      ________
 * NUM NAV*/
 [_LNAV] = LAYOUT_planck_mit(
 
                                                          KC_TRNS,    TD(TD_DASH),              KC_1,              KC_2,              KC_3,            KC_INS, A(S(KC_TAB)),      KC_HOME,        KC_UP,     KC_END,  MT(MOD_LGUI,KC_PGUP),     KC_BSPC,
-                                                         KC_TRNS,     TD(TD_DOT), MT(MOD_LALT,KC_4), MT(MOD_LCTL,KC_5), MT(MOD_LSFT,KC_6), MT(MOD_LGUI,KC_6),    A(KC_TAB),      KC_LEFT,      KC_DOWN,    KC_RGHT,  MT(MOD_LALT,KC_PGDN),     KC_TRNS,
+                                                         KC_TRNS,     TD(TD_DOT), MT(MOD_LALT,KC_4), MT(MOD_LCTL,KC_5), MT(MOD_LSFT,KC_6), MT(MOD_LGUI,KC_0),    A(KC_TAB),      KC_LEFT,      KC_DOWN,    KC_RGHT,  MT(MOD_LALT,KC_PGDN),     KC_TRNS,
                                                          KC_TRNS,    TD(TD_COMM),              KC_7,              KC_8,              KC_9,            KC_ENT,       KC_ESC,      KC_BSPC,       KC_DEL,     KC_ENT,               KC_TRNS,     KC_TRNS,
-                                                         KC_TRNS,        KC_TRNS,           KC_TRNS,           KC_TRNS,         MO(_LSYM),           KC_TRNS,                  MO(_LSYM),      KC_TRNS,    KC_TRNS,               KC_TRNS,     KC_TRNS
+                                                         KC_TRNS,        KC_TRNS,           KC_TRNS,           KC_TRNS,           KC_TRNS,           KC_TRNS,                  MO(_LSYM),      KC_TRNS,    KC_TRNS,               KC_TRNS,     KC_TRNS
   ),
 /* 
-*   ________      TG(_LNAV)       ________      ^             @                        "                     [                       ]                         %                        A(TAB)        HOME          UP            END        PGUP          ________
-*   ________      ________      ________      ________      ä                        ß/alt                 |/Shift                 $/Ctrl                    +                        AS(TAB)       LEFT          DOWN          RGHT       PGD           ________
-*   ________      ________      ________      ________      TD(TD_TICK)              CIRC                  TD(TD_CUR)              ALGR(0)                   S(RBRC)                  ESC           BSP           DEL           ENT        ________      ________
-*   ________      ________      ________      ________      WIN                      Del/Alt                  TG(1)                ________                  ________                 ________      ________      ________      ________   ________      ________
+*   ________      TG(_LNAV)       ________      ^             @                        "                     [                       ]                        %               &             ü             \             ö               ?            ________
+*   ________      ________      ________      ________        ä                        ß                     #                       $                        =               /             (             )             '               LOCK         ________
+*   ________      ________      ________      ________        ´                        |                     {                       }                        +               *             <             >             ~              ________      ________
+*   ________      ________      ________      ________       WIN                       Alt                  ________                MouseLayer             ________        ________      ________      ________      ________          ________      ________
 * SYMBOL*/
 [_LSYM] = LAYOUT_planck_mit(
-                                                CIRCUMFL,     DE_EXLM,            TD(TD_DQUOT),            TD(TD_SQU),             ALGR(KC_9),              KC_PERC,               DE_AMPR,     DE_UDIA,        DE_BSLS,       DE_ODIA,        DE_QUES,       KC_TRNS,
-                                                 KC_TRNS,     DE_ADIA,                 KC_MINS,               KC_NUHS,                 KC_DLR,              KC_RPRN,               DE_SLSH,  TD(TD_PAR),        KC_LPRN,   TD(TD_QUOT),        KC_LOCK,       KC_TRNS,
-                                                 KC_LSFT,    TICKTICK,                 DE_PIPE,            TD(TD_CUR),             ALGR(KC_0),              KC_RBRC,               DE_ASTR,  TD(TD_ANG),     S(KC_NUBS),       DE_TILD,          KC_UP,       KC_TRNS,
-                                                 KC_TRNS,     KC_LGUI,                 KC_LALT,               KC_TRNS,              MO(_LNAV),              KC_TRNS,                            KC_TRNS,        KC_TRNS,       KC_TRNS,        KC_TRNS,       KC_TRNS
+                                                CIRCUMFL,     DE_EXLM,            TD(TD_DQUOT),            TD(TD_SQU),             ALGR(KC_9),              KC_PERC,       DE_AMPR,     DE_UDIA,        DE_BSLS,       DE_ODIA,        DE_QUES,       KC_TRNS,
+                                                 KC_TRNS,     DE_ADIA,                 KC_MINS,               KC_NUHS,                 KC_DLR,              KC_RPRN,       DE_SLSH,  TD(TD_PAR),        KC_LPRN,   TD(TD_QUOT),        KC_LOCK,       KC_TRNS,
+                                                 KC_LSFT,    TICKTICK,                 DE_PIPE,            TD(TD_CUR),             ALGR(KC_0),              KC_RBRC,       DE_ASTR,  TD(TD_ANG),     S(KC_NUBS),       DE_TILD,          KC_UP,       KC_TRNS,
+                                                 KC_TRNS,     KC_LGUI,                 KC_LALT,               KC_TRNS,              MO(_LNAV),              KC_TRNS,                    KC_TRNS,        KC_TRNS,       KC_TRNS,        KC_TRNS,       KC_TRNS
   ),
 
 /* L3
  *                      v------------------------RGB CONTROL--------------------v
  * ,-----------------------------------------------------------------------------------.
- * |  F1  | Reset|AutoS | RGB  |RGBMOD| HUE+ | HUE- |lclick| ms-u |rclick|ms-w+ | ASTG |
+ * | GAME | Reset|AutoS | RGB  |RGBMOD| HUE+ | HUE- |lclick| ms-u |rclick|ms-w+ | L0   |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |  F2  |  F5  |ACCEL0|ACCEL1|ACCEL2| SAT+ | SAT- | ms-l | ms-d | ms-r |ms-w- |      |
+ * | SWAP |      |ACCEL0|ACCEL1|ACCEL2| SAT+ | SAT- | ms-l | ms-d | ms-r |ms-w- |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |  F3  |  F6  |  F8  |  F10 |  F12 |BRGTH+|BRGTH-|lclick|mclick|rclick|      |      |
+ * |  NUM |      |      |      |      |BRGTH+|BRGTH-|lclick|rclick|mclick|      |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |  F4  |  F7  |  F9  |  F11 |      |             |      |      |      |      | ALT  |
+ * |  L0  |      |      |      |      |             |      |      |      |      | ALT  |
  * `-----------------------------------------------------------------------------------'
  * 
  */
 [_L3] = LAYOUT_planck_mit(
-    TG(_GAME), RESET,             DEBUG,      RGB_TOG,       RGB_MOD, RGB_HUI, RGB_HUD, KC_MS_BTN1,    KC_MS_UP,   KC_MS_BTN2,   KC_MS_WH_UP,         TG(_GAME),
-    TG(_SWAP), KC_F5,      KC_MS_ACCEL0, KC_MS_ACCEL1,  KC_MS_ACCEL2, RGB_SAI, RGB_SAD, KC_MS_LEFT,  KC_MS_DOWN,  KC_MS_RIGHT, KC_MS_WH_DOWN,               KC_TRNS,
-    KC_F3, KC_F6,             KC_F8,       KC_F10,        KC_F12, RGB_VAI, RGB_VAD, KC_MS_BTN1,  KC_MS_BTN2,   KC_MS_BTN3,       _______,               _______,
-    TO(_L0), KC_F7,MT(MOD_LALT,KC_F9),       KC_F11,       _______, _______,             _______,     _______,      _______,       _______,  MT(MOD_LALT, KC_RGHT)
+    TG(_GAME),   RESET,             DEBUG,      RGB_TOG,       RGB_MOD, RGB_HUI, RGB_HUD, KC_MS_BTN1,    KC_MS_UP,   KC_MS_BTN2,   KC_MS_WH_UP,    TO(_L0),
+    TG(_SWAP),   KC_NO,      KC_MS_ACCEL0, KC_MS_ACCEL1,  KC_MS_ACCEL2, RGB_SAI, RGB_SAD, KC_MS_LEFT,  KC_MS_DOWN,  KC_MS_RIGHT, KC_MS_WH_DOWN,    KC_TRNS,
+    TG(_NAV), TG(_SYM),             KC_NO,        KC_NO,         KC_NO, RGB_VAI, RGB_VAD, KC_MS_BTN1,  KC_MS_BTN2,   KC_MS_BTN3,       _______,    _______,
+    TO(_L0),   _______,           _______,      _______,       _______, _______,             _______,     _______,      _______,       _______,    _______
 ),
 
 
 /* L4
  * ,-----------------------------------------------------------------------------------.
- * |      | 1 F1 | 2 F2 | 3 F3 | € F10|  - _ | PGUP |  F24 | C+S+F| RALT | PSCR |      |
+ * |      | 1 F1 | 2 F2 | 3 F3 | € F10|  ALT | PGUP |  APP | C+S+F| RALT | PSCR |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      | 4 F4 | 5 F5 | 6 F6 | 0 F11|  . : | PGDN |  1st |  2nd | 3rd  | LALT |      |
+ * |      | 4 F4 | 5 F5 | 6 F6 | 0 F11|  WIN | PGDN |  1st |  2nd | 3rd  | LALT |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      | 7 F7 | 8 F8 | 9 F9 | 1 F12|  , ; | ESC  |  APP |rclick|  WIN | VOL+ |      |
+ * |      | 7 F7 | 8 F8 | 9 F9 | 1 F12|  CTL | ESC  |  BSP |rclick|  WIN | VOL+ |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      |  0Alt|      |      |             |      | [L4] |      | VOL- |      |
+ * |      |      |      | [L4] |      |             |      | [L4] |      | VOL- |      |
  * `-----------------------------------------------------------------------------------'
  */
 [_L4] = LAYOUT_planck_mit(

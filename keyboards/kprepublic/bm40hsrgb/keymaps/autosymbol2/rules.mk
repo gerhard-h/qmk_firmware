@@ -3,7 +3,7 @@ AUTO_SHIFT_ENABLE = no
 MOUSEKEY_ENABLE = yes
 TAP_DANCE_ENABLE = yes
 LEADER_ENABLE = no
-EXTRAKEY_ENABLE = no
+EXTRAKEY_ENABLE = yes
 KEY_LOCK_ENABLE = yes
 # -flto saves ~14% on firmware size
 EXTRAFLAGS += -flto
