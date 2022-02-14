@@ -92,7 +92,9 @@ static inline void process_tap_dance_action_on_dance_finished(qk_tap_dance_actio
     if (action->state.finished) return;
     action->state.finished = true;
     add_mods(action->state.oneshot_mods);
-    add_weak_mods(action->state.weak_mods);
+// Deactivating the following line will allow for clear_mods, del_mods,... inside _dance_finished functions
+// this is essential to implement a SFT_HOLD_Layer (pseudo layer)
+//   add_weak_mods(action->state.weak_mods);
     send_keyboard_report();
     _process_tap_dance_action_fn(&action->state, action->user_data, action->fn.on_dance_finished);
 }
