@@ -221,7 +221,11 @@ void dance_ss_finished(qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
     switch (atap_state.state) {
         case TD_SINGLE_HOLD:
-             if (get_mods() | get_oneshot_mods()) {tap_code16(KC_DLR); break;}
+             if (get_mods() | get_oneshot_mods()) {
+                     tap_code16(keycode); // autocorrect into S, C(s),...
+                     //tap_code16(KC_DLR); // $ extra 
+                     break;
+             }
              tap_code16(keycode2); break;
         default: tap_code(keycode); break;
     }
@@ -462,13 +466,15 @@ static td_tap_t s2tap_state_dbl = {
     .is_press_action = true,
     .state = TD_NONE
 };
-// (bug) modifier_dbldance_finished with cur_dance() when interupted outputs the key instead of the modifier
+// (bug) modifier_dbldance_finished with cur_dance() when interupted outputs the key instead of the modifierd
+//       so holding down the key simultaniously or very fast will not work
 // (workaround) 
 //             a) press mods one after the other, 
 //             b) place multimods on the keymap,
 //             c) use Tab-Ctl or Enter-Ctl instead, 
-//             d) don't use TD_DOUBLE_HOLD on Homerow mods alltogether
-// Enhance MT() with TD_DOUBLE_HOLD
+//             d) don't use TD_DOUBLE_HOLD/tap_dance on Homerow mods alltogether
+//             c) using mod_dance() does fast mod activation for F, but disables fast f* typing
+// This is a MT() replacement with additional features TD_DOUBLE_HOLD
 void modifier_dbldance_finished (qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
     uint16_t keycode2param = ((dance_user_data_t*)user_data)->keycode2;
@@ -490,7 +496,7 @@ void modifier_dbldance_finished (qk_tap_dance_state_t *state, void *user_data) {
     }*/
     switch (keycode2param) {
 //        case 22 :                                            // fast mod activation for T does not work de lets try with tapping term 140
-        case 11 : ctap_state->state = mod_dance(state); break; // fast mod activation for F - asuming that f+* will be typed relativly slowly
+//        case 11 : ctap_state->state = mod_dance(state); break; // fast mod activation for F - asuming that f+* will be typed relativly slowly
         default : ctap_state->state = cur_dance(state); break; // slow mod activation
     }   
 
@@ -500,22 +506,28 @@ void modifier_dbldance_finished (qk_tap_dance_state_t *state, void *user_data) {
                 
                 // imlements the SFT_HOLD layer
                 switch (keycode2param) {
-                        case 22 :
-                        case 12 :
-                                if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_LSFT)) {
-                                        tap_code16(keycode3);break;       
+                        case 22 : // T
+                                if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_RSFT)) {
+                                        // prevent bug: HOLD(n) then HOLD(t) produces )
+                                        break;       
                                 }
-                        case 21 :
+                        case 12 : // N
+                                if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_LSFT)) {
+                                        tap_code16(keycode3);
+                                        break;       
+                                }
+                        case 21 : // D
                                 if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_RSFT)) {
                                     mod_state = get_mods();
                                     clear_mods();
                                     tap_code16(keycode3);                 
                                     set_mods(mod_state);
                                     break;
-                                }                              
-                        case 11 :
+                                }
+                        case 11 : // F
                                 if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_RSFT)) {
-                                        tap_code16(keycode3);break;       
+                                        tap_code16(keycode3);
+                                        break;       
                                 }
                 }
                 register_code16(keycode2); break;
@@ -523,6 +535,59 @@ void modifier_dbldance_finished (qk_tap_dance_state_t *state, void *user_data) {
         case TD_DOUBLE_TAP:
         case TD_DOUBLE_SINGLE_TAP:tap_code16(keycode);register_code16(keycode); break;
         default: register_code16(keycode); break;
+    }
+}
+// the shift keys get there own funtions because tey also get an tighter timing ~ 100ms
+void shift_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
+    uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
+    uint16_t keycode2param = ((dance_user_data_t*)user_data)->keycode2;
+    uint16_t keycode3 = ((dance_user_data_t*)user_data)->keycode3;
+    uint16_t keycode2;
+    switch (keycode2param) {
+        case 11 :  keycode2 = KC_LSFT; break;
+        case 12 :  keycode2 = KC_RSFT; break;
+        case 22 :
+        case 21 :  keycode2 = KC_LCTL; break;
+        default :  keycode2 = KC_LALT; break;
+    }
+    td_tap_t *ctap_state = (keycode2param == 11) ? &s1tap_state_dbl : (keycode2param == 12) ? &s2tap_state_dbl : (keycode2param == 21) ? &c1tap_state_dbl : &c2tap_state_dbl; 
+    ctap_state->state = cur_dance(state);
+
+    switch (ctap_state->state) {
+        case TD_SINGLE_TAP: tap_code16(keycode); break;
+        case TD_SINGLE_HOLD:
+                
+                // imlements the SFT_HOLD layer
+                switch (keycode2param) {
+                        case 22 : // T
+                                if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_RSFT)) {
+                                        // prevent bug: HOLD(n) then HOLD(t) produces )
+                                        break;       
+                                }
+                        case 12 : // N
+                                if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_LSFT)) {
+                                        tap_code16(keycode3);
+                                        break;       
+                                }
+                        case 21 : // D
+                                if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_RSFT)) {
+                                    mod_state = get_mods();
+                                    clear_mods();
+                                    tap_code16(keycode3);                 
+                                    set_mods(mod_state);
+                                    break;
+                                }
+                        case 11 : // F
+                                if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_RSFT)) {
+                                        tap_code16(keycode3);
+                                        break;       
+                                }
+                }
+                register_code16(keycode2); break;
+        case TD_DOUBLE_HOLD:
+        case TD_DOUBLE_TAP:
+        case TD_DOUBLE_SINGLE_TAP:tap_code16(keycode);tap_code16(keycode); break;
+        default: tap_code16(keycode); break;
     }
 }
 void modifier_dbldance_each(qk_tap_dance_state_t *state, void *user_data) {
@@ -559,7 +624,43 @@ void modifier_dbldance_reset (qk_tap_dance_state_t *state, void *user_data) {
     ctap_state->state = TD_NONE;
     if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
 }
-
+void shift_dance_reset (qk_tap_dance_state_t *state, void *user_data) {
+    //uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
+    uint16_t keycode2param = ((dance_user_data_t*)user_data)->keycode2;
+    uint16_t keycode2;
+    switch (keycode2param) {
+        case 11 :  keycode2 = KC_LSFT; break;
+        case 12 :  keycode2 = KC_RSFT; break;
+        case 22 :
+        case 21 :  keycode2 = KC_LCTL; break;
+        default :  keycode2 = KC_LALT; break;
+    }
+    td_tap_t *ctap_state = (keycode2param == 11) ? &s1tap_state_dbl : (keycode2param == 12) ? &s2tap_state_dbl : (keycode2param == 21) ? &c1tap_state_dbl : &c2tap_state_dbl; 
+    switch (ctap_state->state) {
+        case TD_SINGLE_TAP: 
+                //unregister_code16(keycode);
+                break;
+        case TD_SINGLE_HOLD:  
+                unregister_code16(keycode2); break;
+        case TD_DOUBLE_HOLD: 
+        case TD_DOUBLE_TAP:
+        case TD_DOUBLE_SINGLE_TAP:
+        default: 
+        //unregister_code16(keycode);
+        break;
+    }
+    ctap_state->state = TD_NONE;
+    if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
+}
+void shift_dance_each(qk_tap_dance_state_t *state, void *user_data) {
+    uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
+    if (state->count == 2) {
+            tap_code(keycode);
+    }
+    else if (state->count > 2) {
+            tap_code(keycode);
+    }
+};
 
 // no autoshift for numbers on the number layer, also # F key instead
 // this is a way to set a shifted key however you want
@@ -623,9 +724,9 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     //[TD_12] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_holdwmod_finished, atap_state_reset, &((dance_user_data_t){KC_1, KC_F12})),
     //[TD_10] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_holdwmod_finished, atap_state_reset, &((dance_user_data_t){DE_EURO, KC_F10})),
 //    [TD_DEL10] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_holdwmod_finished, atap_state_reset, &((dance_user_data_t){KC_DEL, KC_F10})),
-    [TD_F] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, modifier_dbldance_finished, modifier_dbldance_reset, &((dance_user_data_t){KC_F, 11, KC_DLR})),
+    [TD_F] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, shift_dance_finished, shift_dance_reset, &((dance_user_data_t){KC_F, 11, KC_DLR})),
     [TD_D] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, modifier_dbldance_finished, modifier_dbldance_reset, &((dance_user_data_t){KC_D, 21, DE_HASH})),
-    [TD_N] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, modifier_dbldance_finished, modifier_dbldance_reset, &((dance_user_data_t){KC_N, 12, DE_LPRN})),
+    [TD_N] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, shift_dance_finished, shift_dance_reset, &((dance_user_data_t){KC_N, 12, DE_LPRN})),
     [TD_T] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, modifier_dbldance_finished, modifier_dbldance_reset, &((dance_user_data_t){KC_T, 22, DE_RPRN})),
     [TD_DQUOT] = ACTION_TAP_DANCE_FN_ADVANCED_USER(curly_dance_each, curly_dance_finished, curly_dance_reset, &((dance_user_data_t){KC_AT, KC_AT})),
     [TD_SQU] = ACTION_TAP_DANCE_FN_ADVANCED_USER(curly_dance_each, curly_dance_finished, curly_dance_reset, &((dance_user_data_t){ALGR(KC_8), ALGR(KC_9)})),
@@ -633,17 +734,21 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         switch (keycode) {
+            // diacrits should activate much faster than normal symbols 
             case TD(TD_A_UML):
             case TD(TD_O_UML):
             case TD(TD_U_UML):
             case TD(TD_SS_UML):
                 return 140;
-            case TD(TD_T):
             case TD(TD_N):
+            case TD(TD_F):
+                return 120;
+            case TD(TD_T):
+            case TD(TD_D):
                 return 140;
             case TD(TD_Y):
                 return 250;
             default:
-                return TAPPING_TERM;
+                return TAPPING_TERM;  // ~ 210
         }
 }

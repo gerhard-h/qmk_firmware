@@ -40,12 +40,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                              TD(TD_ESC),          TD(TD_Q),        TD(TD_W),          TD(TD_E),              KC_R,          KC_J,      TD(TD_Z),      TD(TD_U_UML),               KC_I,    TD(TD_O_UML),               KC_P,                KC_BSPC,
                                    MT(MOD_LCTL ,KC_TAB),      TD(TD_A_UML),   TD(TD_SS_UML),          TD(TD_D),          TD(TD_F),          KC_G,          KC_H,          TD(TD_N),           TD(TD_T),        TD(TD_L), MT(MOD_LALT, KC_K),    MT(MOD_LCTL,KC_ENT),
                                           OSM(MOD_LSFT),          TD(TD_Y),        TD(TD_X),          TD(TD_C),          TD(TD_V),          KC_B,      TD(TD_M),       TD(TD_COMM),         TD(TD_DOT),     TD(TD_DASH),              KC_UP,    MT(MOD_LSFT,KC_DEL),
-                                  MT(MOD_LCTL, KC_PGUP),           KC_LGUI,
-                                                                         KC_LALT,
-                                                                                    OSL(_L4),
-                                                                                                                        OSL(_LNAV),
-                                                                                                                                 LT(_LSYM,KC_SPC),
-                                                                                                                                                                          LT(_LNAV,KC_TAB),    LT(_L4,KC_DEL),         KC_LEFT,              KC_DOWN,                KC_RGHT
+                                                KC_LCTL,           KC_LGUI,         KC_LALT,          OSL(_L4),        OSL(_LNAV),
+                                                                                                                                            LT(_LSYM,KC_SPC),
+                                                                                                                                                                  LT(_LNAV,KC_TAB),     LT(_L4,KC_DEL),         KC_LEFT,             KC_DOWN,                KC_RGHT
  ),
 [_GAME] = LAYOUT_planck_mit(    
      KC_ESC,     KC_Q,        KC_W,          KC_E,          KC_R,          KC_J,           KC_Y,              KC_U,           KC_I,        KC_O,               KC_P,    KC_BSPC,
@@ -57,12 +54,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                              TD(TD_ESC),          TD(TD_Q),        TD(TD_W),          TD(TD_E),              KC_R,          KC_J,      TD(TD_Z),      TD(TD_U_UML),               KC_I,    TD(TD_O_UML),               KC_P,                KC_BSPC,
                                    MT(MOD_LCTL ,KC_TAB),      TD(TD_A_UML),   TD(TD_SS_UML),          TD(TD_D),          TD(TD_F),          KC_G,          KC_H,          TD(TD_N),           TD(TD_T),        TD(TD_L), MT(MOD_LALT, KC_K),    MT(MOD_LCTL,KC_ENT),
                                           OSM(MOD_LSFT),          TD(TD_Y),        TD(TD_X),          TD(TD_C),          TD(TD_V),          KC_B,      TD(TD_M),       TD(TD_COMM),         TD(TD_DOT),     TD(TD_DASH),              KC_UP,    MT(MOD_LSFT,KC_DEL),
-                                                KC_LCTL,           KC_LGUI,
-                                                                                    KC_LALT,
-                                                                                                         SH_OS,
-                                                                                                                        OSL(_LNAV),
-                                                                                                                                 LT(_LSYM,KC_SPC),
-                                                                                                                                                                          MO(_LNAV),     SH_OS,     LT(_L4,KC_DEL),                  KC_LGUI,                KC_LCTL
+                                                KC_LCTL,           KC_LGUI,         KC_LALT,             SH_OS,        OSL(_LNAV),
+                                                                                                                                            LT(_LSYM,KC_SPC),
+                                                                                                                                                                          MO(_LNAV),             SH_OS,     LT(_L4,KC_DEL),         KC_LGUI,                KC_LCTL
  ),
  
 /*           
