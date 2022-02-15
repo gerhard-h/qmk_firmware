@@ -165,7 +165,7 @@ void curly_dance_reset (qk_tap_dance_state_t *state, void *user_data) {
     if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
 }
 
-// TD shortcut () <> {} [] "" ''
+// TD shortcut () <> {} [] "" '' triggered by HOLD or DOUBLE_HOLD
 void shortcut_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
     atap_state.state = cur_dance(state);
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
@@ -183,7 +183,7 @@ void shortcut_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
                      // mods overwrite hold:  ctl + hold c -> C(c) instead of C({)
                      tap_code16(keycode); break;
              }
-             if (get_mods() & MOD_MASK_SHIFT) {
+             if ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT) {
                     // sft + hold c -> TD_DOUBLE_HOLD
                     // imlements the SFT_HOLD layer
                     mod_state = get_mods();
@@ -261,9 +261,10 @@ void dance_holdwmod_finished(qk_tap_dance_state_t *state, void *user_data) {
     }
 }*/
 
-/* i \ /, z ! C(z),... lost words: eineiige unparteiische variieren ~ 50 words; jazz piazza skizzen bizzar kreuzzug kurzzeitig zzgl. ~ 100
-alternativvorschlag ~ 5 words; 
-* for when SINGLE_TAP, SINGLE_HOLD, DOUBLE_TAP should all behave different and  DOUBLE_TAP equals DOUBLE_HOLD*/
+/* no dbl_tap for v, i and z. lost words: eineiige unparteiische variieren ~ 50 words; jazz piazza skizzen bizzar kreuzzug kurzzeitig zzgl. ~ 100
+ v lost words: alternativvorschlag ~ 5 words;
+* y comma q  
+* for when SINGLE_TAP, SINGLE_HOLD, DOUBLE_TAP should all behave different and DOUBLE_HOLD equals DOUBLE_TAP */
 void dance_dbltap_finished(qk_tap_dance_state_t *state, void *user_data) {
     atap_state.state = cur_dance(state);
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;        //normal
@@ -272,6 +273,15 @@ void dance_dbltap_finished(qk_tap_dance_state_t *state, void *user_data) {
     switch (atap_state.state) {
         case TD_SINGLE_HOLD:
              //if (get_mods() & (MOD_MASK_GUI | MOD_MASK_ALT | MOD_MASK_CTRL )) {tap_code16(keycode); break;} //was there a reason to exclude shift ... yes ü ... put a mod mask in userdata vs di$erent$inished functions 
+             if ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT) {
+                    // imlements the SFT_HOLD layer
+                    mod_state = get_mods();
+                    clear_mods();
+                    tap_code16(keycode3);
+                    set_mods(mod_state);
+                    break;
+             } 
+             // autocorrect to UPPER 
              if (get_mods() | get_oneshot_mods()) {tap_code16(keycode); break;}
              tap_code16(keycode2); break;
         case TD_DOUBLE_TAP:
@@ -292,6 +302,15 @@ void dance_autorepeat_finished(qk_tap_dance_state_t *state, void *user_data) {
         case TD_SINGLE_TAP: register_code16(keycode); break;
         case TD_SINGLE_HOLD:
                 if (get_mods() & (MOD_MASK_GUI | MOD_MASK_ALT | MOD_MASK_CTRL)) {tap_code16(keycode); break;}
+                if ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT) {
+                    // imlements the SFT_HOLD layer
+                    mod_state = get_mods();
+                    clear_mods();
+                    tap_code16(keycode3);
+                    if (keycode3 == KC_GRV) { tap_code(KC_SPC); }                 
+                    set_mods(mod_state);
+                    break;
+                } 
                 register_code16(keycode2); break;
         case TD_DOUBLE_HOLD:
             if (keycode3 == KC_GRV) { // dead key handling for ^
@@ -319,7 +338,9 @@ void dance_autorepeat_reset(qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
     switch (atap_state.state) {
         case TD_SINGLE_TAP: unregister_code16(keycode); break;
-        case TD_SINGLE_HOLD: unregister_code16(keycode2); break;
+        case TD_SINGLE_HOLD: 
+                if ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT) {break;}
+                unregister_code16(keycode2); break;
         case TD_DOUBLE_HOLD:  break;//unregister_code16(keycode3); break;
         case TD_DOUBLE_TAP:
         case TD_DOUBLE_SINGLE_TAP: 
@@ -454,8 +475,8 @@ void modifier_dbldance_finished (qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode3 = ((dance_user_data_t*)user_data)->keycode3;
     uint16_t keycode2;
     switch (keycode2param) {
-        case 11 :
-        case 12 :  keycode2 = KC_LSFT; break;
+        case 11 :  keycode2 = KC_LSFT; break;
+        case 12 :  keycode2 = KC_RSFT; break;
         case 22 :
         case 21 :  keycode2 = KC_LCTL; break;
         default :  keycode2 = KC_LALT; break;
@@ -475,7 +496,29 @@ void modifier_dbldance_finished (qk_tap_dance_state_t *state, void *user_data) {
 
     switch (ctap_state->state) {
         case TD_SINGLE_TAP: register_code16(keycode); break;
-        case TD_SINGLE_HOLD: register_code16(keycode2); break;
+        case TD_SINGLE_HOLD:
+                
+                // imlements the SFT_HOLD layer
+                switch (keycode2param) {
+                        case 22 :
+                        case 12 :
+                                if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_LSFT)) {
+                                        tap_code16(keycode3);break;       
+                                }
+                        case 21 :
+                                if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_RSFT)) {
+                                    mod_state = get_mods();
+                                    clear_mods();
+                                    tap_code16(keycode3);                 
+                                    set_mods(mod_state);
+                                    break;
+                                }                              
+                        case 11 :
+                                if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_RSFT)) {
+                                        tap_code16(keycode3);break;       
+                                }
+                }
+                register_code16(keycode2); break;
         case TD_DOUBLE_HOLD: tap_code16(keycode3); break;
         case TD_DOUBLE_TAP:
         case TD_DOUBLE_SINGLE_TAP:tap_code16(keycode);register_code16(keycode); break;
@@ -497,8 +540,8 @@ void modifier_dbldance_reset (qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode2param = ((dance_user_data_t*)user_data)->keycode2;
     uint16_t keycode2;
     switch (keycode2param) {
-        case 11 :
-        case 12 :  keycode2 = KC_LSFT; break;
+        case 11 :  keycode2 = KC_LSFT; break;
+        case 12 :  keycode2 = KC_RSFT; break;
         case 22 :
         case 21 :  keycode2 = KC_LCTL; break;
         default :  keycode2 = KC_LALT; break;
@@ -506,7 +549,8 @@ void modifier_dbldance_reset (qk_tap_dance_state_t *state, void *user_data) {
     td_tap_t *ctap_state = (keycode2param == 11) ? &s1tap_state_dbl : (keycode2param == 12) ? &s2tap_state_dbl : (keycode2param == 21) ? &c1tap_state_dbl : &c2tap_state_dbl; 
     switch (ctap_state->state) {
         case TD_SINGLE_TAP: unregister_code16(keycode); break;
-        case TD_SINGLE_HOLD: unregister_code16(keycode2); break;
+        case TD_SINGLE_HOLD:  
+                unregister_code16(keycode2); break;
         case TD_DOUBLE_HOLD: break;
         case TD_DOUBLE_TAP:
         case TD_DOUBLE_SINGLE_TAP:
@@ -548,8 +592,7 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_Q] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, dance_dbltap_finished, atap_state_reset, &((dance_user_data_t){KC_Q, DE_EXLM, DE_AT})), // tap, hold, double_tap 
     [TD_X] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, atap_state_reset, &((dance_user_data_t){KC_X, DE_PIPE})),
     [TD_C] = ACTION_TAP_DANCE_FN_ADVANCED_USER(shortcut_dance_each, shortcut_dance_finished, atap_state_reset, &((dance_user_data_t){KC_C, KC_NO, ALGR(KC_7), ALGR(KC_0)})), // tap, double tap key or KC_NO for 2xtap, hold, double_hold autoclose for "" '' () []...
-    [TD_V] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, atap_state_reset, &((dance_user_data_t){KC_V, ALGR(KC_0)})),
-    
+    [TD_V] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, atap_state_reset, &((dance_user_data_t){KC_V, ALGR(KC_0)})), 
     [TD_Y] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, dance_dbltap_finished, atap_state_reset, &((dance_user_data_t){KC_Z, C(KC_Z), C(KC_Z)})),
     [TD_Z] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, atap_state_reset, &((dance_user_data_t){KC_Y, DE_AMPR})),
     [TD_M] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_autorepeat_finished, dance_autorepeat_reset, &((dance_user_data_t){KC_M, S(KC_RBRC), S(KC_RBRC)})),
