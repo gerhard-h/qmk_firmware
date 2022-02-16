@@ -7,8 +7,12 @@ enum custom_keycodes {
     CTLSFTF,
     CIRCUMFL,
     TICKTICK,
+    N_RSHFT,
+    F_LSHFT
 };
 
+static uint16_t n_rshft_timer;
+static uint16_t f_lshft_timer;
 // Initialize variable holding the binary
 // representation of active modifiers.
 uint8_t mod_state;
@@ -116,6 +120,36 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     
    // first lets handel custom keycodes
    switch (keycode) {
+        case N_RSHFT:
+              if(record->event.pressed) {
+                n_rshft_timer = timer_read();
+                register_code(KC_RSFT); // Change the key to be held here
+              } else {
+                unregister_code(KC_RSFT); // Change the key that was held here, too!
+                if (timer_elapsed(n_rshft_timer) < 120 ) {  // < TAPPING_TERM
+                  tap_code16(KC_N); // Change the character(s) to be sent on tap here
+                } else 
+                if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_LSFT)) {
+                  tap_code16(DE_LPRN);      
+                }
+                return false;
+              }
+              break;
+        case F_LSHFT:
+              if(record->event.pressed) {
+                f_lshft_timer = timer_read();
+                register_code(KC_LSFT); // Change the key to be held here
+              } else {
+                unregister_code(KC_LSFT); // Change the key that was held here, too!
+                if (timer_elapsed(f_lshft_timer) < 120 ) {
+                  tap_code16(KC_F); // Change the character(s) to be sent on tap here
+                } else 
+                if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_RSFT)) {
+                  tap_code16(KC_DLR);      
+                }
+                return false;
+              }
+              break;
         case KC_BSPC:
         {
         // Initialize a boolean variable that keeps track
@@ -225,7 +259,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case KC_S: return process_record_hold_key(keycode, record, DE_SS, 8);	break;
             case KC_H: return process_record_hold_key(keycode, record, DE_SLSH, 9);	break;
     }
-    
-    return true;
+    // return false; // We handled this keypress
+    return true; // We didn't handle other keypresses
 };
  
