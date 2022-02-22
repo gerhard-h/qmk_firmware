@@ -59,11 +59,12 @@
 //#define DYNAMIC_KEYMAP_LAYER_COUNT 5
 #define NO_ACTION_MACRO //disable old-style macro handling using MACRO(), action_get_macro() (deprecated) EXTRAFLAGS += -flto
 #define NO_ACTION_FUNCTION //disable old-style function handling using fn_actions, action_function() (deprecated) EXTRAFLAGS += -flto
-//#define TAPPING_FORCE_HOLD // gives the hold behavior priority over the keyrepeat behavior. eg. to get dünn instead of ddun with LT(1,KC_D)
+//#define TAPPING_FORCE_HOLD // gives the hold behavior priority over the keyrepeat behavior. eg. to get dünn instead of ddun with LT(1,KC_D) 
 
 /* enable home row mods */
-#define IGNORE_MOD_TAP_INTERRUPT
-#define PERMISSIVE_HOLD
+#define IGNORE_MOD_TAP_INTERRUPT  // affects MT() ~ ALT 
+#define PERMISSIVE_HOLD           // affects tap dance (but seems to have no effect here)
+//#define HOLD_ON_OTHER_KEY_PRESS // negative effect on MT() ~ too many ALT
 
 #define ONESHOT_TAP_TOGGLE 3  /* Tapping this number of times holds the key until tapped once again. */
 #define ONESHOT_TIMEOUT 5000  /* Time (in ms) before the one shot key is released */

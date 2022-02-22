@@ -37,9 +37,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 *  CTL           ALT           NO            PgUp/Ctrl           WIN                  Del/Alt           Tab/Ctl              L1         Space/Shift   Space/Shift         L2                    OSL L4        Left              Down          Right
 */       
 [_L0] = LAYOUT_planck_mit(    
-                                             TD(TD_ESC),          TD(TD_Q),        TD(TD_W),          TD(TD_E),              KC_R,          KC_J,      TD(TD_Z),      TD(TD_U_UML),               KC_I,    TD(TD_O_UML),               KC_P,                KC_BSPC,
-                                   MT(MOD_LCTL ,KC_TAB),      TD(TD_A_UML),   TD(TD_SS_UML),          TD(TD_D),           F_LSHFT,          KC_G,          KC_H,           N_RSHFT,           TD(TD_T),        TD(TD_L), MT(MOD_LALT, KC_K),    MT(MOD_LCTL,KC_ENT),
-                                          OSM(MOD_LSFT),          TD(TD_Y),        TD(TD_X),          TD(TD_C),          TD(TD_V),          KC_B,      TD(TD_M),       TD(TD_COMM),         TD(TD_DOT),     TD(TD_DASH),              KC_UP,    MT(MOD_LSFT,KC_DEL),
+                                             TD(TD_ESC),          TD(TD_Q),        TD(TD_W),          TD(TD_E),              KC_R,          KC_J,      TD(TD_Z),      TD(TD_U_UML),           TD(TD_I),    TD(TD_O_UML),               KC_P,                KC_BSPC,
+                                   MT(MOD_LCTL ,KC_TAB),      TD(TD_A_UML),   TD(TD_SS_UML),          TD(TD_D),           F_LSHFT,          KC_G,      TD(TD_H),           N_RSHFT,           TD(TD_T),        TD(TD_L), MT(MOD_LALT, KC_K),    MT(MOD_LCTL,KC_ENT),
+                                          OSM(MOD_LSFT),          TD(TD_Y),        TD(TD_X),          TD(TD_C),          TD(TD_V),          KC_B,      TD(TD_M),       TD(TD_COMM),         TD(TD_DOT),     TD(TD_DASH),              KC_UP,    MT(MOD_RSFT,KC_DEL),
                                                 KC_LCTL,           KC_LGUI,         KC_LALT,          OSL(_L4),        OSL(_LNAV),
                                                                                                                                             LT(_LSYM,KC_SPC),
                                                                                                                                                                   LT(_LNAV,KC_TAB),     LT(_L4,KC_DEL),         KC_LEFT,             KC_DOWN,                KC_RGHT
@@ -101,7 +101,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_L3] = LAYOUT_planck_mit(
     TG(_GAME),     RESET,             DEBUG,      RGB_TOG,       RGB_MOD, RGB_HUI, RGB_HUD, KC_MS_BTN1,    KC_MS_UP,   KC_MS_BTN2,   KC_MS_WH_UP,    TO(_L0),
     TG(_SWAP),     KC_NO,      KC_MS_ACCEL0, KC_MS_ACCEL1,  KC_MS_ACCEL2, RGB_SAI, RGB_SAD, KC_MS_LEFT,  KC_MS_DOWN,  KC_MS_RIGHT, KC_MS_WH_DOWN,    KC_TRNS,
-    TG(_LNAV), TG(_LSYM),             KC_NO,        KC_NO,         KC_NO, RGB_VAI, RGB_VAD, KC_MS_BTN1,  KC_MS_BTN2,   KC_MS_BTN3,       _______,    _______,
+    TG(_LNAV), TG(_LSYM),             KC_NO,        KC_NO,     TG(_SWAP), RGB_VAI, RGB_VAD, KC_MS_BTN1,  KC_MS_BTN2,   KC_MS_BTN3,       _______,    _______,
     TO(_L0),     _______,           _______,      _______,       _______, _______,             _______,     _______,      _______,       _______,    _______
 ),
 
@@ -134,6 +134,6 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     case _GAME:
         hold_feature_active = 0;
         break;
-}
+    }
   return update_tri_layer_state(state, _LNAV, _LSYM, _L3);
 }

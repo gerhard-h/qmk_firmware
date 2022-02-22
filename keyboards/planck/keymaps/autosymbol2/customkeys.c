@@ -7,8 +7,16 @@ enum custom_keycodes {
     CTLSFTF,
     CIRCUMFL,
     TICKTICK,
-    BACKLIT
+    BACKLIT,
+    N_RSHFT,
+    F_LSHFT
 };
+
+static uint16_t n_rshft_timer;
+static uint16_t f_lshft_timer;
+//static uint16_t last_kc; // remember the last produced keycode (not last tapped key) !! unused ??
+
+uint8_t mod_state; // holding the binary representation of active modifiers
 
 typedef struct {
     uint16_t key_hold_timer;
@@ -107,8 +115,97 @@ bool process_record_hold_key(uint16_t keycode, keyrecord_t *record, uint16_t key
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-   // first lets handel custom keycodes
+        
+   // Store the current modifier state in the variable for later reference
+    mod_state = get_mods();
+    /*
     switch (keycode) {
+        case N_RSHFT: break;
+        case F_LSHFT: break;
+        default:
+          last_kc = KC_NO; break;
+    }
+    */
+   // first lets handel custom keycodes
+   switch (keycode) {
+        case N_RSHFT:
+              if(record->event.pressed) {
+                n_rshft_timer = timer_read();
+                register_code(KC_RSFT); // Change the key to be held here
+              } else {
+                unregister_code(KC_RSFT); // Change the key that was held here, too!
+                if (timer_elapsed(n_rshft_timer) < 120 ) {  // < TAPPING_TERM
+                  tap_code16(KC_N); // Change the character(s) to be sent on tap here
+                  //if (record->tap.count > 1) {
+                  //      tap_code16(KC_N);  
+                  //}
+                  //last_kc = KC_N;
+                } else 
+                if (timer_elapsed(n_rshft_timer) < 240 ) {  // < TAPPING_TERM x 2
+                  tap_code16(KC_N); // enable dbl tap ff
+                  //last_kc = KC_N;
+                } else        
+                if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_LSFT)) {
+                  tap_code16(DE_LPRN);
+                  //last_kc = DE_LPRN;      
+                }
+                return false;
+              }
+              break;
+        case F_LSHFT:
+              if(record->event.pressed) {
+                f_lshft_timer = timer_read();
+                register_code(KC_LSFT); // Change the key to be held here
+              } else {
+                unregister_code(KC_LSFT); // Change the key that was held here, too!
+                if (timer_elapsed(f_lshft_timer) < 120 ) {  // < TAPPING_TERM
+                  tap_code16(KC_F); // Change the character(s) to be sent on tap here
+                  //if (record->tap.count > 1) {
+                  //      tap_code16(KC_F);  
+                  //}
+                  //last_kc = KC_F;
+                } else 
+                if (timer_elapsed(f_lshft_timer) < 240 ) {  // < TAPPING_TERM x 2
+                  tap_code16(KC_F); // enable dbl tap ff
+                  //last_kc = KC_F;
+                } else        
+                if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_RSFT )) {
+                  tap_code16(KC_DLR);
+                  //last_kc = KC_DLR;      
+                }
+                return false;
+              }
+              break;
+        case KC_BSPC:
+        {
+        // Initialize a boolean variable that keeps track
+        // of the delete key status: registered or not?
+        static bool delkey_registered;
+        if (record->event.pressed) {
+            // Detect the activation of either shift keys
+            if (mod_state & MOD_MASK_SHIFT) {
+                // First temporarily canceling both shifts so that
+                // shift isn't applied to the KC_DEL keycode
+                del_mods(MOD_MASK_SHIFT);
+                register_code(KC_DEL);
+                // Update the boolean variable to reflect the status of KC_DEL
+                delkey_registered = true;
+                // Reapplying modifier state so that the held shift key(s)
+                // still work even after having tapped the Backspace/Delete key.
+                set_mods(mod_state);
+                return false;
+            }
+        } else { // on release of KC_BSPC
+            // In case KC_DEL is still being sent even after the release of KC_BSPC
+            if (delkey_registered) {
+                unregister_code(KC_DEL);
+                delkey_registered = false;
+                return false;
+            }
+        }
+        // Let QMK process the KC_BSPC keycode as usual outside of shift
+        return true;
+    }
     case PICKFIRST:
         if (record->event.pressed) {
             // when keycode PICKFIRST is pressed
@@ -196,16 +293,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case KC_P: return process_record_hold_key(keycode, record, DE_QUES, 0);	break;
             case KC_J: return process_record_hold_key(keycode, record, KC_PERC, 1);	break;
             case KC_R: return process_record_hold_key(keycode, record, DE_RBRC, 2);	break;
-            case KC_I: return process_record_hold_key(keycode, record, DE_BSLS, 4);	break;
+            //case KC_I: return process_record_hold_key(keycode, record, DE_BSLS, 4);	break;
             case KC_B: return process_record_hold_key(keycode, record, DE_PLUS, 3);	break;
             //case KC_T: return process_record_hold_key(keycode, record, DE_RPRN, 4);	break;
             //case KC_F: return process_record_hold_key(keycode, record, S(KC_4), 5);	break;
             case KC_G: return process_record_hold_key(keycode, record, DE_EQL, 6);	break;
             //case KC_D: return process_record_hold_key(keycode, record, ALGR(KC_NUBS), 7);	break;
-            case KC_S: return process_record_hold_key(keycode, record, DE_SS, 8);	break;
-            case KC_H: return process_record_hold_key(keycode, record, DE_SLSH, 9);	break;
+            //case KC_S: return process_record_hold_key(keycode, record, DE_SS, 8);	break;
+            //case KC_H: return process_record_hold_key(keycode, record, DE_SLSH, 9);	break;
     }
-    
-    return true;
+    // return false; // We handled this keypress
+    return true; // We didn't handle other keypresses
 };
  
