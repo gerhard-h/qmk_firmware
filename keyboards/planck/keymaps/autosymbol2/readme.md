@@ -32,10 +32,12 @@
     _instead of pressing a layer key just hold a key longer_
     key arrangemenet partly inspired by NEO, AltGr symbols, and shifted number symbols 
     
- 16x q w e u o a s d t l c m , . - esc :tapdance hold (autosymbol),  
- 10x r j (z) i p g h (x) (v) b         :custom key hold feature (reconsider using tapdance instead, but there is a bug with having to many tapdances)
-  3x f n bsp                           :custom key (reconsider using MT() giving up SFT_HOLD pseudo layer for this keys)       
-  
+ 22x q w e z u i o a s d h t l y x c v m , . - esc      :tapdance hold (autosymbol),  
+  5x r j p g b                                          :custom key hold feature (autosymbol)
+  2x f n                                                :custom key home row shift   
+  1x k                                                  :mod tap
+  (reconsider) using tapdance instead of custom key hold feature, but there is a bug with having to many tapdances (not tried to reproduce on planck)
+  (reconsider) using MT() instead of 'custom key home row shift' but that looses SFT_HOLD symbols for F and N   
     
   ### SFT_HOLD pseudo layer
     gives the ability to map Shift(SINGLE_HOLD) to any key
@@ -56,17 +58,22 @@
         * sft + hold(W)          -> ""  S                tapdance        also dbl_tap_hold
         * sft + hold(C)          -> {}  N                tapdance        also dbl_tap_hold
         * sft + hold(L)          -> ''  S                tapdance        also dbl_tap_hold
+        * sft + hold(I)          -> \\  N                tapdance        also dbl_tap_hold
+        * sft + hold(H)          -> //  S                tapdance        also dbl_tap_hold
         * sft + hold(A)          -> Ä   S                tapdance   
         * sft + hold(U)          -> Ü   S                tapdance
         * sft + hold(O)          -> Ö   S                tapdance       
         * unused keys  
-                rjz i p  
-                s  gh  
-                x  bm  
+                rjz    p  
+                s  g   
+                xv bm  
     
-    info for home row shifts ( rsft+hold(F), lsft+hold(N))  $ and ( are only shown after key release. todo test for timeouts  in matrix_scan_user 
+    info for home row shifts ( rsft+hold(F), lsft+hold(N))  $ and ( to not only show up after key release they are handeled in matrix_scan_user too
     
-    reconsider dbl_tap_hold(i or h) sft_hold(i or h) -> \\ or //  
+    still inconsistent (and unclear what is best):
+    sft + hold(m,z)         -> *,&             
+    sft + hold(r,b,s,p,j,g) -> R,B,S,P,J,G
+    sft + hold(x,v)         -> nothing
     
     TapDance currently does not support modifier deactivation inside _dance_finished() functions  
     wich is necessary for the is shifted = N cases.
@@ -152,10 +159,6 @@ reconsider RAISE and right side Layer4 keys Tap function: Tab? Del?
 
 todo light_control if OSM(modifier) is locked  (may be check osm status in matrix user)
   
- 
-  
-info tapdance usage before custom process_record_user (there have been serious errors on bm40rgb if the dbl_tap array got too big)  
-  
 info L3 ADJUST/Mouse-Layer is reached directly by Space + NAV  and also by  Lower + Raise (but not by  Raise_before_Lower) 
   
 (reconsider) a basic consideration was that using the cursor keys is a "one hand" operation thus RAISE must activate NAV layer  
@@ -172,7 +175,7 @@ info i, h and u will not use dbl_tap any more to allow words like: Auufer, Buchh
 info TAPPING_TERM 140 is good for typing diacrits äöüß but most keys should have longer timeouts, fixed by using TAPPING_TERM per key  
   
 info about custom autosymbol funtionality:  
-info single_tap_hold for r i p j b s g h  is not realized by tap dance, but instead in matrix_scan_user and process_record_user because of tap_dance array overflow,  
+info single_tap_hold for r p j b g is not realized by tap dance, but instead in matrix_scan_user and process_record_user because of tap_dance array overflow,  
      after removal of NumToFKey-dbltaps this is maybe not necessary anymore  
   
 ### AUTOCORRCET (reconsider)
@@ -264,39 +267,41 @@ always send KC_LEAD after ESC or up ? Does it work? Are there usecases?
 # home row mods timeing issues
 
 CTL and ALT have long activation presses, so they don't conflict with fast typing
-(timeing issue) pressing f and p (not a tapdance) 
+(timeing issue) pressing f and p or (r, j ,g, b) (not using tapdance) 
  * simaltanously gives P                        > ok
  * simaltanously holding both gives P           > ok
  * in succsession gives fp,                     > ok
- * in superfast wrong order gives Pf or P       > problem! pf 'pf' is what you wanted 
- * in fast wrong order hold gives ?             > bad handling invoking shift during hold 
+ * in superfast wrong order gives Pf or P       > problem? Pf  'pf' is what you wanted (unlikely to happen in pratice)
+ * in fast wrong order hold gives ?             > ok - bad handling invoking shift during hold 
  * in supersuperfast succsession gives fp or P  > ok
 (timeing issue) pressing f and e (is  a tapdance)
  * simaltanously gives E                        > ok
  * simaltanously holding both gives e           > bad handling
  * in succsession gives fe,                     > ok
- * in superfast wrong order gives e,            > problem because e_down f_down f_up ep_up all within TAPPING_TERM
- * in superfast succsession gives e             > problem! f is missing: f_down e_down f_up ep_up all within TAPPING_TERM
+ * in superfast wrong order gives e,            > ok (fixed) 
+ * in superfast succsession gives e             > ok (fixed)
 todos
  * make this tests with MT()
  * try retro tapping 
- * reduce TAPPING_TERM
+ * reduce/enlarge TAPPING_TERM
  * use Tapdance for all cases  
  
-bug Upper case F only possible with RShift or one shot modifiers tap, same with N and LShift ... who cares
+(bug) Upper case F only possible with RShift or one shot modifiers tap, also LShift+F ungegisters LShift even if held
+      same with N and LShift ... who cares
  
 # Alternativ layout/typing ideas
-instead of the hold feature it may be faster to just activate the symbol layer (to type diacrits)
-and use MT(shift, space) instead of homerow mod shift, but personaly I found autosymbol to be faster to learn and TYP
+instead of the autosymbol hold feature it may be faster to just activate the symbol layer (to type diacrits)
+and use MT(shift, space) instead of homerow mod shift, but personaly I found autosymbol to be faster to learn and to TYPE
 I tested this 
         LOWER > right symbols
         RAISE > left symbols
         SPACE > shift
-but didn't like cases like 
+but didn't like (because the thumb gets overworked) in cases like 
  * Fä where the thumb has to be faster than the fingers to not became the bottleneck
- * Ä where you have to shift with the other thumb than usual  
-solution 1: use classical shift keys, but these would force my whole hand outwards ~ half a key
-solution 2: LOWER = RAISE > all symbols, allows to shift as normal but requires diacrits to be pressed one handed or two handed in respect to the preceding letter 
-solution 3: have homerow SHIFT on the Symbol-Layer
-solution 4: have OSL(SYM) and make sure Space/Shift does not clear the osl status
-solution 5: tapdance diacrits on the OSL layer to get shifted versions
+ * Ä where you have to shift with the other thumb than usual 
+idea 1: use classical shift keys, but these would force my whole hand outwards ~ half a key
+idea 2: LOWER = RAISE > all symbols, allows to shift as normal but requires diacrits to be pressed one handed or two handed in respect to the preceding letter 
+idea 3a: use homerow SHIFT only on the Symbol-Layer
+idea 3b: use homerow SHIFT instead of thumb shift everywhere
+idea 4: have OSL(SYM) and make sure Space/Shift does not clear the osl status
+idea 5: tapdance diacrits on the OSL layer to get shifted versions
