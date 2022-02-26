@@ -135,7 +135,11 @@ bool process_record_hold_key(uint16_t keycode, keyrecord_t *record, uint16_t key
     	}    
 }
 
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {      
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  // If console is enabled, it will print the matrix position and status of each key pressed
+#ifdef CONSOLE_ENABLE
+    //dprintf("KL: kc: 0x%04X, col: %u, row: %u, pressed: %b, time: %u, interrupt: %b, count: %u\n", keycode, record->event.key.col, record->event.key.row, record->event.pressed, record->event.time, record->tap.interrupted, record->tap.count);
+#endif
    // Store the current modifier state in the variable for later reference
     mod_state = get_mods();
    // first lets handel custom keycodes
@@ -145,12 +149,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 n_rshft_pressed = true;      
                 n_rshft_done = false;
                 n_rshft_timer = timer_read();
+                dprintf("N down ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
                 register_code(KC_RSFT); // Change the key to be held here
               } else {
                 n_rshft_pressed = false;      
                 unregister_code(KC_RSFT); // Change the key that was held here, too!
                 if (timer_elapsed(n_rshft_timer) < 120 ) {  // < TAPPING_TERM
-                  tap_code16(KC_N); // Change the character(s) to be sent on tap here
+                  dprintf("N tap ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
+                  dprintf("N tap diff: %u ls: %u rs: %u\n", f_lshft_timer - n_rshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
+                  if( n_rshft_timer < f_lshft_timer && f_lshft_timer - n_rshft_timer < 80){
+                        unregister_code(KC_LSFT);
+                        tap_code16(KC_N);
+                        register_code(KC_LSFT);
+                  } else {
+                        tap_code16(KC_N); // Change the character(s) to be sent on tap here
+                  }
                   n_rshft_done = true;
                 } else 
                 if (timer_elapsed(n_rshft_timer) < 240 ) {  // < TAPPING_TERM x 2
@@ -160,7 +173,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_LSFT)) {
                   if(!n_rshft_done){
                         tap_code16(DE_LPRN);
-                        n_rshft_done = true;   
+                        n_rshft_done = true;
                   }
                 }
                 return false;
@@ -172,11 +185,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 f_lshft_done = false;     
                 f_lshft_timer = timer_read();
                 register_code(KC_LSFT); // Change the key to be held here
+                dprintf("F down ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
               } else {
                 f_lshft_pressed = false;
                 unregister_code(KC_LSFT); // Change the key that was held here, too!
                 if (timer_elapsed(f_lshft_timer) < 120 ) {  // < TAPPING_TERM
-                  tap_code16(KC_F); // Change the character(s) to be sent on tap here
+                  dprintf("F tap ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
+                  dprintf("F tap diff: %u ls: %u rs: %u\n", n_rshft_timer - f_lshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
+                  if( f_lshft_timer < n_rshft_timer && n_rshft_timer - f_lshft_timer < 80){
+                        unregister_code(KC_RSFT);
+                        tap_code16(KC_F);
+                        register_code(KC_RSFT);
+                  } else {
+                        tap_code16(KC_F); // Change the character(s) to be sent on tap here
+                  }
                   f_lshft_done = true;
                 } else 
                 if (timer_elapsed(f_lshft_timer) < 240 ) {  // < TAPPING_TERM x 2

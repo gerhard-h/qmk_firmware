@@ -6,17 +6,16 @@
  * uses Shift and Ctrl home row mods (prefering stronger fingers)
  * Thumb symetry (high compfort and easy to learn)
  * combined Numpad(phone like) and Navigation layer
- * proper arranged cursor keys
+ * proper arranged cursor keys on a 40% keyboard
  * option to use tapdance on one shot layers (sounds usefull when imlementig a one hand layout) 
  * for german keyboard layout (when only useing US keys the symbol arrangement could be further improved )
  * slightly improved QUERTY (NT and interpunctuation mod)
  
 ## qmk options
-  * no VIA because of unknown incomptibilities and size limitations
+  * no VIA because of unknown incomptibilities and size limitations using extra layers
   * tap dance
   * rgb key highlighting per layer
-  * custom keycodes (macros)
-  * KEY_LOCK_ENABLE
+  * custom keycodes (macros, autosymbol, home row shift)
   * SWAP_HANDS_ENABLE
   * MOUSEKEY_ENABLE
  
@@ -38,7 +37,25 @@
   1x k                                                  :mod tap
   (reconsider) using tapdance instead of custom key hold feature, but there is a bug with having to many tapdances (not tried to reproduce on planck)
   (reconsider) using MT() instead of 'custom key home row shift' but that looses SFT_HOLD symbols for F and N   
-    
+  fixed bug Nf/Fn instead of nf/fn when typing very fast Fn debug output:
+  
+  here Fn is corrected to fn within process_record_user because because diff < 80ms
+  ```
+OLKB:Planck:1: N down ft: 62629 nt: 62687 pressed: 1 time: 62687
+OLKB:Planck:1: F tap ft: 62629 nt: 62687 pressed: 0 time: 62729
+OLKB:Planck:1: F tap diff: 58 ls: 2 rs: 32
+OLKB:Planck:1: N tap ft: 62629 nt: 62687 pressed: 0 time: 62783
+OLKB:Planck:1: N tap diff: 4294967238 ls: 0 rs: 32
+  ```
+  
+  here Fn is not  corrected within process_record_user maybe because the letters seem to be typed by matrix_scan
+  but it only happens if F-up is forcefully delayed 
+  ```
+OLKB:Planck:1: F down ft: 64111 nt: 62687 pressed: 1 time: 64111
+OLKB:Planck:1: N down ft: 64111 nt: 64155 pressed: 1 time: 64155
+  ```
+  the key down events must be within less than 50ms, so a timer based fix seems possible
+  
   ### SFT_HOLD pseudo layer
     gives the ability to map Shift(SINGLE_HOLD) to any key
     this is alternative/additional approach to using Tapdance DOUBLE_TAP_HOLD feature
@@ -183,6 +200,14 @@ info TAP_HOLD is autocorreted as SINGLE_TAP if modifiers are active e.g. SHIFT +
 info DBL_TAP_HOLD is autocorreted to bb pp rr tt  instead of b+ p~ r] t)  
 info AHK does additional aä > ä ... autocorrection, but that is not very usefull  
   
+### Retro Tapping 
+(reconsider) only listing keycodes we really want it on
+Has noeffect on homerow mods d, f, n, t as MT is not used for them
+ * does some kind of autocorrection in case of MT(ALT,K) but some applicaions register ALT(K)
+ * MT,ACSW,4560  are also unpredictable depending on mod and application
+ * OSL keys are excluded because there is strange behavior in notepad++
+ * MT(SFT, DEL) is also excluded to avoid unwanted deletes
+ 
 ### TAP Dance Problems/Inconsistencies/specialties 
 
 #### autorepeat
