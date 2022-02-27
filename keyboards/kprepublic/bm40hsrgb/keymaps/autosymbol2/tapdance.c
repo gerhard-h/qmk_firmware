@@ -757,3 +757,14 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
                 return TAPPING_TERM;  // ~ 210
         }
 }
+bool get_retro_tapping(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case OSL(_L4):
+        case OSL(_LNAV):
+        case MT(MOD_RSFT,KC_DEL):
+        case LT(_LSYM,KC_SPC):
+            return false;
+        default:
+            return true;
+    }
+}

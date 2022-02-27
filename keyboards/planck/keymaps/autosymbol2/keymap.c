@@ -50,7 +50,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                           OSM(MOD_LSFT),          TD(TD_Y),        TD(TD_X),          TD(TD_C),          TD(TD_V),          KC_B,      TD(TD_M),       TD(TD_COMM),         TD(TD_DOT),     TD(TD_DASH),              KC_UP,    MT(MOD_LSFT,KC_DEL),
                                           OSM(MOD_LCTL),     OSM(MOD_LGUI),   OSM(MOD_LALT),        OSL(_LNAV),        OSL(_LNAV),
                                                                                                                                             LT(_LSYM,KC_SPC),
-                                                                                                                                                                          MO(_LNAV),          OSL(_LSYM),     LT(_L4,KC_DEL),         KC_LGUI,                KC_LCTL
+                                                                                                                                                                          MO(_LNAV),          OSL(_LSYM),     LT(_L4,KC_DEL), OSM(MOD_LGUI),           OSM(MOD_LCTL)
  ),
  
 /*           
@@ -68,7 +68,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
 /* 
 *   ________      TG(_LNAV)       ________      ^             @                        "                     [                       ]                        %               &             ü             \             ö               ?            ________
-*   ________      ________      ________      ________        ä                        ß                     #                       $                        =               /             (             )             '                        ________
+*   ________      ________      ________      ________        ä                        ß                     #                       $                        =               /             (             )             '               €            ________
 *   ________      ________      ________      ________        ´                        |                     {                       }                        +               *             <             >             ~              ________      ________
 *   ________      ________      ________      ________       WIN                       Alt                  ________                MouseLayer             ________        ________      ________      ________      ________          ________      ________
 * SYMBOL*/

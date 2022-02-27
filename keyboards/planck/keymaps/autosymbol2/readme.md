@@ -85,7 +85,7 @@ OLKB:Planck:1: N down ft: 64111 nt: 64155 pressed: 1 time: 64155
                 s  g   
                 xv bm  
     
-    info for home row shifts ( rsft+hold(F), lsft+hold(N))  $ and ( to not only show up after key release they are handeled in matrix_scan_user too
+    info for home row shifts rsft+hold(F) -> '$' and lsft+hold(N) -> ')'  to not only show up after key release they are handeled in matrix_scan_user too
     
     still inconsistent (and unclear what is best):
     sft + hold(m,z)         -> *,&             
@@ -174,8 +174,11 @@ OLKB:Planck:1: N down ft: 64111 nt: 64155 pressed: 1 time: 64155
 
 reconsider RAISE and right side Layer4 keys Tap function: Tab? Del?
 
-todo light_control if OSM(modifier) is locked  (may be check osm status in matrix user)
+todo add light_control if OSM(modifier) is locked  (may be check osm status in matrix user)
   
+todo bm40rgb light intensity controls are inactive -> search solution in oryx keymap code   
+todo planck has the Backlit key any purpose?  
+info tapdance usage: there have been serious errors on bm40rgb/idobo and maybe all amtel if the dbl_tap array got too big, so far not reproduced on planck 
 info L3 ADJUST/Mouse-Layer is reached directly by Space + NAV  and also by  Lower + Raise (but not by  Raise_before_Lower) 
   
 (reconsider) a basic consideration was that using the cursor keys is a "one hand" operation thus RAISE must activate NAV layer  
@@ -311,10 +314,10 @@ todos
  * reduce/enlarge TAPPING_TERM
  * use Tapdance for all cases  
  
-(bug) Upper case F only possible with RShift or one shot modifiers tap, also LShift+F ungegisters LShift even if held
+(bug) Upper case F only possible with RShift or one shot modifiers tap, also LShift+F unregisters LShift even if held down
       same with N and LShift ... who cares
  
-# Alternativ layout/typing ideas
+# Alternativ layout/typing ideas ... the past
 instead of the autosymbol hold feature it may be faster to just activate the symbol layer (to type diacrits)
 and use MT(shift, space) instead of homerow mod shift, but personaly I found autosymbol to be faster to learn and to TYPE
 I tested this 
@@ -330,3 +333,21 @@ idea 3a: use homerow SHIFT only on the Symbol-Layer
 idea 3b: use homerow SHIFT instead of thumb shift everywhere
 idea 4: have OSL(SYM) and make sure Space/Shift does not clear the osl status
 idea 5: tapdance diacrits on the OSL layer to get shifted versions
+
+# Alternativ layout/typing ideas ... the future
+
+After having dealt with all the quirks of homerow SHIFT, its finally the way to go.  
+Using fast timinig for Shift and slower timings for other mods.  
+Not using diacrit-autosymbol but having a layer key (eg. space) to the symbol layer has problems.
+ * Typing fünf or für would require swaping the used thumb depending on the letter after 'ü'
+   (using alwas the same thumb might be more practical)
+ * Pressing space and a key at the same time should favor layer activation 
+ * Also timing for layer deactivation gets an issue
+learnings:
+ * use symbol layer activated by a layer key
+ * only diacrits should be accessible by autosymbol hold. - so learning tap vs hold is restricted to only some keys
+ * diacrits must not be on the symbol layer - meaning symbols can be otimized freely ... but
+ * if dicrits conflict with home row mods like a/ä and s/ß  
+   consider puttig the complete set of home row mods on the symbol layer
+   (this means keep your symbol-home-row free of symbols you want to tapdance/autosymbol² on)
+  
