@@ -30,6 +30,21 @@ static td_tap_t atap_state = {
     .is_press_action = true,
     .state = TD_NONE
 };
+// force home row shift even if shift key is already released
+bool force_shift_tap( uint16_t keycode, bool sft_done, bool sft_pressed, bool only_register) {
+        dprintf("TD tap keycode: %u done: %b pressed: %b shft_up_timer: %u shft_used_timer: %u limit: 300\n", keycode, n_rshft_done,n_rshft_pressed,  timer_elapsed(shft_up_timer), timer_elapsed(shft_used_timer));
+        if ( !sft_done && !sft_pressed && timer_elapsed(shft_up_timer) < 300 && timer_elapsed(shft_used_timer) > 300 ) {
+                                        dprintf("TD force SFT  \n");
+                                        if(only_register){
+                                                register_code16(S(keycode));
+                                        } else {
+                                                tap_code16(S(keycode));
+                                        }
+                                        shft_used_timer = timer_read();
+                                        return true;
+        }
+        return false;
+}
 
 /*general td state evaluation*/
 td_state_t cur_dance(qk_tap_dance_state_t *state) {
@@ -177,11 +192,11 @@ void shortcut_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
             tap_code16(keycode3);
             tap_code16(keycode4);
             tap_code(keycode2); 
-        break;
+            return;
         case TD_SINGLE_HOLD:
              if (get_mods() & (MOD_MASK_GUI | MOD_MASK_ALT | MOD_MASK_CTRL)) {
                      // mods overwrite hold:  ctl + hold c -> C(c) instead of C({)
-                     tap_code16(keycode); break;
+                     tap_code16(keycode); return;
              }
              if ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT) {
                     // sft + hold c -> TD_DOUBLE_HOLD
@@ -192,11 +207,24 @@ void shortcut_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
                     tap_code16(keycode4);
                     tap_code(keycode2);
                     set_mods(mod_state);
-                    break;
+                    return;
              } 
              // hold c -> {
-             tap_code16(keycode3); break;
-        case TD_SINGLE_TAP: tap_code16(keycode); break;
+             tap_code16(keycode3); return;
+        case TD_SINGLE_TAP:
+                // do we have to set n_rshft_done to avoid double uppercase like EC instead of Ec
+                // applying shift even though the shift key got already released
+                switch (keycode) {
+                        case KC_W:
+                        case KC_E:
+                                if ( force_shift_tap(keycode, n_rshft_done, n_rshft_pressed, false)) {return;}
+                                break;
+                        default:
+                                if ( force_shift_tap(keycode, f_lshft_done, f_lshft_pressed, false)) {return;}
+                }
+                if( f_lshft_pressed || n_rshft_pressed){shft_used_timer = timer_read();}
+                tap_code16(keycode);
+                return;
         case TD_DOUBLE_TAP:
         case TD_DOUBLE_SINGLE_TAP:
         default:
@@ -226,7 +254,11 @@ void dance_ss_finished(qk_tap_dance_state_t *state, void *user_data) {
                      break;
              }
              tap_code16(keycode2); break;
-        default: tap_code(keycode); break;
+        default:
+                if ( force_shift_tap(keycode, n_rshft_done, n_rshft_pressed, false )) {return;}
+                if( f_lshft_pressed || n_rshft_pressed ){shft_used_timer = timer_read();}
+                tap_code16(keycode);
+                return;
     }
 }
 
@@ -264,7 +296,7 @@ void dance_holdwmod_finished(qk_tap_dance_state_t *state, void *user_data) {
     }
 }*/
 
-/* no dbl_tap for v, i and z. lost words: eineiige unparteiische variieren ~ 50 words; jazz piazza skizzen bizzar kreuzzug kurzzeitig zzgl. ~ 100
+/* i \ /, z ! C(z),... lost words: eineiige unparteiische variieren ~ 50 words; jazz piazza skizzen bizzar kreuzzug kurzzeitig zzgl. ~ 100
  v lost words: alternativvorschlag ~ 5 words;
 * y comma q  
 * for when SINGLE_TAP, SINGLE_HOLD, DOUBLE_TAP should all behave different and DOUBLE_HOLD equals DOUBLE_TAP */
@@ -500,7 +532,18 @@ void modifier_dbldance_finished (qk_tap_dance_state_t *state, void *user_data) {
     }   
 
     switch (ctap_state->state) {
-        case TD_SINGLE_TAP: register_code16(keycode); break;
+        case TD_SINGLE_TAP:
+              switch (keycode2param) {
+                        case 22 : // T
+                                if ( force_shift_tap(keycode, f_lshft_done, f_lshft_pressed, true)) {return;}
+                                break;
+                        case 21 : // D
+                                if ( force_shift_tap(keycode, n_rshft_done, n_rshft_pressed, true)) {return;}
+                                break;
+                }
+                if( f_lshft_pressed || n_rshft_pressed){shft_used_timer = timer_read();}
+                register_code16(keycode);
+                return;
         case TD_SINGLE_HOLD:
                 
                 // imlements the SFT_HOLD layer
@@ -533,7 +576,9 @@ void modifier_dbldance_finished (qk_tap_dance_state_t *state, void *user_data) {
         case TD_DOUBLE_HOLD: tap_code16(keycode3); break;
         case TD_DOUBLE_TAP:
         case TD_DOUBLE_SINGLE_TAP:tap_code16(keycode);register_code16(keycode); break;
-        default: register_code16(keycode); break;
+        default: 
+                register_code16(keycode);
+                return;
     }
 }
 
@@ -752,6 +797,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
             case TD(TD_D):
                 return 140;
             case TD(TD_Y):
+            case MT(MOD_LALT, KC_K):
                 return 250;
             default:
                 return TAPPING_TERM;  // ~ 210

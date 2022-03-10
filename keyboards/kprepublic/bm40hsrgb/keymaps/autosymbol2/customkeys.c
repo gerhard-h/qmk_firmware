@@ -17,6 +17,8 @@ static bool n_rshft_done;
 static bool f_lshft_done;
 static bool n_rshft_pressed;
 static bool f_lshft_pressed;
+static uint16_t shft_up_timer; // when shift was last released
+static uint16_t shft_used_timer; // when the last shifted letter was produced by a TAP and holding a home row mod
 
 uint8_t mod_state; // holding the binary representation of active modifiers
 
@@ -82,7 +84,7 @@ void matrix_scan_user(void) {
                    }
                }   
         }
-        
+        // resposivnes for holding F (lsft) then holding N (rsft) -> (
         if (!n_rshft_done &&  f_lshft_pressed && (timer_elapsed(n_rshft_timer) > 240) && (timer_elapsed(n_rshft_timer) < 245)){
           if(timer_elapsed(f_lshft_timer) > timer_elapsed(n_rshft_timer)){ 
            if((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_LSFT)) {
@@ -91,6 +93,7 @@ void matrix_scan_user(void) {
            }
           }
         }
+        // resposivnes for holding holding N (rsft) then F (lsft) -> $
         if (!f_lshft_done && n_rshft_pressed && (timer_elapsed(f_lshft_timer) > 240) && (timer_elapsed(f_lshft_timer) < 245)){
           if(timer_elapsed(f_lshft_timer) < timer_elapsed(n_rshft_timer)){ 
            if((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_LSFT)) {
@@ -151,11 +154,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 dprintf("N down ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
                 register_code(KC_RSFT); // Change the key to be held here
               } else {
+                shft_up_timer = timer_read();
                 n_rshft_pressed = false;      
                 unregister_code(KC_RSFT); // Change the key that was held here, too!
                 if (timer_elapsed(n_rshft_timer) < 120 ) {  // < TAPPING_TERM
                   dprintf("N tap ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
                   dprintf("N tap diff: %u ls: %u rs: %u\n", f_lshft_timer - n_rshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
+                  // if F (lsft) was pressed after N-down but before N-up don't shift N
                   if( n_rshft_timer < f_lshft_timer && f_lshft_timer - n_rshft_timer < 80){
                         unregister_code(KC_LSFT);
                         tap_code16(KC_N);
@@ -166,7 +171,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                   n_rshft_done = true;
                 } else 
                 if (timer_elapsed(n_rshft_timer) < 240 ) {  // < TAPPING_TERM x 2
-                  tap_code16(KC_N); // enable dbl tap ff
+                  tap_code16(KC_N); // enable dbl tap nn
                   n_rshft_done = true;
                 } else        
                 if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_LSFT)) {
@@ -186,11 +191,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 register_code(KC_LSFT); // Change the key to be held here
                 dprintf("F down ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
               } else {
+                shft_up_timer = timer_read();
                 f_lshft_pressed = false;
                 unregister_code(KC_LSFT); // Change the key that was held here, too!
                 if (timer_elapsed(f_lshft_timer) < 120 ) {  // < TAPPING_TERM
                   dprintf("F tap ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
                   dprintf("F tap diff: %u ls: %u rs: %u\n", n_rshft_timer - f_lshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
+                  // if N (rsft) was pressed after F-down but before F-up don't shift F
                   if( f_lshft_timer < n_rshft_timer && n_rshft_timer - f_lshft_timer < 80){
                         unregister_code(KC_RSFT);
                         tap_code16(KC_F);
@@ -201,15 +208,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                   f_lshft_done = true;
                 } else 
                 if (timer_elapsed(f_lshft_timer) < 240 ) {  // < TAPPING_TERM x 2
-                  tap_code16(KC_F); // enable dbl tap ff
-                  f_lshft_done = true;
+                          tap_code16(KC_F); // enable dbl tap ff
+                          f_lshft_done = true;
                 } else        
-                if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_RSFT )) {
-                  if(!f_lshft_done){
-                        tap_code16(KC_DLR);
-                        f_lshft_done = true;
-                  }      
-                }
+                        if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_RSFT )) {
+                          if(!f_lshft_done){
+                                tap_code16(KC_DLR);
+                                f_lshft_done = true;
+                          }      
+                        }
                 return false;
               }
               break;
