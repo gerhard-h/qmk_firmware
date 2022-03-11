@@ -713,6 +713,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
                 return TAPPING_TERM;  // ~ 210
         }
 }
+/* not so usefull better to increase tapping term 
 bool get_retro_tapping(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case OSL(_L4):
@@ -724,3 +725,4 @@ bool get_retro_tapping(uint16_t keycode, keyrecord_t *record) {
             return true;
     }
 }
+*/
