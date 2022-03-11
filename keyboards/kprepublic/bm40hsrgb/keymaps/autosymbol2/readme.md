@@ -26,7 +26,11 @@
     no use of TapDance on gaming layer,
     locate good keys for shift and space in combination with WASD
     DF() doesn't do the trick if you want an callback => TG(_GAME) is used
-    
+
+  ### Homerow mod early Shift
+  When releaseing the home row shift to early (in anticipation of preventing two uppercase letters)
+  the first letters becomes uppercase anyway. This is relevant in combination with PERMISSIVE_HOLD 
+  
   ### SINGLE_HOLD symbol pseudo layer / AUTOSYMBOL layer
     _instead of pressing a layer key just hold a key longer_
     key arrangemenet partly inspired by NEO, AltGr symbols, and shifted number symbols 

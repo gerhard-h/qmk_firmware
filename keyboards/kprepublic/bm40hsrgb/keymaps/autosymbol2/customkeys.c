@@ -17,7 +17,8 @@ static bool n_rshft_done;
 static bool f_lshft_done;
 static bool n_rshft_pressed;
 static bool f_lshft_pressed;
-static uint16_t shft_up_timer; // when shift was last released
+static uint16_t rshft_up_timer; // when shift was last released
+static uint16_t lshft_up_timer;
 static uint16_t shft_used_timer; // when the last shifted letter was produced by a TAP and holding a home row mod
 
 uint8_t mod_state; // holding the binary representation of active modifiers
@@ -108,7 +109,7 @@ void matrix_scan_user(void) {
 bool process_record_hold_key(uint16_t keycode, keyrecord_t *record, uint16_t keycode2, int hold_status ){
     if (record->event.pressed) {
                 hold_array[hold_status].key_tap_keycode =  keycode;
-                if (get_mods() | get_oneshot_mods()) { // If key was held ans no mods
+                if (get_mods() | get_oneshot_mods()) { // If key was held and no mods
                         hold_array[hold_status].key_hold_keycode =  keycode;
                 } else {                       
                         hold_array[hold_status].key_hold_keycode = keycode2;
@@ -154,7 +155,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 dprintf("N down ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
                 register_code(KC_RSFT); // Change the key to be held here
               } else {
-                shft_up_timer = timer_read();
+                rshft_up_timer = timer_read();
                 n_rshft_pressed = false;      
                 unregister_code(KC_RSFT); // Change the key that was held here, too!
                 if (timer_elapsed(n_rshft_timer) < 120 ) {  // < TAPPING_TERM
@@ -191,7 +192,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 register_code(KC_LSFT); // Change the key to be held here
                 dprintf("F down ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
               } else {
-                shft_up_timer = timer_read();
+                lshft_up_timer = timer_read();
                 f_lshft_pressed = false;
                 unregister_code(KC_LSFT); // Change the key that was held here, too!
                 if (timer_elapsed(f_lshft_timer) < 120 ) {  // < TAPPING_TERM
