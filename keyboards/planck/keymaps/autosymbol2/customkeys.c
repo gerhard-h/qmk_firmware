@@ -1,5 +1,5 @@
-/* custom keycodes (macros) and KEY_HOLD feature are in the same file bc they both modify process_record_user */
-// Macros
+/* custom keycodes (macros) */
+#include "customhold.c"
 enum custom_keycodes {
     PICKFIRST = SAFE_RANGE,
     PICK2ND,
@@ -18,72 +18,87 @@ static bool n_rshft_done;
 static bool f_lshft_done;
 static bool n_rshft_pressed;
 static bool f_lshft_pressed;
+static uint16_t rshft_up_timer; // when shift was last released
+static uint16_t lshft_up_timer;
+static uint16_t shft_used_timer; // when the last shifted letter was produced by a TAP and holding a home row mod
 
 uint8_t mod_state; // holding the binary representation of active modifiers
-
-typedef struct {
-    uint16_t key_hold_timer;
-    bool is_key_hold_active;
-    uint16_t key_hold_keycode;
-    uint16_t key_tap_keycode;
-    bool permit_up; // used to prevent autorepeat
-} key_hold_data_t;
-
-// each key needs its own status object
-#define HOLD_STAT_USER 10   // ATTENTION adjust array bounds
-static key_hold_data_t hold_array[HOLD_STAT_USER] = {0};
-static uint16_t key_hold_lastkey = 0;
-static uint16_t key_hold_dbltap_timer = 0;                                          
-static int hold_active_array[HOLD_STAT_USER];
-static int hold_active_max = -1;
-static int hold_feature_active = 1;
-void hold_active_clear_at(int index) {
-        for(int i = index; i < hold_active_max; i++) {
-               hold_active_array[i] = hold_active_array[i+1];
+// force home row shift even if shift key is already released
+bool force_shift_tap( uint16_t keycode, bool sft_done, bool sft_pressed, bool only_register, uint16_t shft_up_timer) {
+        
+        if ( !sft_done && !sft_pressed && timer_elapsed(shft_up_timer) < 300 && timer_elapsed(shft_used_timer) > 300 ) {
+                                        dprintf("TD force SFT  \n");
+                                        if(only_register){
+                                                register_code16(S(keycode));
+                                        } else {
+                                                tap_code16(S(keycode));
+                                        }
+                                        shft_used_timer = timer_read();
+                                        return true;
         }
-        hold_active_max--;
-        if (hold_active_max < -1) hold_active_max = -1;
+        return false;
 }
-void hold_active_clear(int hold_active_index) {
-        for(int i = 0; i <= hold_active_max; i++) {
-               if(hold_active_array[i] == hold_active_index) hold_active_clear_at(i);
+bool force_leftside_shift_tap( uint16_t keycode, bool only_register) {
+        dprintf("TD left side tap keycode: %u done: %b pressed: %b rshft_up_timer: %u shft_used_timer: %u limit: 300\n", keycode, n_rshft_done,n_rshft_pressed,  timer_elapsed(rshft_up_timer), timer_elapsed(shft_used_timer));
+        switch (keycode) {
+                        case KC_Q:
+                        case KC_W:
+                        case KC_R:
+                        case KC_E:
+                        case KC_J:
+                        case KC_A:
+                        case KC_S:
+                        case KC_D:
+                        case KC_F:
+                        case KC_G:
+                        case KC_Z:  //Y
+                        case KC_X:
+                        case KC_C:
+                        case KC_V:
+                        case KC_B:
+                                return force_shift_tap( keycode, n_rshft_done, n_rshft_pressed, only_register, rshft_up_timer);
+                        default:
+                                dprintf("TD left side tap keycode: %u is ignored bc it is not left side\n", keycode);
+                                return false;
         }
 }
-void hold_active_add(int index) {
-        hold_active_max++;
-        hold_active_array[hold_active_max] = index;
+bool force_rightside_shift_tap( uint16_t keycode, bool only_register) {
+        dprintf("TD right side tap keycode: %u done: %b pressed: %b lshft_up_timer: %u shft_used_timer: %u limit: 300\n", keycode, f_lshft_done,f_lshft_pressed,  timer_elapsed(lshft_up_timer), timer_elapsed(shft_used_timer));
+                switch (keycode) {
+                        case KC_Y: //Z
+                        case KC_U:
+                        case KC_I:
+                        case KC_O:
+                        case KC_P:
+                        case KC_H:
+                        case KC_N:
+                        case KC_T:
+                        case KC_L:
+                        case KC_K:
+                        case MT(MOD_LALT, KC_K):
+                        case KC_M:
+                        case KC_COMM:
+                        case KC_DOT:
+                                return force_shift_tap( keycode, f_lshft_done, f_lshft_pressed, only_register, lshft_up_timer);
+                        default:
+                                dprintf("TD right side tap keycode: %u is ignored bc it is not right side\n", keycode);
+                                return false;
+        }
 }
+void handle_force_shift_tap( uint16_t keycode, bool only_register) {
+        if ( force_leftside_shift_tap(keycode, false)) {return;}
+        if ( force_rightside_shift_tap(keycode, false)) {return;}
+        if( f_lshft_pressed || n_rshft_pressed){shft_used_timer = timer_read();}
+        if( only_register ) {
+                register_code16(keycode);
+        } else {
+                tap_code16(keycode);
+        }
+}
+
 void matrix_scan_user(void) {
-        // instead of a for loop over all status, processing is improved by putting is_key_hold_active indices in a list and only iterate over that
-        // control variables: hold_active_array [10] because number of fingers  or HOLD_STAT_USER,  int hold_active_max (highest used element of list)
-        // add: 1. hold_active_max++ 2. hold_active_array[hold_active_max] = me_pointer   
-        // clear: 1. find_me in hold_active_array shift higher array elements one index down 2. hold_active_max--  
-        // 2a. find_me in matrix_scan_user is obvious because we are in an hign to low loop of hold_active_array
-        // 2a. find_me in process_record_hold_key: linear search in hold_active_array
-        // instead of &hold_array[1] process_record_hold_key  should use the index
-        
-        for (int j=hold_active_max; j >= 0; j--){
-             int i = hold_active_array[j];
-             if (timer_elapsed(hold_array[i].key_hold_timer) > TAPPING_TERM) {
-                   if (hold_array[i].permit_up == true)  {  // todo check if permit_up is needed to prevent autorepeat
-                       hold_array[i].is_key_hold_active = false;
-                       hold_active_clear_at(j); 
-                       if (hold_array[i].key_tap_keycode == key_hold_lastkey) {
-                               if (timer_elapsed(key_hold_dbltap_timer) < (2 * TAPPING_TERM)) {
-                                        tap_code16(hold_array[i].key_tap_keycode); //todo timer with reset here and in process_record_hold_key missing
-                               } else {
-                                        tap_code16(hold_array[i].key_hold_keycode);
-                               }
-                       } else {                               
-                               tap_code16(hold_array[i].key_hold_keycode);
-                       }
-                       if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
-                       key_hold_lastkey = hold_array[i].key_tap_keycode;
-                       hold_array[i].permit_up = false;
-                   }
-               }   
-        }
-        
+        key_hold_matrix_scan_user();
+        // resposivnes for holding F (lsft) then holding N (rsft) -> (
         if (!n_rshft_done &&  f_lshft_pressed && (timer_elapsed(n_rshft_timer) > 240) && (timer_elapsed(n_rshft_timer) < 245)){
           if(timer_elapsed(f_lshft_timer) > timer_elapsed(n_rshft_timer)){ 
            if((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_LSFT)) {
@@ -92,6 +107,7 @@ void matrix_scan_user(void) {
            }
           }
         }
+        // resposivnes for holding holding N (rsft) then F (lsft) -> $
         if (!f_lshft_done && n_rshft_pressed && (timer_elapsed(f_lshft_timer) > 240) && (timer_elapsed(f_lshft_timer) < 245)){
           if(timer_elapsed(f_lshft_timer) < timer_elapsed(n_rshft_timer)){ 
            if((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_LSFT)) {
@@ -101,38 +117,6 @@ void matrix_scan_user(void) {
           }
         }
         
-}
-
-bool process_record_hold_key(uint16_t keycode, keyrecord_t *record, uint16_t keycode2, int hold_status ){
-    if (record->event.pressed) {
-                hold_array[hold_status].key_tap_keycode =  keycode;
-                if (get_mods() | get_oneshot_mods()) { // If key was held ans no mods
-                        hold_array[hold_status].key_hold_keycode =  keycode;
-                } else {                       
-                        hold_array[hold_status].key_hold_keycode = keycode2;
-                }
-                key_hold_dbltap_timer = timer_read();
-                hold_array[hold_status].key_hold_timer = timer_read();  // start the timer
-                hold_array[hold_status].is_key_hold_active = true;
-                hold_active_add(hold_status);
-                hold_array[hold_status].permit_up = true;
-                return false;              // return false to keep keycode from being sent yet
-        } else { 
-                if (timer_elapsed(hold_array[hold_status].key_hold_timer) > TAPPING_TERM) { // If key was held and no mods
-                        key_hold_lastkey = keycode2;
-                        //unregister_code16(hold_status->key_hold_keycode);
-                        hold_array[hold_status].is_key_hold_active = false;
-                        hold_active_clear(hold_status);
-                } else if (hold_array[hold_status].is_key_hold_active){                       
-                        tap_code16(keycode);// if key was tapped
-                        key_hold_lastkey = keycode;
-                        hold_array[hold_status].is_key_hold_active = false;
-                        hold_active_clear(hold_status);
-                }
-                hold_array[hold_status].permit_up = false;
-                if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
-                return false;
-    	}    
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -152,11 +136,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 dprintf("N down ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
                 register_code(KC_RSFT); // Change the key to be held here
               } else {
+                rshft_up_timer = timer_read();
                 n_rshft_pressed = false;      
                 unregister_code(KC_RSFT); // Change the key that was held here, too!
                 if (timer_elapsed(n_rshft_timer) < 120 ) {  // < TAPPING_TERM
                   dprintf("N tap ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
                   dprintf("N tap diff: %u ls: %u rs: %u\n", f_lshft_timer - n_rshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
+                  // if F (lsft) was pressed after N-down but before N-up don't shift N
                   if( n_rshft_timer < f_lshft_timer && f_lshft_timer - n_rshft_timer < 80){
                         unregister_code(KC_LSFT);
                         tap_code16(KC_N);
@@ -167,7 +153,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                   n_rshft_done = true;
                 } else 
                 if (timer_elapsed(n_rshft_timer) < 240 ) {  // < TAPPING_TERM x 2
-                  tap_code16(KC_N); // enable dbl tap ff
+                  tap_code16(KC_N); // enable dbl tap nn
                   n_rshft_done = true;
                 } else        
                 if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_LSFT)) {
@@ -187,11 +173,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 register_code(KC_LSFT); // Change the key to be held here
                 dprintf("F down ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
               } else {
+                lshft_up_timer = timer_read();
                 f_lshft_pressed = false;
                 unregister_code(KC_LSFT); // Change the key that was held here, too!
                 if (timer_elapsed(f_lshft_timer) < 120 ) {  // < TAPPING_TERM
                   dprintf("F tap ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
                   dprintf("F tap diff: %u ls: %u rs: %u\n", n_rshft_timer - f_lshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
+                  // if N (rsft) was pressed after F-down but before F-up don't shift F
                   if( f_lshft_timer < n_rshft_timer && n_rshft_timer - f_lshft_timer < 80){
                         unregister_code(KC_RSFT);
                         tap_code16(KC_F);
@@ -202,18 +190,32 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                   f_lshft_done = true;
                 } else 
                 if (timer_elapsed(f_lshft_timer) < 240 ) {  // < TAPPING_TERM x 2
-                  tap_code16(KC_F); // enable dbl tap ff
-                  f_lshft_done = true;
+                          tap_code16(KC_F); // enable dbl tap ff
+                          f_lshft_done = true;
                 } else        
-                if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_RSFT )) {
-                  if(!f_lshft_done){
-                        tap_code16(KC_DLR);
-                        f_lshft_done = true;
-                  }      
-                }
+                        if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_RSFT )) {
+                          if(!f_lshft_done){
+                                tap_code16(KC_DLR);
+                                f_lshft_done = true;
+                          }      
+                        }
                 return false;
               }
               break;
+        case MT(MOD_LALT, KC_K):
+            if (record->tap.count && record->event.pressed) {
+                // Intercept tap function
+                if ( force_rightside_shift_tap(KC_K, false)) {return false;}
+                if( f_lshft_pressed || n_rshft_pressed){shft_used_timer = timer_read();}
+            }
+            return true;             // Return true for normal processing of tap keycode
+
+            /*else if (record->event.pressed) {
+                tap_code16(ALGR(KC_E)); // Intercept hold function to send Ctrl-V
+            }
+            
+            return false;*/
+            
         /* S(BSP) = DEL ... tends to be more confusing than helpfull   
         case KC_BSPC:
         {

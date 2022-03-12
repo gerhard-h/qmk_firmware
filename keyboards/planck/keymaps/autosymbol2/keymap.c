@@ -38,12 +38,22 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                                                                             LT(_LSYM,KC_SPC),
                                                                                                                                                                   LT(_LNAV,KC_TAB),     LT(_L4,KC_DEL),         KC_LEFT,             KC_DOWN,                KC_RGHT
  ),
-[_GAME] = LAYOUT_planck_mit(    
+// test mt 
+ /*
+ [_GAME] = LAYOUT_planck_mit(    
+     KC_ESC,     KC_Q,        KC_W,          KC_E,          KC_R,          KC_J,           KC_Y,        TD(TD_U_UML),           KC_I,     TD(TD_O_UML),               KC_P,    KC_BSPC,
+     KC_TAB, TD(TD_A_UML), TD(TD_SS_UML),  LCTL_T(KC_D),  LSFT_T(KC_F),          KC_G,           KC_H,      RSFT_T(KC_N),   LCTL_T(KC_T),        KC_L,       LALT_T(KC_K),    KC_ENT,
+    KC_LSFT,     KC_Z,        KC_X,          KC_C,          KC_V,          KC_B,           KC_M,           KC_COMM,         KC_DOT,    KC_SLASH,              KC_UP,    KC_RSFT,
+    KC_LCTL,  KC_LALT,     KC_LSFT,        KC_SPC,        OSL(_LNAV), LT(_LSYM,KC_SPC),         OSL(_LNAV),               OSL(_L4),     KC_LEFT,            KC_DOWN,    KC_RGHT
+ ),
+ */
+ [_GAME] = LAYOUT_planck_mit(    
      KC_ESC,     KC_Q,        KC_W,          KC_E,          KC_R,          KC_J,           KC_Y,              KC_U,           KC_I,        KC_O,               KC_P,    KC_BSPC,
      KC_TAB,     KC_A,        KC_S,          KC_D,          KC_F,          KC_G,           KC_H,              KC_N,           KC_T,        KC_L,               KC_K,    KC_ENT,
     KC_LSFT,     KC_Z,        KC_X,          KC_C,          KC_V,          KC_B,           KC_M,           KC_COMM,         KC_DOT,    KC_SLASH,              KC_UP,    KC_RSFT,
     KC_LCTL,  KC_LALT,     KC_LSFT,        KC_SPC,        OSL(_LNAV), LT(_LSYM,KC_SPC),         OSL(_LNAV),               OSL(_L4),     KC_LEFT,            KC_DOWN,    KC_RGHT
  ),
+
 [_SWAP] = LAYOUT_planck_mit(    
                                              TD(TD_ESC),          TD(TD_Q),        TD(TD_W),          TD(TD_E),              KC_R,          KC_J,      TD(TD_Z),      TD(TD_U_UML),               KC_I,    TD(TD_O_UML),               KC_P,                KC_BSPC,
                                    MT(MOD_LCTL ,KC_TAB),      TD(TD_A_UML),   TD(TD_SS_UML),          TD(TD_D),          TD(TD_F),          KC_G,          KC_H,          TD(TD_N),           TD(TD_T),        TD(TD_L), MT(MOD_LALT, KC_K),    MT(MOD_LCTL,KC_ENT),

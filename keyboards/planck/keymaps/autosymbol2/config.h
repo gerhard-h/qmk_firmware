@@ -48,10 +48,10 @@
 #define RGBLIGHT_EFFECT_CHRISTMAS_STEP 1
 #endif
 
-# define RETRO_TAPPING
-# define RETRO_TAPPING_PER_KEY
+// # define RETRO_TAPPING
+// # define RETRO_TAPPING_PER_KEY
 #define TAPPING_TERM_PER_KEY
-#define TAPPING_TERM 210
+#define TAPPING_TERM 250 // 210
 //#define MOD_CODE_DELAY 0
 // # define TAP_CODE_DELAY 10 //will not fix Remotedesktop timings
 // #define USB_POLLING_INTERVAL_MS 10 # tried 1 and 10 both resourceheavy or it's just NKRO
@@ -61,7 +61,7 @@
 //#define DYNAMIC_KEYMAP_LAYER_COUNT 5
 #define NO_ACTION_MACRO //disable old-style macro handling using MACRO(), action_get_macro() (deprecated) EXTRAFLAGS += -flto
 #define NO_ACTION_FUNCTION //disable old-style function handling using fn_actions, action_function() (deprecated) EXTRAFLAGS += -flto
-//#define TAPPING_FORCE_HOLD // gives the hold behavior priority over the keyrepeat behavior. eg. to get dünn instead of ddun with LT(1,KC_D) 
+//#define TAPPING_FORCE_HOLD // gives the hold behavior priority over the keyrepeat behavior. eg. to get dünn instead of ddun with LT(1,KC_D)
 
 /* enable home row mods */
 #define IGNORE_MOD_TAP_INTERRUPT  // affects MT() ~ ALT 

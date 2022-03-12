@@ -1,7 +1,8 @@
-# An autosymbol keymap for plank (Rev 6)
+# An autosymbol keymap for planck rev6
  ## Highlights
  * uses KEY_HOLD pseudo layer to produce an alternativ key (a symbol) without the need of an layer activiation key - similar to the autoshift concept  
  * uses SHIFT + KEY_HOLD to create an additional pseudo layer (can also be achived by dbl_tap_hold)
+ * Homerow mod early Shift - allows too release shift keys early as most people will do when typing fast
  * because pseudo layers don't require additional layer activiation keys, this concept is promising for any keyboard 
  * uses Shift and Ctrl home row mods (prefering stronger fingers)
  * Thumb symetry (high compfort and easy to learn)
@@ -26,7 +27,13 @@
     no use of TapDance on gaming layer,
     locate good keys for shift and space in combination with WASD
     DF() doesn't do the trick if you want an callback => TG(_GAME) is used
-    
+
+  ### Homerow mod early Shift
+  When releaseing the home row shift to early (in anticipation of preventing two uppercase letters)  
+  the first letters becomes uppercase anyway. This is relevant in combination with PERMISSIVE_HOLD  
+  In contrast to Mod Tap (wich solves the problem solely by timing ) this System knows about wich key is located on wich side of the keboard and  
+  thus becomes able to anticipate the expected correct SHIFT behavior.
+  
   ### SINGLE_HOLD symbol pseudo layer / AUTOSYMBOL layer
     _instead of pressing a layer key just hold a key longer_
     key arrangemenet partly inspired by NEO, AltGr symbols, and shifted number symbols 
@@ -56,46 +63,54 @@ OLKB:Planck:1: N down ft: 64111 nt: 64155 pressed: 1 time: 64155
   ```
   the key down events must be within less than 50ms, so a timer based fix seems possible
   
-  ### SFT_HOLD pseudo layer
-    gives the ability to map Shift(SINGLE_HOLD) to any key
-    this is alternative/additional approach to using Tapdance DOUBLE_TAP_HOLD feature
-    this is way to map symbols on home row mod keys
-    this requires the skill not to Hold a upper case letter longer than a lower case letters f
-    current exsamples when holding Shift and holding key 
-        * activation            output  is shifted       implemented by
-        * rsft + hold(F)         -> $   S                custom keycode  lsft + hold(F) -> sft + ctl
-        * lsft + hold(N)         -> (   S                custom keycode  rsft + hold(N) -> sft + ctl
-        * lsft + hold(T)         -> )   S                tapdance        also dbl_tap_hold (if super fast)
-        * rsft + hold(D)         -> #   N                tapdance        also dbl_tap_hold (if super fast)
-        * sft + hold(,)          -> <   N                tapdance        also dbl_tap
-        * sft + hold(.)          -> >   S                tapdance        also dbl_tap_hold
-        * sft + hold(-)          -> ~   N                tapdance        also dbl_tap_hold
-        * sft + hold(Q)          -> @   N                tapdance        also dbl_tap    
-        * sft + hold(E)          -> []  N                tapdance        also dbl_tap_hold   
-        * sft + hold(W)          -> ""  S                tapdance        also dbl_tap_hold
-        * sft + hold(C)          -> {}  N                tapdance        also dbl_tap_hold
-        * sft + hold(L)          -> ''  S                tapdance        also dbl_tap_hold
-        * sft + hold(I)          -> \\  N                tapdance        also dbl_tap_hold
-        * sft + hold(H)          -> //  S                tapdance        also dbl_tap_hold
-        * sft + hold(A)          -> Ä   S                tapdance   
-        * sft + hold(U)          -> Ü   S                tapdance
-        * sft + hold(O)          -> Ö   S                tapdance       
-        * unused keys  
-                rjz    p  
-                s  g   
-                xv bm  
-    
-    info for home row shifts rsft+hold(F) -> '$' and lsft+hold(N) -> ')'  to not only show up after key release they are handeled in matrix_scan_user too
-    
-    still inconsistent (and unclear what is best):
+### SFT_HOLD pseudo layer
+
+gives the ability to map Shift(SINGLE_HOLD) to any key
+this is alternative/additional approach to using Tapdance DOUBLE_TAP_HOLD feature
+this is way to map symbols on home row mod keys
+this requires the skill not to Hold a upper case letter longer than a lower case letters f
+current exsamples when holding Shift and holding key  
+```
+ * activation            output  is shifted       implemented by
+ * rsft + hold(F)         -> $   S                custom keycode  lsft + hold(F) -> sft + ctl
+ * lsft + hold(N)         -> (   S                custom keycode  rsft + hold(N) -> sft + ctl
+ * lsft + hold(T)         -> )   S                tapdance        also dbl_tap_hold (if super fast)
+ * rsft + hold(D)         -> #   N                tapdance        also dbl_tap_hold (if super fast)
+ * sft + hold(,)          -> <   N                tapdance        also dbl_tap
+ * sft + hold(.)          -> >   S                tapdance        also dbl_tap_hold
+ * sft + hold(-)          -> ~   N                tapdance        also dbl_tap_hold
+ * sft + hold(Q)          -> @   N                tapdance        also dbl_tap    
+ * sft + hold(E)          -> []  N                tapdance        also dbl_tap_hold   
+ * sft + hold(W)          -> ""  S                tapdance        also dbl_tap_hold
+ * sft + hold(C)          -> {}  N                tapdance        also dbl_tap_hold
+ * sft + hold(L)          -> ''  S                tapdance        also dbl_tap_hold
+ * sft + hold(I)          -> \\  N                tapdance        also dbl_tap_hold
+ * sft + hold(H)          -> //  S                tapdance        also dbl_tap_hold
+ * sft + hold(A)          -> Ä   S                tapdance   
+ * sft + hold(U)          -> Ü   S                tapdance
+ * sft + hold(O)          -> Ö   S                tapdance     
+  
+ * unused keys  
+         rjz    p  
+         s  g   
+         xv bm  
+```
+info for home row shifts rsft+hold(F) -> '$' and lsft+hold(N) -> ')'  to not only show up after key release they are handeled in matrix_scan_user too
+
+still inconsistent (and unclear what is best):
+```
     sft + hold(m,z)         -> *,&             
     sft + hold(r,b,s,p,j,g) -> R,B,S,P,J,G
     sft + hold(x,v)         -> nothing
-    
-    TapDance currently does not support modifier deactivation inside _dance_finished() functions  
-    wich is necessary for the is shifted = N cases.
-    solution: `quantum/process_tap_dance.c` must be modified to stop enforcing mods.
-  ```
+```
+todos  
+ * increase Tapping Term for everything not producing a upper case letter
+ * favor upper case letter  
+
+TapDance currently does not support modifier deactivation inside _dance_finished() functions  
+wich is necessary for the is shifted = N cases.
+solution: `quantum/process_tap_dance.c` must be modified to stop enforcing mods.
+```
       static inline void process_tap_dance_action_on_dance_finished(qk_tap_dance_action_t *action) {
           if (action->state.finished) return;
           action->state.finished = true;
@@ -106,12 +121,28 @@ OLKB:Planck:1: N down ft: 64111 nt: 64155 pressed: 1 time: 64155
           send_keyboard_report();
           _process_tap_dance_action_fn(&action->state, action->user_data, action->fn.on_dance_finished);
       }
-        
-  ```
-  ### tap dance in one shot layers  
-    WARNING this is currently not supported by QMK.  
-    solution `quantum/action.c` must be modified to not clear the one shot status when pressing a custom keycode  
-    ```  
+```
+### Home row mods
+
+Using tapdance for multiple home row mods leads to 
+ * not activated mods when pressing the keys at the same time (long timespan)
+ * inconsistent behaviour when typing fast
+ * combinations of mod tap (alt) and tapdance (ctrl)
+ 
+Using custom key home row shift leads to 
+ * when pressing the ctl sft at the same time (short timespan) there is an asymetric behavior
+        * df -> d
+        * nt -> ctl + sft
+        * but because the middle finger is longer t will be down faster: tn -> t ()
+        * inward fingeractivation always produces d or t
+   workaround: Always Using Outward Finger Activation
+   workaround/todo: use MT() and test if we can process MT in process record user to implement SHIF_HOLD there 
+ * combinations of mod tap (alt) has no timing issues but may send the MT() key after releasing solution: disable retro tapping 
+
+### tap dance in one shot layers  
+WARNING this is currently not supported by QMK.  
+solution `quantum/action.c` must be modified to not clear the one shot status when pressing a custom keycode  
+```
         void process_action(  
         ...  
             if (is_oneshot_layer_active() && event.pressed && (action.kind.id == ACT_USAGE || !IS_MOD(action.key.code))  
@@ -127,48 +158,48 @@ OLKB:Planck:1: N down ft: 64111 nt: 64155 pressed: 1 time: 64155
                         }  
             do_release_oneshot = !is_oneshot_layer_active();  
         ...  
-   ```  
-        after disabling clear_oneshot it can/must be called in custom keycodes (process_record_user) and tapdances  
-        for example in all your _dance_reset callbacks  
-        ACTION_TAP_DANCE_FN_ADVANCED_USER(..._each_tap, ..._dance_finished, ..._dance_reset, user_user_data)  
-```  
-        if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);  
-```  
-        remember MT() will still clears OSL, but here we mostly use Tapdance as replacement for MT()
-          
+```
+After disabling clear_oneshot it can/must be called in custom keycodes (process_record_user) and tapdances  
+for example in all your _dance_reset callbacks  
+ACTION_TAP_DANCE_FN_ADVANCED_USER(..._each_tap, ..._dance_finished, ..._dance_reset, user_user_data)  
+```
+if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);  
+```
+Remember MT() will still clears OSL, but here we mostly use Tapdance as replacement for MT()
 
 ###  one hand typing (todo: find a strategy):
-        is currenly activated on layer _L3 (lsft), wich is not onehand itself maybe put it on V too  
+is currenly activated on layer _L3 (lsft), wich is not onehand itself maybe put it on V too  
+
+maybe use an optimized layout, because that emphazises the benefits of OSL()  
+        fdnig   jkm'-  
+        stheo   ypl.q  
+        cwrau   xbv,z  
         
-        maybe use an optimized layout, because that emphazises the benefits of OSL() 
-                fdnig   jkm'-  
-                stheo   ypl.q  
-                cwrau   xbv,z  
-                
-                - problem existing layer and diacrits clash  
-                - combo feature might cause problems  
-                - SH_OS onshot fails for  I, P and H  
-        more likely by using the swap hand or new layer qmk feature  
-                        - new base layer _SWAP necessary
-                        - without home row mods  
-                        - not having , on the main layer makes Comma makros less attractiv ... swap v and , maybe (use q combos?!)
-                        - no _LSYM layer all symbols are done by HOLD or DBL_TAP_HOLD
-                        - one_shot_swap and tapdance do not work out - main reason I want to go for individual layers  
-                        - mirroring cursor keys is pointless  
-                        - mirroring cursor keys in NAV layer is also pointless  
-                        - LOWER becomes OSL MIRROR,
-                        - SPACE_HOLD can be reused as Shift (implemented as tapdance to work with OSL)
-                        - (L4 can also be used as Shift, because it is easier to hold together with other mods OR)
-                        - maybe CTL ALT mods should be available as one shot mods OSM(sft) ... ?ctl OSM(win) OSM(alt) OSM(ctl) OSL(mirr) SPC/shift
-                        - OSM lock should happen after just 2 taps
-                        - SPACE_HOLD could be _LNAV instead of Shift
-                        - _NAV is maybe more important now, because BSP ENTER DEL HOME are only there?
-                        - esc > bsp S(esc) > del because escape is not so relevant?
-                        - bottom left ctl could become TO(_NUM) or OSL(_NUM); additional qw>1, qe>2,... 
-                        - TAB can become TO(NAV) ...   
-                        - or TAB (L4) can cycle TO(Num) TO(Macro) TO(FKEY) TO(NAV)?  
-                        - Shift can become TO(???) and TO(0)  
-                        - alt is only on the mouse ... ctrl too?  
+ - problem existing layer and diacrits clash  
+ - combo feature might cause problems  
+ - SH_OS onshot fails for  I, P and H  
+ 
+more likely by using the swap hand or new layer qmk feature  
+ - new base layer _SWAP necessary
+ - without home row mods  
+ - not having , on the main layer makes Comma makros less attractiv ... swap v and , maybe (use q combos?!)
+ - no _LSYM layer all symbols are done by HOLD or DBL_TAP_HOLD
+ - one_shot_swap and tapdance do not work out - main reason I want to go for individual layers  
+ - mirroring cursor keys is pointless  
+ - mirroring cursor keys in NAV layer is also pointless  
+ - LOWER becomes OSL MIRROR,
+ - SPACE_HOLD can be reused as Shift (implemented as tapdance to work with OSL)
+ - (L4 can also be used as Shift, because it is easier to hold together with other mods OR)
+ - maybe CTL ALT mods should be available as one shot mods OSM(sft) ... ?ctl OSM(win) OSM(alt) OSM(ctl) OSL(mirr) SPC/shift
+ - OSM lock should happen after just 2 taps
+ - SPACE_HOLD could be _LNAV instead of Shift
+ - _NAV is maybe more important now, because BSP ENTER DEL HOME are only there?
+ - esc > bsp S(esc) > del because escape is not so relevant?
+ - bottom left ctl could become TO(_NUM) or OSL(_NUM); additional qw>1, qe>2,... 
+ - TAB can become TO(NAV) ...   
+ - or TAB (L4) can cycle TO(Num) TO(Macro) TO(FKEY) TO(NAV)?  
+ - Shift can become TO(???) and TO(0)  
+ - alt is only on the mouse ... ctrl too?  
 
 ## todos, reminders, ideas 
 
@@ -189,10 +220,10 @@ info L3 ADJUST/Mouse-Layer is reached directly by Space + NAV  and also by  Lowe
 info backtick ` is only available as Shift(tick) on LSYM  (or as ahk macro: ,y)  
 info # $ () <> ~ ´ are also easyly available on SYMBOL-Layer (or as ahk macros)  
 info < and @ are available per double_tap , or q even without _hold 
-info € is only available per ctl+alt+e €   
+info € is only available per ctl+alt+e €  or Space + k -> €
 info {} and [] are not working in windows terminal when done as CTL(ALT()) always use ALGR()  
 info i, h and u will not use dbl_tap any more to allow words like: Auufer, Buchhalter, nachher,...   
-info TAPPING_TERM 140 is good for typing diacrits äöüß but most keys should have longer timeouts, fixed by using TAPPING_TERM per key  
+info short TAPPING_TERM 140 is good for typing diacrits äöüß but most keys should have longer timeouts, fixed by using TAPPING_TERM per key  
   
 info about custom autosymbol funtionality:  
 info single_tap_hold for r p j b g is not realized by tap dance, but instead in matrix_scan_user and process_record_user because of tap_dance array overflow,  
@@ -203,7 +234,7 @@ info TAP_HOLD is autocorreted as SINGLE_TAP if modifiers are active e.g. SHIFT +
 info DBL_TAP_HOLD is autocorreted to bb pp rr tt  instead of b+ p~ r] t)  
 info AHK does additional aä > ä ... autocorrection, but that is not very usefull  
   
-### Retro Tapping 
+### Retro Tapping (tested and dismissed)
 (reconsider) only listing keycodes we really want it on
 Has noeffect on homerow mods d, f, n, t as MT is not used for them
  * does some kind of autocorrection in case of MT(ALT,K) but some applicaions register ALT(K)
