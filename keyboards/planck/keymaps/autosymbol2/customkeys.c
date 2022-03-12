@@ -1,5 +1,5 @@
 /* custom keycodes (macros) */
-#include "customhold.c"
+// # include "customhold.c"
 enum custom_keycodes {
     PICKFIRST = SAFE_RANGE,
     PICK2ND,
@@ -97,7 +97,7 @@ void handle_force_shift_tap( uint16_t keycode, bool only_register) {
 }
 
 void matrix_scan_user(void) {
-        key_hold_matrix_scan_user();
+        // key_hold_matrix_scan_user();
         // resposivnes for holding F (lsft) then holding N (rsft) -> (
         if (!n_rshft_done &&  f_lshft_pressed && (timer_elapsed(n_rshft_timer) > 240) && (timer_elapsed(n_rshft_timer) < 245)){
           if(timer_elapsed(f_lshft_timer) > timer_elapsed(n_rshft_timer)){ 
@@ -327,7 +327,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       break;    
     }
 // second lets handel the KEY_HOLD feature keycodes
-    if (!hold_feature_active) return true;  
+/*    if (!hold_feature_active) return true;  
     if ((key_hold_lastkey != keycode) || (timer_elapsed(key_hold_dbltap_timer) > (2 * TAPPING_TERM))) key_hold_lastkey = KC_NO;
     switch (keycode) {
             // this is an alternate key on hold feature case KC_A...KC_Z:
@@ -343,6 +343,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             //case KC_S: return process_record_hold_key(keycode, record, DE_SS, 8);	break;
             //case KC_H: return process_record_hold_key(keycode, record, DE_SLSH, 9);	break;
     }
+*/
     // return false; // We handled this keypress
     return true; // We didn't handle other keypresses
 };

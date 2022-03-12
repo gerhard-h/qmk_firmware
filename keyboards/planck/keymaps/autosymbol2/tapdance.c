@@ -115,19 +115,19 @@ enum {
   TD_X,
   TD_C,
   TD_V,
-//  TD_B,
-//  TD_G,
-//  TD_J,
+  TD_B,
+  TD_G,
+  TD_J,
   TD_W,
   TD_N,
   TD_E,
   TD_L,
   TD_ESC,
 //  TD_DEL10,
-//  TD_R,
-//  TD_P,
+  TD_R,
+  TD_P,
   TD_T,
-  TD_BSP,
+//  TD_BSP,
 };
 
 
@@ -619,6 +619,17 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_SQU] = ACTION_TAP_DANCE_FN_ADVANCED_USER(curly_dance_each, curly_dance_finished, curly_dance_reset, &((dance_user_data_t){ALGR(KC_8), ALGR(KC_9)})),
     [TD_H] = ACTION_TAP_DANCE_FN_ADVANCED_USER(shortcut_dance_each, shortcut_dance_finished, atap_state_reset, &((dance_user_data_t){KC_H, KC_NO, DE_SLSH, DE_SLSH})),
     [TD_I] = ACTION_TAP_DANCE_FN_ADVANCED_USER(shortcut_dance_each, shortcut_dance_finished, atap_state_reset, &((dance_user_data_t){KC_I, KC_NO, DE_BSLS, DE_BSLS})),
+     
+          /*case KC_P: return process_record_hold_key(keycode, record, DE_QUES, 0);	break;
+            case KC_J: return process_record_hold_key(keycode, record, KC_PERC, 1);	break;
+            case KC_R: return process_record_hold_key(keycode, record, DE_RBRC, 2);	break;
+            case KC_B: return process_record_hold_key(keycode, record, DE_PLUS, 3);	break;
+            case KC_G: return process_record_hold_key(keycode, record, DE_EQL, 6);	break; */
+    [TD_B] = ACTION_TAP_DANCE_FN_ADVANCED_USER(shortcut_dance_each, shortcut_dance_finished, atap_state_reset, &((dance_user_data_t){KC_B, KC_NO, DE_PLUS, DE_PLUS})),
+    [TD_P] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, atap_state_reset, &((dance_user_data_t){KC_P, DE_QUES})),
+    [TD_G] = ACTION_TAP_DANCE_FN_ADVANCED_USER(shortcut_dance_each, shortcut_dance_finished, atap_state_reset, &((dance_user_data_t){KC_G, KC_NO, DE_EQL, DE_EQL})),
+    [TD_J] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, atap_state_reset, &((dance_user_data_t){KC_J, KC_PERC})),
+    [TD_R] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, atap_state_reset, &((dance_user_data_t){KC_R, DE_RBRC})),
     
 };
 

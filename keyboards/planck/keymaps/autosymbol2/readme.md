@@ -6,7 +6,7 @@
  * because pseudo layers don't require additional layer activiation keys, this concept is promising for any keyboard 
  * uses Shift and Ctrl home row mods (prefering stronger fingers)
  * Thumb symetry (high compfort and easy to learn)
- * combined Numpad(phone like) and Navigation layer
+ * combined (phone like)Numpad and Navigation layer
  * proper arranged cursor keys on a 40% keyboard
  * option to use tapdance on one shot layers (sounds usefull when imlementig a one hand layout) 
  * for german keyboard layout (when only useing US keys the symbol arrangement could be further improved )
