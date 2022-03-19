@@ -7,7 +7,6 @@ enum custom_keycodes {
     CTLSFTF,
     CIRCUMFL,
     TICKTICK,
-    STICKTICK,
     BACKLIT,
     N_RSHFT,
     F_LSHFT
@@ -303,15 +302,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             else {
                 tap_code(KC_EQL);
             }
-            tap_code(KC_SPC);
-            break;
-        } else {
-           if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
-        }
-        break;
-    case STICKTICK:
-        if (record->event.pressed) {
-            tap_code16(S(KC_EQL));
             tap_code(KC_SPC);
             break;
         } else {
