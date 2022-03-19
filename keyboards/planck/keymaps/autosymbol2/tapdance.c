@@ -137,6 +137,13 @@ void curly_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
      atap_state.state = cur_dance(state);
      uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
      uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
+    if ( keycode2 == S(KC_NUHS) && ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT)) { // sft + ' to "
+        keycode2 = KC_AT;
+    }
+    else if ( keycode2 == KC_AT && ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT))) { // sft + " to '
+        keycode = S(KC_NUHS);
+        keycode2 = S(KC_NUHS);
+    }
     switch (atap_state.state) {
         case TD_SINGLE_HOLD:
             tap_code16(keycode);
@@ -149,10 +156,22 @@ void curly_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
 }
 void curly_dance_each(qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
+    if ( keycode == S(KC_NUHS) && ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT)) { // sft + ' to "
+        keycode = KC_AT;
+    }
+    else if ( keycode == KC_AT && ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT))) { // sft + " to '
+        keycode = S(KC_NUHS);
+    }
     if (state->count > 1) tap_code16(keycode);
 };
 void curly_dance_reset (qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
+    if ( keycode == S(KC_NUHS) && ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT)) { // sft + ' to "
+        keycode = KC_AT;
+    }
+    else if ( keycode == KC_AT && ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT))) { // sft + " to '
+        keycode = S(KC_NUHS);
+    }
     switch (atap_state.state) {
         case TD_SINGLE_HOLD: break;
         case TD_SINGLE_TAP:
@@ -171,8 +190,19 @@ void shortcut_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
     uint16_t keycode3 = ((dance_user_data_t*)user_data)->keycode3;
     uint16_t keycode4 = ((dance_user_data_t*)user_data)->keycode4;
+    
     switch (atap_state.state) {
         case TD_DOUBLE_HOLD:
+            
+           if ( keycode3 == S(KC_NUHS) && ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT)) { // sft + ' to "
+                keycode3 = KC_AT;
+                keycode4 = KC_AT;
+            }
+            else if ( keycode3 == KC_AT && ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT))) { // sft + " to '
+                keycode3 = S(KC_NUHS);
+                keycode4 = S(KC_NUHS);
+            }
+            
             tap_code16(keycode3);
             tap_code16(keycode4);
             tap_code(keycode2); 
@@ -208,6 +238,12 @@ void shortcut_dance_finished (qk_tap_dance_state_t *state, void *user_data) {
 }
 void shortcut_dance_each(qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
+    if ( keycode == S(KC_NUHS) && ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT)) { // sft + ' to "
+        keycode = KC_AT;
+    }
+    else if ( keycode == KC_AT && ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT))) { // sft + " to '
+        keycode = S(KC_NUHS);
+    }
     if (state->count > 2) tap_code16(keycode);
 };
 //general reset function 

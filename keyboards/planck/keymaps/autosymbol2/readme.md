@@ -11,6 +11,7 @@
  * option to use tapdance on one shot layers (sounds usefull when imlementig a one hand layout) 
  * for german keyboard layout (when only useing US keys the symbol arrangement could be further improved )
  * slightly improved QUERTY (NT and interpunctuation mod)
+ * Shift quot -> dquote / shift dquote -> quot ... usefull???
  
 ## qmk options
   * no VIA because of unknown incomptibilities and size limitations using extra layers
@@ -370,20 +371,59 @@ idea 5: tapdance diacrits on the OSL layer to get shifted versions
 
 # Alternativ layout/typing ideas ... the future
 
-After having dealt with all the quirks of homerow SHIFT, its finally the way to go.  
-Using fast timinig for Shift and slower timings for other mods.  
-Not using diacrit-autosymbol but having a layer key (eg. space) to the symbol layer has problems.
- * Typing fünf or für would require swaping the used thumb depending on the letter after 'ü' for max speed
-   (using alwas the same thumb might be more practical)
- * Pressing space and a key at the same time should favor layer activation 
- * Also timing for layer deactivation gets an issue
-
-# learnings if you want to flatten the learning curve:
- * use symbol layer activated by a layer key
- * only diacrits should be accessible by autosymbol hold. - so learning tap vs hold is restricted to only some keys
- * diacrits must not be on the symbol layer to enforce/ease learning - meaning symbol layer can be optimized freely
-
+## ideas
+ * home-row-left-shift + RAISE/LOWER could switch to a different layer  
  * if dicrits conflict with home row mods like a/ä and s/ß  
-   consider puttig the complete set of home row mods on the symbol layer
-   (this means keep your symbol-home-row free of symbols you want to tapdance on)
-  
+   consider puttig a complete set of home row mods on the symbol layer (this means keep your symbol-layer-home-row free of symbols you want to tapdance on like LPARAN )
+
+## (no) Autoshift
+ * for me Autoshift required an awkward wait at the beginning of a word, but with additional training and more agressiv timings/customizations that might be a non issue
+ * Autoshift and Home row mods don't work well together, because it feels wrong to have letters with exceptions to autoshift  
+ * consider puttig a complete set of home row mods on the symbol layer (this means keep your symbol-layer-home-row free of symbols you want to tapdance on like LPARAN )
+ * Autoshift requires additional customization for uncomfortable/slow letters
+ * Autoshift forces diacrits to be mixed onto the symbol layer (or have an own layer)  
+ * idea: COMBO-DIACRIT like KOMMA + a/s/d/f -> ä/ß/ö/ü
+ * idea: Make an *OSL* DIACRIT-NUMBER-(MACRO) and FKEY-NAV layer instead of NAV-NUM and FKEY-MACRO  
+ * idea: Make an *OSL* DIACRIT-FKEY-MACRO layer  
+
+## (no) thumb shift
+ * space-shift is the fastest and most error free shifting methode, but it will get in your way when combining with autoshift or homerow mods
+   and even with other thumb layer keys  
+ * using space-shift in conjunction with a thumb activated layer for diacrits gets into thumb overloading problems.
+   Typing fünf or für would require swaping the used thumb depending on the letter after 'ü' for max speed  
+   (using alwas the same thumb might be more practical)
+   
+## no diacrits on extra layer
+ * Pressing space and a key at the same time should favor layer activation (wich is what happens)..
+ * Also timing for layer deactivation gets an issue  
+
+# learnings
+ * After having dealt with all the quirks of homerow SHIFT, its finally the way to go.  
+   Using fastest timinig for Shift(index finger), fast timing for ctrl(middle finger) and much slower timings for other mods.
+ * using auto diacrit with short timing feel more comfortable than hitting a separate layer key
+
+# flatten the learning curve/simlify this keymap: (asume you have LOWER/RAISE keys)
+ 1. remove diacrits from the symbol layer to enforce/ease learning  
+ 2. optimize symbol layer to your likings
+ 3. only diacrits äüöß, interpunctuation ,.- and other tripple-symbol-keys like q->@  should be accessible by autosymbol single_hold.  
+    That way learning tap vs hold is restricted to  much fewer keys
+ 3a. We may not need the whole SHIFT_HOLD system
+ 3b. Maybe we don't need the DBL_TAP_HOLD system either
+ 3c. Hold(Q) -> END and other options become possible againk 
+ 4. use symbol layer symbols only by activating the layer by a key(space)
+
+# todos
+
+ * using home row mod k as ALT is makes pressing mod combos difficult => move it to L
+ * remove diacrits from the symbol layer
+ * Hold(Q) -> END / Hold(esc) -> HOME
+ * using autosymbol should make it pointless to bind SPACE_HOLD to Symbol-Layer - remember !´`'€ - what else would be better?
+ * SHIFT_HOLD s -> ''
+ * map BSP DEL to layer buttons vv -> Enter  SHIFT_HOLD D -> TAB ,+d -># ,l ,+l->''
+ * or SHIFT_HOLD v -> TAB 
+ 
+combos?
+, q -> !
+, w -> '
+, s -> '
+
