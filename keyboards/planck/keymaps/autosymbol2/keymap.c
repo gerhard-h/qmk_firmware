@@ -18,6 +18,8 @@
 #include QMK_KEYBOARD_H
 //#include "muse.h"
 #include "keymap_german.h"
+// only here because of intellisense
+#include "rev6/config.h"
 //#include "rgb.c"
 enum layers { _L0, _GAME, _SWAP, _LNAV, _LSYM, _L3, _L4};
 #include "customkeys.c"
@@ -74,7 +76,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                          KC_TRNS,    TD(TD_DASH),              KC_1,              KC_2,              KC_3,            KC_INS, A(S(KC_TAB)),      KC_HOME,        KC_UP,     KC_END,  MT(MOD_LGUI,KC_PGUP),     KC_BSPC,
                                                          KC_TRNS,     TD(TD_DOT), MT(MOD_LALT,KC_4), MT(MOD_LCTL,KC_5), MT(MOD_LSFT,KC_6), MT(MOD_LGUI,KC_0),    A(KC_TAB),      KC_LEFT,      KC_DOWN,    KC_RGHT,  MT(MOD_LALT,KC_PGDN),     KC_TRNS,
                                                          KC_TRNS,    TD(TD_COMM),              KC_7,              KC_8,              KC_9,            KC_ENT,       KC_ESC,      KC_BSPC,       KC_DEL,     KC_ENT,               KC_TRNS,     KC_TRNS,
-                                                         KC_TRNS,        KC_TRNS,           KC_TRNS,           KC_TRNS,           KC_TRNS,           KC_TRNS,                  MO(_LSYM),      KC_TRNS,    KC_TRNS,               KC_TRNS,     KC_TRNS
+                                                         KC_TRNS,        KC_TRNS,           KC_TRNS,           KC_TRNS,           KC_TRNS,           KC_TRNS,                    TO(_L3),      KC_TRNS,    KC_TRNS,               KC_TRNS,     KC_TRNS
   ),
 /* 
 *   ________      TG(_LNAV)       ________      ^             @                        "                     [                       ]                        %               &             ü             \             ö               ?            ________
@@ -86,7 +88,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                 CIRCUMFL,     DE_EXLM,            TD(TD_DQUOT),            TD(TD_SQU),             ALGR(KC_9),              KC_PERC,       DE_AMPR,     KC_NUHS,        DE_BSLS,        KC_END,        DE_QUES,       KC_TRNS,
                                                  KC_TRNS,   STICKTICK,             TD(TD_QUOT),                KC_TAB,                 KC_DLR,              KC_RPRN,       DE_SLSH,  TD(TD_PAR),        KC_LPRN,   TD(TD_QUOT),     ALGR(KC_E),       KC_TRNS,
                                                  KC_LSFT,    TICKTICK,                 DE_PIPE,            TD(TD_CUR),             ALGR(KC_0),              KC_RBRC,       DE_ASTR,  TD(TD_ANG),     S(KC_NUBS),       DE_TILD,          KC_UP,       KC_TRNS,
-                                                 KC_TRNS,     KC_LGUI,                 KC_LALT,               KC_TRNS,              MO(_LNAV),              KC_TRNS,                    KC_TRNS,        KC_TRNS,       KC_TRNS,        KC_TRNS,       KC_TRNS
+                                                 KC_TRNS,     KC_LGUI,                 KC_LALT,               KC_TRNS,                TO(_L3),              KC_TRNS,                    TO(_L3),        KC_TRNS,       KC_TRNS,        KC_TRNS,       KC_TRNS
   ),
 
 /* L3
@@ -103,10 +105,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * 
  */
 [_L3] = LAYOUT_planck_mit(
-    TG(_GAME),     RESET,             DEBUG,      RGB_TOG,       RGB_MOD, RGB_HUI, RGB_HUD, KC_MS_BTN1,    KC_MS_UP,   KC_MS_BTN2,   KC_MS_WH_UP,    BACKLIT,
-    TG(_SWAP),     KC_NO,      KC_MS_ACCEL0, KC_MS_ACCEL1,  KC_MS_ACCEL2, RGB_SAI, RGB_SAD, KC_MS_LEFT,  KC_MS_DOWN,  KC_MS_RIGHT, KC_MS_WH_DOWN,    KC_TRNS,
-    TG(_LNAV), TG(_LSYM),             KC_NO,        KC_NO,     TG(_SWAP), RGB_VAI, RGB_VAD, KC_MS_BTN1,  KC_MS_BTN2,   KC_MS_BTN3,       _______,    _______,
-    TO(_L0),     _______,           _______,      _______,       _______, _______,             _______,     _______,      _______,       _______,    _______
+    TG(_GAME),     RESET,             DEBUG,      RGB_TOG,      TG(_SWAP), RGB_HUI, RGB_HUD, KC_MS_BTN1,    KC_MS_UP,   KC_MS_BTN2,   KC_MS_WH_UP,    BACKLIT,
+    TG(_SWAP),    RGB_MOD,      KC_MS_ACCEL0, KC_MS_ACCEL1,  KC_MS_ACCEL2, RGB_SAI, RGB_SAD, KC_MS_LEFT,  KC_MS_DOWN,  KC_MS_RIGHT, KC_MS_WH_DOWN,    KC_TRNS,
+    TG(_LNAV),  TG(_SWAP),       KC_MS_BTN3,   KC_MS_BTN2,     KC_MS_BTN1, RGB_VAI, RGB_VAD, KC_MS_BTN1,  KC_MS_BTN2,   KC_MS_BTN3,       _______,    _______,
+    TO(_L0),    TG(_LSYM),           _______,      _______,       KC_LCTL, TO(_L0),             KC_LSFT,     _______,      _______,       _______,    _______
 ),
 
 
@@ -130,7 +132,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 };
 
-layer_state_t layer_state_set_user(layer_state_t state) {
+//layer_state_t layer_state_set_user(layer_state_t state) {
     /*switch (get_highest_layer(state)) {
     case _L0:
         hold_feature_active = 1;
@@ -139,5 +141,10 @@ layer_state_t layer_state_set_user(layer_state_t state) {
         hold_feature_active = 0;
         break;
     }*/
-  return update_tri_layer_state(state, _LNAV, _LSYM, _L3);
+//  return update_tri_layer_state(state, _LNAV, _LSYM, _L3);
+// }
+void oneshot_locked_mods_changed_user(uint8_t mods) {
+  if ((mods & MOD_MASK_SHIFT)) {
+   tap_code(KC_LSFT);
+  }
 }

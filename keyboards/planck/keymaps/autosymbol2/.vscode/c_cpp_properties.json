@@ -1,0 +1,62 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/../../**",
+                "${workspaceFolder}/../../rev6/**",
+                "C:\\Users\\heideg\\qmk_firmware_my\\keyboards\\planck\\",
+                "C:\\Users\\heideg\\qmk_firmware_my\\keyboards\\planck\\rev6\\",
+                "C:\\Users\\heideg\\qmk_firmware_my\\platforms\\**",
+                "C:\\pcg\\QMK_MSYS\\mingw64\\avr\\include\\",
+                "C:\\pcg\\QMK_MSYS\\mingw64\\avr\\include\\avr\\**",
+                "C:\\Users\\heideg\\qmk_firmware_my\\quantum\\**",
+                "C:\\Users\\heideg\\qmk_firmware_my\\tmk_core\\**",
+                "C:\\pcg\\QMK_MSYS\\mingw64\\x86_64-w64-mingw32\\include",
+                "C:\\pcg\\QMK_MSYS\\mingw64\\lib\\clang\\13.0.0\\include\\**",
+                "C:\\pcg\\QMK_MSYS\\mingw64\\lib\\gcc\\arm-none-eabi\\**",
+                "C:\\pcg\\QMK_MSYS\\mingw64\\lib\\**"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-msvc-x64"
+        },
+        {
+            "name": "mysys",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "C:\\Users\\heideg\\qmk_firmware_my\\quantum\\**",
+                "C:\\Users\\heideg\\qmk_firmware_my\\tmk_core\\**",
+                "C:\\pcg\\QMK_MSYS\\mingw64\\x86_64-w64-mingw32\\include",
+                "C:\\Users\\heideg\\qmk_firmware_my\\platforms\\**",
+                "C:\\pcg\\QMK_MSYS\\mingw64\\lib\\clang\\13.0.0\\include\\**",
+                "C:\\pcg\\QMK_MSYS\\mingw64\\lib\\gcc\\arm-none-eabi\\**",
+                "C:\\pcg\\QMK_MSYS\\mingw64\\lib\\**"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-gcc-x64",
+            "compilerArgs": [],
+            "mergeConfigurations": false,
+            "browse": {
+                "path": [
+                    "C:\\pcg\\QMK_MSYS\\mingw64\\x86_64-w64-mingw32\\include",
+                    "${workspaceFolder}"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            }
+        }
+    ],
+    "version": 4
+}
