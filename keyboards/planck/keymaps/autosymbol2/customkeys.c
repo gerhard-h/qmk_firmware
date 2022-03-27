@@ -264,6 +264,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             tap_code(KC_UP);tap_code(KC_RGHT);tap_code(KC_ENT);
         } else {
            if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
+           //PLAY_SONG(PLANCK_SOUND); error in makro
         }
         break;
 

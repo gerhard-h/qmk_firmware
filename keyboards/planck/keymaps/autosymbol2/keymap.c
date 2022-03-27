@@ -19,7 +19,7 @@
 //#include "muse.h"
 #include "keymap_german.h"
 // only here because of intellisense
-#include "rev6/config.h"
+//include "rev6/config.h"
 //#include "rgb.c"
 enum layers { _L0, _GAME, _SWAP, _LNAV, _LSYM, _L3, _L4};
 #include "customkeys.c"
@@ -76,7 +76,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                          KC_TRNS,    TD(TD_DASH),              KC_1,              KC_2,              KC_3,            KC_INS, A(S(KC_TAB)),      KC_HOME,        KC_UP,     KC_END,  MT(MOD_LGUI,KC_PGUP),     KC_BSPC,
                                                          KC_TRNS,     TD(TD_DOT), MT(MOD_LALT,KC_4), MT(MOD_LCTL,KC_5), MT(MOD_LSFT,KC_6), MT(MOD_LGUI,KC_0),    A(KC_TAB),      KC_LEFT,      KC_DOWN,    KC_RGHT,  MT(MOD_LALT,KC_PGDN),     KC_TRNS,
                                                          KC_TRNS,    TD(TD_COMM),              KC_7,              KC_8,              KC_9,            KC_ENT,       KC_ESC,      KC_BSPC,       KC_DEL,     KC_ENT,               KC_TRNS,     KC_TRNS,
-                                                         KC_TRNS,        KC_TRNS,           KC_TRNS,           KC_TRNS,           KC_TRNS,           KC_TRNS,                    TO(_L3),      KC_TRNS,    KC_TRNS,               KC_TRNS,     KC_TRNS
+                                                         KC_TRNS,        KC_TRNS,           KC_TRNS,           KC_TRNS,           TO(_L3),           KC_TRNS,                    TO(_L3),      KC_TRNS,    KC_TRNS,               KC_TRNS,     KC_TRNS
   ),
 /* 
 *   ________      TG(_LNAV)       ________      ^             @                        "                     [                       ]                        %               &             ü             \             ö               ?            ________
@@ -143,8 +143,50 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     }*/
 //  return update_tri_layer_state(state, _LNAV, _LSYM, _L3);
 // }
-void oneshot_locked_mods_changed_user(uint8_t mods) {
-  if ((mods & MOD_MASK_SHIFT)) {
-   tap_code(KC_LSFT);
+/* oneshot callbacks don't work 
+void oneshot_mods_changed_user(uint8_t mods) {
+  if (mods & MOD_MASK_SHIFT) {
+    println("Oneshot mods SHIFT");
+    if (GOODBYE_SONG) {dprintf("song found: ")};
+    PLAY_SONG(GOODBYE_SONG);
+  }
+  if (mods & MOD_MASK_CTRL) {
+    println("Oneshot mods CTRL");
+  }
+  if (mods & MOD_MASK_ALT) {
+    println("Oneshot mods ALT");
+  }
+  if (mods & MOD_MASK_GUI) {
+    println("Oneshot mods GUI");
+  }
+  if (!mods) {
+    println("Oneshot mods off");
   }
 }
+void oneshot_locked_mods_changed_user(uint8_t mods) {
+  if (mods & MOD_MASK_SHIFT) {
+    dprintf("Oneshot locked mods SHIFT");
+  }
+  if (mods & MOD_MASK_CTRL) {
+    dprintf("Oneshot locked mods CTRL");
+  }
+  if (mods & MOD_MASK_ALT) {
+    dprintf("Oneshot locked mods ALT");
+  }
+  if (mods & MOD_MASK_GUI) {
+    dprintf("Oneshot locked mods GUI");
+  }
+  if (!mods) {
+    dprintf("Oneshot locked mods off");
+  }
+}
+void oneshot_layer_changed_user(uint8_t layer) {
+  if (layer == 1) {
+    println("Oneshot layer 1 on");
+  }
+  if (!layer) {
+    println("Oneshot layer off");
+  }
+  PLAY_SONG(GOODBYE_SONG);
+}
+*/

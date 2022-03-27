@@ -61,7 +61,7 @@
 //#define DYNAMIC_KEYMAP_LAYER_COUNT 5
 #define NO_ACTION_MACRO //disable old-style macro handling using MACRO(), action_get_macro() (deprecated) EXTRAFLAGS += -flto
 #define NO_ACTION_FUNCTION //disable old-style function handling using fn_actions, action_function() (deprecated) EXTRAFLAGS += -flto
-//#define TAPPING_FORCE_HOLD // gives the hold behavior priority over the keyrepeat behavior. eg. to get dünn instead of ddun with LT(1,KC_D)
+//#define TAPPING_FORCE_HOLD // gives the hold behavior priority over the keyrepeat behavior. eg. to get dï¿½nn instead of ddun with LT(1,KC_D)
 
 /* enable home row mods */
 #define IGNORE_MOD_TAP_INTERRUPT  // affects MT() ~ ALT 
@@ -74,13 +74,13 @@
 ///#define EXTRA_SHORT_COMBOS // Defining EXTRA_SHORT_COMBOS combines a combo's internal state into just one byte. This can, in some cases, save some memory. If it doesn't, no point using it.
 //#define COMBO_TERM 100 // default 50
 #define MK_KINETIC_SPEED
-#define MOUSEKEY_DELAY 5                                // Delay between pressing a movement key and cursor movement
+#define MOUSEKEY_DELAY 0                                // Delay between pressing a movement key and cursor movement
 #define MOUSEKEY_INTERVAL 16                            // Time between cursor movements in milliseconds
-#define MOUSEKEY_MOVE_DELTA 5                           // Step size for accelerating from initial to base speed
-#define MOUSEKEY_INITIAL_SPEED 100                      // Initial speed of the cursor in pixel per second
-#define MOUSEKEY_BASE_SPEED 1000                        // Maximum cursor speed at which acceleration stops
-#define MOUSEKEY_DECELERATED_SPEED 400                  // Decelerated cursor speed
-#define MOUSEKEY_ACCELERATED_SPEED 3000                 // Accelerated cursor speed
+#define MOUSEKEY_MOVE_DELTA 3                           // Step size for accelerating from initial to base speed
+#define MOUSEKEY_INITIAL_SPEED 40                      // Initial speed of the cursor in pixel per second
+#define MOUSEKEY_BASE_SPEED 500                        // Maximum cursor speed at which acceleration stops
+#define MOUSEKEY_DECELERATED_SPEED 300                  // Decelerated cursor speed
+#define MOUSEKEY_ACCELERATED_SPEED 2000                 // Accelerated cursor speed
 #define MOUSEKEY_WHEEL_INITIAL_MOVEMENTS 16             // Initial number of movements of the mouse wheel
 #define MOUSEKEY_WHEEL_BASE_MOVEMENTS 32                // Maximum number of movements at which acceleration stops
 #define MOUSEKEY_WHEEL_ACCELERATED_MOVEMENTS 48         // Accelerated wheel movements
