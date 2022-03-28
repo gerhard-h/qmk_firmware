@@ -35,8 +35,8 @@
 #define DISABLE_RGB_MATRIX_SOLID_SPLASH
 #define DISABLE_RGB_MATRIX_SOLID_MULTISPLASH
 
-//# define RETRO_TAPPING
-//# define RETRO_TAPPING_PER_KEY
+// # define RETRO_TAPPING
+// # define RETRO_TAPPING_PER_KEY
 #define TAPPING_TERM_PER_KEY
 #define TAPPING_TERM 250 // 210
 //#define MOD_CODE_DELAY 0
@@ -55,8 +55,20 @@
 #define PERMISSIVE_HOLD           // affects tap dance (but seems to have no effect here)
 //#define HOLD_ON_OTHER_KEY_PRESS // negative effect on MT() ~ too many ALT
 
-#define ONESHOT_TAP_TOGGLE 3  /* Tapping this number of times holds the key until tapped once again. */
-#define ONESHOT_TIMEOUT 5000  /* Time (in ms) before the one shot key is released */
+//#define ONESHOT_TAP_TOGGLE 2  /* Tapping this number of times holds the key until tapped once again. */
+//#define ONESHOT_TIMEOUT 3000  /* Time (in ms) before the one shot key is released */
 //#define LEADER_TIMEOUT 500
 ///#define EXTRA_SHORT_COMBOS // Defining EXTRA_SHORT_COMBOS combines a combo's internal state into just one byte. This can, in some cases, save some memory. If it doesn't, no point using it.
 //#define COMBO_TERM 100 // default 50
+#define MK_KINETIC_SPEED
+#define MOUSEKEY_DELAY 0                                // Delay between pressing a movement key and cursor movement
+#define MOUSEKEY_INTERVAL 16                            // Time between cursor movements in milliseconds
+#define MOUSEKEY_MOVE_DELTA 2                           // Step size for accelerating from initial to base speed
+#define MOUSEKEY_INITIAL_SPEED 40                      // Initial speed of the cursor in pixel per second
+#define MOUSEKEY_BASE_SPEED 500                        // Maximum cursor speed at which acceleration stops
+#define MOUSEKEY_DECELERATED_SPEED 300                  // Decelerated cursor speed
+#define MOUSEKEY_ACCELERATED_SPEED 4000                 // Accelerated cursor speed
+#define MOUSEKEY_WHEEL_INITIAL_MOVEMENTS 16             // Initial number of movements of the mouse wheel
+#define MOUSEKEY_WHEEL_BASE_MOVEMENTS 32                // Maximum number of movements at which acceleration stops
+#define MOUSEKEY_WHEEL_ACCELERATED_MOVEMENTS 48         // Accelerated wheel movements
+#define MOUSEKEY_WHEEL_DECELERATED_MOVEMENTS 8          // Decelerated wheel movements

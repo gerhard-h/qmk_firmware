@@ -1,5 +1,5 @@
 /* custom keycodes (macros) */
-#include "customhold.c"
+// # include "customhold.c"
 enum custom_keycodes {
     PICKFIRST = SAFE_RANGE,
     PICK2ND,
@@ -7,6 +7,8 @@ enum custom_keycodes {
     CTLSFTF,
     CIRCUMFL,
     TICKTICK,
+    STICKTICK,
+    BACKLIT,
     N_RSHFT,
     F_LSHFT
 };
@@ -22,10 +24,81 @@ static uint16_t lshft_up_timer;
 static uint16_t shft_used_timer; // when the last shifted letter was produced by a TAP and holding a home row mod
 
 uint8_t mod_state; // holding the binary representation of active modifiers
-
+// force home row shift even if shift key is already released
+bool force_shift_tap( uint16_t keycode, bool sft_done, bool sft_pressed, bool only_register, uint16_t shft_up_timer) {
+        
+        if ( !sft_done && !sft_pressed && timer_elapsed(shft_up_timer) < 300 && timer_elapsed(shft_used_timer) > 300 ) {
+                                        dprintf("TD force SFT  \n");
+                                        if(only_register){
+                                                register_code16(S(keycode));
+                                        } else {
+                                                tap_code16(S(keycode));
+                                        }
+                                        shft_used_timer = timer_read();
+                                        return true;
+        }
+        return false;
+}
+bool force_leftside_shift_tap( uint16_t keycode, bool only_register) {
+        dprintf("TD left side tap keycode: %u done: %b pressed: %b rshft_up_timer: %u shft_used_timer: %u limit: 300\n", keycode, n_rshft_done,n_rshft_pressed,  timer_elapsed(rshft_up_timer), timer_elapsed(shft_used_timer));
+        switch (keycode) {
+                        case KC_Q:
+                        case KC_W:
+                        case KC_R:
+                        case KC_E:
+                        case KC_J:
+                        case KC_A:
+                        case KC_S:
+                        case KC_D:
+                        case KC_F:
+                        case KC_G:
+                        case KC_Z:  //Y
+                        case KC_X:
+                        case KC_C:
+                        case KC_V:
+                        case KC_B:
+                                return force_shift_tap( keycode, n_rshft_done, n_rshft_pressed, only_register, rshft_up_timer);
+                        default:
+                                dprintf("TD left side tap keycode: %u is ignored bc it is not left side\n", keycode);
+                                return false;
+        }
+}
+bool force_rightside_shift_tap( uint16_t keycode, bool only_register) {
+        dprintf("TD right side tap keycode: %u done: %b pressed: %b lshft_up_timer: %u shft_used_timer: %u limit: 300\n", keycode, f_lshft_done,f_lshft_pressed,  timer_elapsed(lshft_up_timer), timer_elapsed(shft_used_timer));
+                switch (keycode) {
+                        case KC_Y: //Z
+                        case KC_U:
+                        case KC_I:
+                        case KC_O:
+                        case KC_P:
+                        case KC_H:
+                        case KC_N:
+                        case KC_T:
+                        case KC_L:
+                        case KC_K:
+                        case MT(MOD_LALT, KC_K):
+                        case KC_M:
+                        case KC_COMM:
+                        case KC_DOT:
+                                return force_shift_tap( keycode, f_lshft_done, f_lshft_pressed, only_register, lshft_up_timer);
+                        default:
+                                dprintf("TD right side tap keycode: %u is ignored bc it is not right side\n", keycode);
+                                return false;
+        }
+}
+void handle_force_shift_tap( uint16_t keycode, bool only_register) {
+        if ( force_leftside_shift_tap(keycode, false)) {return;}
+        if ( force_rightside_shift_tap(keycode, false)) {return;}
+        if( f_lshft_pressed || n_rshft_pressed){shft_used_timer = timer_read();}
+        if( only_register ) {
+                register_code16(keycode);
+        } else {
+                tap_code16(keycode);
+        }
+}
 
 void matrix_scan_user(void) {
-        key_hold_matrix_scan_user();
+        // key_hold_matrix_scan_user();
         // resposivnes for holding F (lsft) then holding N (rsft) -> (
         if (!n_rshft_done &&  f_lshft_pressed && (timer_elapsed(n_rshft_timer) > 240) && (timer_elapsed(n_rshft_timer) < 245)){
           if(timer_elapsed(f_lshft_timer) > timer_elapsed(n_rshft_timer)){ 
@@ -130,6 +203,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 return false;
               }
               break;
+        case MT(MOD_LALT, KC_K):
+            if (record->tap.count && record->event.pressed) {
+                // Intercept tap function
+                if ( force_rightside_shift_tap(KC_K, false)) {return false;}
+                if( f_lshft_pressed || n_rshft_pressed){shft_used_timer = timer_read();}
+            }
+            return true;             // Return true for normal processing of tap keycode
+
+            /*else if (record->event.pressed) {
+                tap_code16(ALGR(KC_E)); // Intercept hold function to send Ctrl-V
+            }
+            
+            return false;*/
+            
         /* S(BSP) = DEL ... tends to be more confusing than helpfull   
         case KC_BSPC:
         {
@@ -177,6 +264,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             tap_code(KC_UP);tap_code(KC_RGHT);tap_code(KC_ENT);
         } else {
            if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
+           //PLAY_SONG(PLANCK_SOUND); error in makro
         }
         break;
 
@@ -222,9 +310,29 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
            if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
         }
         break;
+    case STICKTICK:
+        if (record->event.pressed) {
+            tap_code16(S(KC_EQL));
+            tap_code(KC_SPC);
+            break;
+        } else {
+           if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
+        }
+        break;
+   case BACKLIT:
+      if (record->event.pressed) {
+        register_code(KC_RSFT);
+        #ifdef BACKLIGHT_ENABLE
+          backlight_step();
+        #endif
+      } else {
+        unregister_code(KC_RSFT);
+      }
+      return false;
+      break;    
     }
 // second lets handel the KEY_HOLD feature keycodes
-    if (!hold_feature_active) return true;  
+/*    if (!hold_feature_active) return true;  
     if ((key_hold_lastkey != keycode) || (timer_elapsed(key_hold_dbltap_timer) > (2 * TAPPING_TERM))) key_hold_lastkey = KC_NO;
     switch (keycode) {
             // this is an alternate key on hold feature case KC_A...KC_Z:
@@ -240,6 +348,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             //case KC_S: return process_record_hold_key(keycode, record, DE_SS, 8);	break;
             //case KC_H: return process_record_hold_key(keycode, record, DE_SLSH, 9);	break;
     }
+*/
     // return false; // We handled this keypress
     return true; // We didn't handle other keypresses
 };

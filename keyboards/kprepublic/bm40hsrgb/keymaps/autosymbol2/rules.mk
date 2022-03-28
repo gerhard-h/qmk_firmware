@@ -5,7 +5,7 @@ TAP_DANCE_ENABLE = yes
 LEADER_ENABLE = no
 EXTRAKEY_ENABLE = yes
 KEY_LOCK_ENABLE = no
-# -flto saves ~14% on firmware size
+# qmk compiler optimization -flto saves ~14% on firmware size
 EXTRAFLAGS += -flto
 # console might require to disable mouse to fit in memory
 CONSOLE_ENABLE = no

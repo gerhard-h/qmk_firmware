@@ -18,6 +18,8 @@
 #include QMK_KEYBOARD_H
 //#include "muse.h"
 #include "keymap_german.h"
+// only here because of intellisense
+//include "rev6/config.h"
 #include "rgb.c"
 enum layers { _L0, _GAME, _SWAP, _LNAV, _LSYM, _L3, _L4};
 #include "customkeys.c"
@@ -38,12 +40,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 *  CTL           ALT           NO            PgUp/Ctrl           WIN                  Del/Alt           Tab/Ctl              L1         Space/Shift   Space/Shift         L2                    OSL L4        Left              Down          Right
 */       
 [_L0] = LAYOUT_planck_mit(    
-                                             TD(TD_ESC),          TD(TD_Q),        TD(TD_W),          TD(TD_E),              KC_R,          KC_J,      TD(TD_Z),      TD(TD_U_UML),           TD(TD_I),    TD(TD_O_UML),               KC_P,                KC_BSPC,
-                                   MT(MOD_LCTL ,KC_TAB),      TD(TD_A_UML),   TD(TD_SS_UML),          TD(TD_D),           F_LSHFT,          KC_G,      TD(TD_H),           N_RSHFT,           TD(TD_T),        TD(TD_L), MT(MOD_LALT, KC_K),    MT(MOD_LCTL,KC_ENT),
-                                          OSM(MOD_LSFT),          TD(TD_Y),        TD(TD_X),          TD(TD_C),          TD(TD_V),          KC_B,      TD(TD_M),       TD(TD_COMM),         TD(TD_DOT),     TD(TD_DASH),              KC_UP,    MT(MOD_RSFT,KC_DEL),
+                                             TD(TD_ESC),          TD(TD_Q),        TD(TD_W),          TD(TD_E),          TD(TD_R),       TD(TD_J),      TD(TD_Z),      TD(TD_U_UML),           TD(TD_I),    TD(TD_O_UML),           TD(TD_P),                KC_BSPC,
+                                   MT(MOD_LCTL ,KC_TAB),      TD(TD_A_UML),   TD(TD_SS_UML),          TD(TD_D),           F_LSHFT,       TD(TD_G),      TD(TD_H),           N_RSHFT,           TD(TD_T), MT(MOD_LALT, KC_L), MT(MOD_LGUI, KC_K), MT(MOD_LCTL,KC_ENT),
+                                          OSM(MOD_LSFT),          TD(TD_Y),        TD(TD_X),          TD(TD_C),          TD(TD_V),       TD(TD_B),      TD(TD_M),       TD(TD_COMM),         TD(TD_DOT),     TD(TD_DASH),              KC_UP,    MT(MOD_RSFT,KC_DEL),
                                           OSM(MOD_LCTL),     OSM(MOD_LGUI),   OSM(MOD_LALT),          OSL(_L4),        OSL(_LNAV),
                                                                                                                                             LT(_LSYM,KC_SPC),
-                                                                                                                                                                  LT(_LNAV,KC_TAB),     LT(_L4,KC_DEL),         KC_LEFT,             KC_DOWN,                KC_RGHT
+                                                                                                                                                                  LT(_LNAV,KC_BSPC),     LT(_L4,KC_DEL),         KC_LEFT,             KC_DOWN,                KC_RGHT
  ),
 [_GAME] = LAYOUT_planck_mit(    
      KC_ESC,     KC_Q,        KC_W,          KC_E,          KC_R,          KC_J,           KC_Y,              KC_U,           KC_I,        KC_O,               KC_P,    KC_BSPC,
@@ -51,10 +53,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_LSFT,     KC_Z,        KC_X,          KC_C,          KC_V,          KC_B,           KC_M,           KC_COMM,         KC_DOT,    KC_SLASH,              KC_UP,    KC_RSFT,
     KC_LCTL,  KC_LALT,     KC_LSFT,        KC_SPC,        OSL(_LNAV), LT(_LSYM,KC_SPC),         OSL(_LNAV),               OSL(_L4),     KC_LEFT,            KC_DOWN,    KC_RGHT
  ),
+
 [_SWAP] = LAYOUT_planck_mit(    
-                                             TD(TD_ESC),          TD(TD_Q),        TD(TD_W),          TD(TD_E),              KC_R,          KC_J,      TD(TD_Z),      TD(TD_U_UML),               KC_I,    TD(TD_O_UML),               KC_P,                KC_BSPC,
-                                   MT(MOD_LCTL ,KC_TAB),      TD(TD_A_UML),   TD(TD_SS_UML),          TD(TD_D),          TD(TD_F),          KC_G,          KC_H,          TD(TD_N),           TD(TD_T),        TD(TD_L), MT(MOD_LALT, KC_K),    MT(MOD_LCTL,KC_ENT),
-                                          OSM(MOD_LSFT),          TD(TD_Y),        TD(TD_X),          TD(TD_C),          TD(TD_V),          KC_B,      TD(TD_M),       TD(TD_COMM),         TD(TD_DOT),     TD(TD_DASH),              KC_UP,    MT(MOD_LSFT,KC_DEL),
+                                             TD(TD_ESC),          TD(TD_Q),        TD(TD_W),          TD(TD_E),          TD(TD_R),       TD(TD_J),      TD(TD_Z),      TD(TD_U_UML),           TD(TD_I),    TD(TD_O_UML),           TD(TD_P),                KC_BSPC,
+                                   MT(MOD_LCTL ,KC_TAB),      TD(TD_A_UML),   TD(TD_SS_UML),          TD(TD_D),          TD(TD_F),       TD(TD_G),      TD(TD_H),          TD(TD_N),           TD(TD_T),        TD(TD_L), MT(MOD_LALT, KC_K),    MT(MOD_LCTL,KC_ENT),
+                                          OSM(MOD_LSFT),          TD(TD_Y),        TD(TD_X),          TD(TD_C),          TD(TD_V),       TD(TD_B),      TD(TD_M),       TD(TD_COMM),         TD(TD_DOT),     TD(TD_DASH),              KC_UP,    MT(MOD_LSFT,KC_DEL),
                                           OSM(MOD_LCTL),     OSM(MOD_LGUI),   OSM(MOD_LALT),             SH_OS,        OSL(_LNAV),
                                                                                                                                             LT(_LSYM,KC_SPC),
                                                                                                                                                                           MO(_LNAV),             SH_OS,     LT(_L4,KC_DEL),   OSM(MOD_LGUI),           OSM(MOD_LCTL)
@@ -68,10 +71,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 * NUM NAV*/
 [_LNAV] = LAYOUT_planck_mit(
 
-                                                         KC_TRNS,    TD(TD_DASH),              KC_1,              KC_2,              KC_3,            KC_INS, A(S(KC_TAB)),      KC_HOME,        KC_UP,     KC_END,  MT(MOD_LGUI,KC_PGUP),     KC_BSPC,
+                                                         KC_TRNS,    TD(TD_DASH),              KC_1,              KC_2,              KC_3,         DF(_LNAV), A(S(KC_TAB)),      KC_HOME,        KC_UP,     KC_END,  MT(MOD_LGUI,KC_PGUP),     KC_BSPC,
                                                          KC_TRNS,     TD(TD_DOT), MT(MOD_LALT,KC_4), MT(MOD_LCTL,KC_5), MT(MOD_LSFT,KC_6), MT(MOD_LGUI,KC_0),    A(KC_TAB),      KC_LEFT,      KC_DOWN,    KC_RGHT,  MT(MOD_LALT,KC_PGDN),     KC_TRNS,
-                                                         KC_TRNS,    TD(TD_COMM),              KC_7,              KC_8,              KC_9,            KC_ENT,       KC_ESC,      KC_BSPC,       KC_DEL,     KC_ENT,               KC_TRNS,     KC_TRNS,
-                                                         KC_TRNS,        KC_TRNS,           KC_TRNS,           KC_TRNS,           KC_TRNS,           KC_TRNS,                  MO(_LSYM),      KC_TRNS,    KC_TRNS,               KC_TRNS,     KC_TRNS
+                                                         KC_TRNS,    TD(TD_COMM),              KC_7,              KC_8,              KC_9,           DF(_L0),       KC_ESC,      KC_BSPC,       KC_DEL,     KC_ENT,               KC_TRNS,     KC_TRNS,
+                                                         KC_TRNS,        KC_TRNS,           KC_TRNS,           KC_TRNS,           TO(_L3),           KC_TRNS,                    TO(_L3),      KC_TRNS,    KC_TRNS,               KC_TRNS,     KC_TRNS
   ),
 /* 
 *   ________      TG(_LNAV)       ________      ^             @                        "                     [                       ]                        %               &             ü             \             ö               ?            ________
@@ -80,16 +83,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 *   ________      ________      ________      ________       WIN                       Alt                  ________                MouseLayer             ________        ________      ________      ________      ________          ________      ________
 * SYMBOL*/
 [_LSYM] = LAYOUT_planck_mit(
-                                                CIRCUMFL,     DE_EXLM,            TD(TD_DQUOT),            TD(TD_SQU),             ALGR(KC_9),              KC_PERC,       DE_AMPR,     DE_UDIA,        DE_BSLS,       DE_ODIA,        DE_QUES,       KC_TRNS,
-                                                 KC_TRNS,     DE_ADIA,                 KC_MINS,               KC_NUHS,                 KC_DLR,              KC_RPRN,       DE_SLSH,  TD(TD_PAR),        KC_LPRN,   TD(TD_QUOT),     ALGR(KC_E),       KC_TRNS,
+                                                CIRCUMFL,     DE_EXLM,            TD(TD_DQUOT),            TD(TD_SQU),             ALGR(KC_9),              KC_PERC,       DE_AMPR,     KC_NUHS,        DE_BSLS,        KC_END,        DE_QUES,       KC_TRNS,
+                                                 KC_TRNS,   STICKTICK,             TD(TD_QUOT),                KC_TAB,                 KC_DLR,              KC_RPRN,       DE_SLSH,  TD(TD_PAR),        KC_LPRN,   TD(TD_QUOT),     ALGR(KC_E),       KC_TRNS,
                                                  KC_LSFT,    TICKTICK,                 DE_PIPE,            TD(TD_CUR),             ALGR(KC_0),              KC_RBRC,       DE_ASTR,  TD(TD_ANG),     S(KC_NUBS),       DE_TILD,          KC_UP,       KC_TRNS,
-                                                 KC_TRNS,     KC_LGUI,                 KC_LALT,               KC_TRNS,              MO(_LNAV),              KC_TRNS,                    KC_TRNS,        KC_TRNS,       KC_TRNS,        KC_TRNS,       KC_TRNS
+                                                 KC_TRNS,     KC_LGUI,                 KC_LALT,               KC_TRNS,                TO(_L3),              KC_TRNS,                    TO(_L3),        KC_TRNS,       KC_TRNS,        KC_TRNS,       KC_TRNS
   ),
 
 /* L3
  *                      v------------------------RGB CONTROL--------------------v
  * ,-----------------------------------------------------------------------------------.
- * | GAME | Reset|DEBUG | RGB  |RGBMOD| HUE+ | HUE- |lclick| ms-u |rclick|ms-w+ | L0   |
+ * | GAME | Reset|DEBUG | RGB  |RGBMOD| HUE+ | HUE- |lclick| ms-u |rclick|ms-w+ | BACKLIT/L0
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | SWAP |      |ACCEL0|ACCEL1|ACCEL2| SAT+ | SAT- | ms-l | ms-d | ms-r |ms-w- |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
@@ -100,10 +103,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * 
  */
 [_L3] = LAYOUT_planck_mit(
-    TG(_GAME),     RESET,             DEBUG,      RGB_TOG,       RGB_MOD, RGB_HUI, RGB_HUD, KC_MS_BTN1,    KC_MS_UP,   KC_MS_BTN2,   KC_MS_WH_UP,    TO(_L0),
-    TG(_SWAP),     KC_NO,      KC_MS_ACCEL0, KC_MS_ACCEL1,  KC_MS_ACCEL2, RGB_SAI, RGB_SAD, KC_MS_LEFT,  KC_MS_DOWN,  KC_MS_RIGHT, KC_MS_WH_DOWN,    KC_TRNS,
-    TG(_LNAV), TG(_LSYM),             KC_NO,        KC_NO,     TG(_SWAP), RGB_VAI, RGB_VAD, KC_MS_BTN1,  KC_MS_BTN2,   KC_MS_BTN3,       _______,    _______,
-    TO(_L0),     _______,           _______,      _______,       _______, _______,             _______,     _______,      _______,       _______,    _______
+    TO(_GAME),     RESET,             DEBUG,      RGB_TOG,      TG(_SWAP), RGB_HUI, RGB_HUD, KC_MS_BTN1,    KC_MS_UP,   KC_MS_BTN2,   KC_MS_WH_UP,    TO(_L0),
+    TO(_SWAP),    RGB_MOD,      KC_MS_ACCEL0, KC_MS_ACCEL1,  KC_MS_ACCEL2, RGB_SAI, RGB_SAD, KC_MS_LEFT,  KC_MS_DOWN,  KC_MS_RIGHT, KC_MS_WH_DOWN,    KC_TRNS,
+    TO(_LNAV),  TO(_SWAP),       KC_MS_BTN3,   KC_MS_BTN2,     KC_MS_BTN1, RGB_VAI, RGB_VAD, KC_MS_BTN1,  KC_MS_BTN2,   KC_MS_BTN3,       _______,    _______,
+    TO(_L0),    TO(_LSYM),           _______,      _______,       KC_LCTL, TO(_L0),             KC_LSFT,     _______,      _______,       _______,    _______
 ),
 
 
@@ -119,7 +122,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * `-----------------------------------------------------------------------------------'
  */
 [_L4] = LAYOUT_planck_mit(
-    KC_TRNS,         KC_F1,               KC_F2,       KC_F3,               KC_F4,       KC_LALT,     KC_PGUP,      KC_APP,        CTLSFTF,       KC_RALT,        KC_PSCR,       KC_TRNS,
+    KC_TRNS,         KC_F1,               KC_F2,       KC_F3,               KC_F4,       KC_LALT,     KC_PGUP,      KC_APP,         KC_INS,       KC_RALT,        KC_PSCR,       KC_TRNS,
     KC_TRNS,         KC_F5,               KC_F6,       KC_F7,               KC_F8,       KC_LGUI,     KC_PGDN,   PICKFIRST,        PICK2ND,       PICK3RD,        KC_LALT,       KC_TRNS,
     KC_TRNS,         KC_F9,              KC_F10,      KC_F11,              KC_F12,       KC_LCTL,      KC_ESC,     KC_BSPC,     KC_MS_BTN2,       KC_LGUI,        KC_VOLU,       KC_TRNS,
     KC_TRNS,       KC_TRNS,             KC_TRNS,     KC_TRNS,             KC_TRNS,       KC_TRNS,                  KC_TRNS,        KC_TRNS,       KC_TRNS,        KC_VOLD,       KC_TRNS
@@ -127,14 +130,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 };
 
-layer_state_t layer_state_set_user(layer_state_t state) {
-    switch (get_highest_layer(state)) {
+//layer_state_t layer_state_set_user(layer_state_t state) {
+    /*switch (get_highest_layer(state)) {
     case _L0:
         hold_feature_active = 1;
         break;
     case _GAME:
         hold_feature_active = 0;
         break;
-    }
-  return update_tri_layer_state(state, _LNAV, _LSYM, _L3);
-}
+    }*/
+//  return update_tri_layer_state(state, _LNAV, _LSYM, _L3);
+// }
