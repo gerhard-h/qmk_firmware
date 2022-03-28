@@ -1,4 +1,4 @@
-# An autosymbol keymap for planck rev6
+# An autosymbol keymap with version for planck rev6 / bm40hsrgb / idobo
 
 ## Highlights
 
@@ -67,8 +67,11 @@ void oneshot_locked_mods_changed_user(uint8_t mods) {
    tap_code(KC_LSFT);
   }
 ```
+todo disable taptoggle as its not working for LAV any more 2x LNAV -> LMOUSE
 
-todo workaround build an custom OSM key
+bug game layer wont activate
+
+todo workaround build an custom OSM key  
 
 Currenly RSHIFT + HOLD(R) and AHK ,c is mapped to CapsLock
 * mixing this up confuses other keyboards

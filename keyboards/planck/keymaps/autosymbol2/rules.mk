@@ -11,10 +11,13 @@ LTO_ENABLE=yes
 # run "qmk console" to see the output disable to save firmware size
 # CONSOLE_ENABLE = yes
 COMBO_ENABLE = no
+# DEBOUNCE and NKRO might be unecessary 
 DEBOUNCE_TYPE = sym_defer_g
 NKRO_ENABLE = yes
 COMMAND_ENABLE = no
 SLEEP_LED_ENABLE = no
 SWAP_HANDS_ENABLE = no
+#Audio is not usable BEEP on RESET is the only feature active
 AUDIO_ENABLE = yes
 #SRC += muse.c
+BACKLIGHT_ENABLE = yes      # Enable keyboard backlight functionality

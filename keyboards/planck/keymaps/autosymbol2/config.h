@@ -61,7 +61,7 @@
 //#define DYNAMIC_KEYMAP_LAYER_COUNT 5
 #define NO_ACTION_MACRO //disable old-style macro handling using MACRO(), action_get_macro() (deprecated) EXTRAFLAGS += -flto
 #define NO_ACTION_FUNCTION //disable old-style function handling using fn_actions, action_function() (deprecated) EXTRAFLAGS += -flto
-//#define TAPPING_FORCE_HOLD // gives the hold behavior priority over the keyrepeat behavior. eg. to get d�nn instead of ddun with LT(1,KC_D)
+//#define TAPPING_FORCE_HOLD // gives the hold behavior priority over the keyrepeat behavior. eg. to get dünn instead of ddun with LT(1,KC_D)
 
 /* enable home row mods */
 #define IGNORE_MOD_TAP_INTERRUPT  // affects MT() ~ ALT 
