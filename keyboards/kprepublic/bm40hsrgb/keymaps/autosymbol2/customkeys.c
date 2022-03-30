@@ -96,9 +96,10 @@ void handle_force_shift_tap( uint16_t keycode, bool only_register) {
                 tap_code16(keycode);
         }
 }
-
+#ifdef HOMEROWSFTSSYMBOL
 void matrix_scan_user(void) {
         // key_hold_matrix_scan_user();
+
         // resposivnes for holding F (lsft) then holding N (rsft) -> (
         if (!n_rshft_done &&  f_lshft_pressed && (timer_elapsed(n_rshft_timer) > 240) && (timer_elapsed(n_rshft_timer) < 245)){
           if(timer_elapsed(f_lshft_timer) > timer_elapsed(n_rshft_timer)){ 
@@ -117,8 +118,9 @@ void matrix_scan_user(void) {
            }
           }
         }
-        
+
 }
+#endif
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   // If console is enabled, it will print the matrix position and status of each key pressed
@@ -156,13 +158,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 if (timer_elapsed(n_rshft_timer) < 240 ) {  // < TAPPING_TERM x 2
                   tap_code16(KC_N); // enable dbl tap nn
                   n_rshft_done = true;
-                } else        
-                if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_LSFT)) {
+                } 
+#ifdef HOMEROWSFTSSYMBOL
+                else if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_LSFT)) {
                   if(!n_rshft_done){
                         tap_code16(DE_LPRN);
                         n_rshft_done = true;
                   }
                 }
+#endif
                 return false;
               }
               break;
@@ -193,13 +197,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 if (timer_elapsed(f_lshft_timer) < 240 ) {  // < TAPPING_TERM x 2
                           tap_code16(KC_F); // enable dbl tap ff
                           f_lshft_done = true;
-                } else        
-                        if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_RSFT )) {
+                }         
+#ifdef HOMEROWSFTSSYMBOL
+                else if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_RSFT )) {
                           if(!f_lshft_done){
                                 tap_code16(KC_DLR);
                                 f_lshft_done = true;
                           }      
-                        }
+                }
+#endif
                 return false;
               }
               break;

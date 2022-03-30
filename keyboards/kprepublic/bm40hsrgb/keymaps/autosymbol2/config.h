@@ -56,7 +56,7 @@
 //#define HOLD_ON_OTHER_KEY_PRESS // negative effect on MT() ~ too many ALT
 
 //#define ONESHOT_TAP_TOGGLE 2  /* Tapping this number of times holds the key until tapped once again. */
-//#define ONESHOT_TIMEOUT 3000  /* Time (in ms) before the one shot key is released */
+#define ONESHOT_TIMEOUT 3000  /* Time (in ms) before the one shot key is released */
 //#define LEADER_TIMEOUT 500
 ///#define EXTRA_SHORT_COMBOS // Defining EXTRA_SHORT_COMBOS combines a combo's internal state into just one byte. This can, in some cases, save some memory. If it doesn't, no point using it.
 //#define COMBO_TERM 100 // default 50
@@ -72,3 +72,4 @@
 #define MOUSEKEY_WHEEL_BASE_MOVEMENTS 32                // Maximum number of movements at which acceleration stops
 #define MOUSEKEY_WHEEL_ACCELERATED_MOVEMENTS 48         // Accelerated wheel movements
 #define MOUSEKEY_WHEEL_DECELERATED_MOVEMENTS 8          // Decelerated wheel movements
+// #define HOMEROWSFTSSYMBOL  // activate SHIFT_HOLD for the Shiftbuttons themselves 

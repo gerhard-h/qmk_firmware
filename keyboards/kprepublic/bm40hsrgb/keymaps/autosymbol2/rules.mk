@@ -11,6 +11,7 @@ EXTRAFLAGS += -flto
 CONSOLE_ENABLE = no
 COMBO_ENABLE = no
 # retest of NKRO no benefits spotted on planck so far
+DEBOUNCE_TYPE = sym_defer_g
 NKRO_ENABLE = no
 COMMAND_ENABLE = no
 SLEEP_LED_ENABLE = no
