@@ -210,6 +210,7 @@ void atap_state_reset (qk_tap_dance_state_t *state, void *user_data) {
 }
 
 // ß autocorrect Shift+Hold -> S :: idea $
+static uint16_t tab_timer = timer_read();
 void dance_ss_finished(qk_tap_dance_state_t *state, void *user_data) {
     atap_state.state = cur_dance(state);
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
@@ -221,25 +222,34 @@ void dance_ss_finished(qk_tap_dance_state_t *state, void *user_data) {
                tap_code16(keycode3); // ' extra 
                return;
              }
+             if ((get_mods() | get_oneshot_mods()) == MOD_BIT(KC_LALT)) {
+               tab_timer = timer_read();
+               tap_code16(KC_TAB); // ' extra 
+               return;
+             }
              if (get_mods() | get_oneshot_mods()) {
-                     tap_code16(keycode); // autocorrect into S, C(s),...
+                     tap_code16(keycode); // autocorrect into C(s),...
                      return;
              }
              tap_code16(keycode2); return;
         default:
                 if ( force_leftside_shift_tap(keycode, false )) {return;}
                 if( f_lshft_pressed || n_rshft_pressed ){shft_used_timer = timer_read();}
+                if(timer_elapsed(tab_timer) < 5000) {
+                        tap_code16(KC_TAB);
+                        return;
+                }
                 tap_code16(keycode);
                 return;
     }
 }
-
 // ö ä oo~200 aa~600 uu~50 vakuum 
 /* DOUBLE_TAP should behave like 2 x SINGLE_TAP and Shift(SINGLE_HOLD) is allowed to get upper case Ä Ö other modifiers not */
 void dance_hold_each(qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
     if (state->count > 1) tap_code16(keycode);
 };
+// todo we could replace dance_hold_finished with dance_ss_finished but would it really reduce firmware size
 void dance_hold_finished(qk_tap_dance_state_t *state, void *user_data) {
     atap_state.state = cur_dance(state);
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;        // normal
@@ -471,7 +481,7 @@ static td_tap_t c2tap_state_dbl = {
     .is_press_action = true,
     .state = TD_NONE
 };
-// (bug) modifier_dbldance_finished with cur_dance() when interupted outputs the key instead of the modifierd
+// (bug) in qmk modifier_dbldance_finished with cur_dance() when interupted outputs the key instead of the modifier
 //       so holding down the key simultaniously or very fast will not work
 // (workaround) 
 //             a) press mods one after the other, 
@@ -498,7 +508,7 @@ void modifier_dbldance_finished (qk_tap_dance_state_t *state, void *user_data) {
                                 if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_LSFT)) {
                                         // prevent bug: HOLD(n) then HOLD(t) produces )
                                         tap_code16(keycode3);
-                                        return;       
+                                        return;
                                 }
                                 break;
                         case 21 : // D

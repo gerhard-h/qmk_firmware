@@ -197,7 +197,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 if (timer_elapsed(f_lshft_timer) < 240 ) {  // < TAPPING_TERM x 2
                           tap_code16(KC_F); // enable dbl tap ff
                           f_lshft_done = true;
-                }         
+                }
 #ifdef HOMEROWSFTSSYMBOL
                 else if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_RSFT )) {
                           if(!f_lshft_done){
