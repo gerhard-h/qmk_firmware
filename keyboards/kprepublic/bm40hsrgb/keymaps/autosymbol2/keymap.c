@@ -129,21 +129,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   )    
 
 };
+/*
 layer_state_t layer_state_set_user(layer_state_t state) {
   switch (get_highest_layer(state)) {
     case _LNAV:
-        // host_keyboard_led_state().num_lock
-        if (IS_HOST_LED_ON(USB_LED_NUM_LOCK) != true) {
+        // this code fails
+        if ((IS_HOST_LED_ON(USB_LED_NUM_LOCK) != true) && get_highest_layer(default_layer_state) > 0) {
                 tap_code(KC_NUMLOCK);
         }
         break;
     case _L0:
-        if (IS_HOST_LED_ON(USB_LED_NUM_LOCK) == true) {
+        // this code clears the num lock flag on layer 0 but is not needed
+        if (IS_HOST_LED_ON(USB_LED_NUM_LOCK) == true  && get_highest_layer(default_layer_state) == _L0) {
                 tap_code(KC_NUMLOCK);
         }
         break;
     }
+    return state;
 }
+*/
 //layer_state_t layer_state_set_user(layer_state_t state) {
     /*switch (get_highest_layer(state)) {
     case _L0:

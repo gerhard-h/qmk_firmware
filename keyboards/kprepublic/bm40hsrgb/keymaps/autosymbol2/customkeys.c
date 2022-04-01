@@ -209,6 +209,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 return false;
               }
               break;
+        case DF(_LNAV):
+                if (record->event.pressed) {
+                    tap_code(KC_NUMLOCK);
+                }
+                return true;
+        case DF(_L0):
+                if (record->event.pressed) {
+                   if (IS_HOST_LED_ON(USB_LED_NUM_LOCK) == true){
+                    tap_code(KC_NUMLOCK);
+                   }
+                }
+                return true;
         case MT(MOD_LALT, KC_K):
             if (record->tap.count && record->event.pressed) {
                 // Intercept tap function
