@@ -64,9 +64,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 * NUM NAV*/
 [_LNAV] = LAYOUT_planck_mit(
 
-                                                         KC_TRNS,    TD(TD_DASH),              KC_1,              KC_2,              KC_3,            KC_INS, A(S(KC_TAB)),      KC_HOME,        KC_UP,     KC_END,  MT(MOD_LGUI,KC_PGUP),     KC_BSPC,
+                                                         KC_TRNS,    TD(TD_DASH),              KC_1,              KC_2,              KC_3,         DF(_LNAV), A(S(KC_TAB)),      KC_HOME,        KC_UP,     KC_END,  MT(MOD_LGUI,KC_PGUP),     KC_BSPC,
                                                          KC_TRNS,     TD(TD_DOT), MT(MOD_LALT,KC_4), MT(MOD_LCTL,KC_5), MT(MOD_LSFT,KC_6), MT(MOD_LGUI,KC_0),    A(KC_TAB),      KC_LEFT,      KC_DOWN,    KC_RGHT,  MT(MOD_LALT,KC_PGDN),     KC_TRNS,
-                                                         KC_TRNS,    TD(TD_COMM),              KC_7,              KC_8,              KC_9,            KC_ENT,       KC_ESC,      KC_BSPC,       KC_DEL,     KC_ENT,               KC_TRNS,     KC_TRNS,
+                                                         KC_TRNS,    TD(TD_COMM),              KC_7,              KC_8,              KC_9,           DF(_L0),       KC_ESC,      KC_BSPC,       KC_DEL,     KC_ENT,               KC_TRNS,     KC_TRNS,
                                                          KC_TRNS,        KC_TRNS,           KC_TRNS,           KC_TRNS,           TO(_L3),           KC_TRNS,                    TO(_L3),      KC_TRNS,    KC_TRNS,               KC_TRNS,     KC_TRNS
   ),
 /* 

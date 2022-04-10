@@ -1,5 +1,5 @@
 void rgb_matrix_indicators_user(void) {
-        switch (biton32(layer_state)) {
+        switch (biton32(layer_state) | biton32(default_layer_state)) {
         case 0:
         //_L0:
                 rgb_matrix_set_color_all(0,1,10);
