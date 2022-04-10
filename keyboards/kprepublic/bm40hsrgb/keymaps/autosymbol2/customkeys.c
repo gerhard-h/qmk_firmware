@@ -12,7 +12,7 @@ enum custom_keycodes {
     N_RSHFT,
     F_LSHFT
 };
-
+static uint16_t caps_lock_on_key = KC_NO;
 static uint16_t n_rshft_timer;
 static uint16_t f_lshft_timer;
 static bool n_rshft_done;
@@ -338,17 +338,32 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
         break;
    case BACKLIT:
-      if (record->event.pressed) {
-        register_code(KC_RSFT);
-        #ifdef BACKLIGHT_ENABLE
-          backlight_step();
-        #endif
-      } else {
-        unregister_code(KC_RSFT);
-      }
-      return false;
-      break;    
-    }
+        if (record->event.pressed) {
+                register_code(KC_RSFT);
+                #ifdef BACKLIGHT_ENABLE
+                backlight_step();
+                #endif
+        } else {
+                unregister_code(KC_RSFT);
+        }
+        return false;   
+  case KC_0..KC_9:
+        if (record->event.pressed) {
+                if (IS_HOST_LED_ON(USB_LED_CAPS_LOCK) == true){
+                        caps_lock_on_key = keycode;
+                        tap_code16(KC_CAPS);
+        } else {
+                if (IS_HOST_LED_ON(USB_LED_CAPS_LOCK) == true  && caps_lock_on_key == keycode){
+                        tap_code16(KC_CAPS);
+                }      
+        }
+        break;    
+   case KC_CAPS:
+        if (record->event.pressed) {
+                caps_lock_on_key = KC_CAPS;
+        }
+        break;    
+  }
 // second lets handel the KEY_HOLD feature keycodes
 /*    if (!hold_feature_active) return true;  
     if ((key_hold_lastkey != keycode) || (timer_elapsed(key_hold_dbltap_timer) > (2 * TAPPING_TERM))) key_hold_lastkey = KC_NO;
@@ -370,4 +385,3 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // return false; // We handled this keypress
     return true; // We didn't handle other keypresses
 };
- 

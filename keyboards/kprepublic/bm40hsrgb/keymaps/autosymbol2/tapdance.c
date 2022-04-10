@@ -242,6 +242,11 @@ void dance_ss_finished(qk_tap_dance_state_t *state, void *user_data) {
                         tap_code16(KC_TAB);
                         return;
                 }
+                if(timer_elapsed(tab_timer) < 7000 && keycode == KC_R && (get_mods() | get_oneshot_mods()) == MOD_BIT(KC_LALT|KC_RSFT)) {
+                        tab_timer = timer_read();
+                        tap_code16(S(KC_TAB));
+                        return;
+                }
                 tap_code16(keycode);
                 return;
     }
