@@ -39,8 +39,10 @@
 //#define RGBLIGHT_LAYERS
 #define RGBLIGHT_SLEEP
 
+# define RETRO_TAPPING
+# define RETRO_TAPPING_PER_KEY
 #define TAPPING_TERM_PER_KEY
-#define TAPPING_TERM 210
+#define TAPPING_TERM 250 // 210
 //#define MOD_CODE_DELAY 0
 // # define TAP_CODE_DELAY 10 //will not fix Remotedesktop timings
 // #define USB_POLLING_INTERVAL_MS 10 # tried 1 and 10 both resourceheavy or it's just NKRO
@@ -53,8 +55,9 @@
 //#define TAPPING_FORCE_HOLD // gives the hold behavior priority over the keyrepeat behavior. eg. to get dünn instead of ddun with LT(1,KC_D)
 
 /* enable home row mods */
-#define IGNORE_MOD_TAP_INTERRUPT
-#define PERMISSIVE_HOLD
+#define IGNORE_MOD_TAP_INTERRUPT  // affects MT() ~ ALT 
+#define PERMISSIVE_HOLD           // affects tap dance (but seems to have no effect here)
+//#define HOLD_ON_OTHER_KEY_PRESS // negative effect on MT() ~ too many ALT
 
 #define ONESHOT_TAP_TOGGLE 3  /* Tapping this number of times holds the key until tapped once again. */
 #define ONESHOT_TIMEOUT 5000  /* Time (in ms) before the one shot key is released */

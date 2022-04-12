@@ -46,7 +46,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                        OSM(MOD_LSFT),      TD(TD_Y),       TD(TD_X),  TD(TD_C),    TD(TD_V),  TD(TD_B), TD(TD_M),  TD(TD_COMM), TD(TD_DOT),  TD(TD_DASH),       KC_UP, RSFT_T(KC_DEL),
                        OSM(MOD_LCTL), OSM(MOD_LGUI),  OSM(MOD_LALT),  OSL(_L4),  OSL(_LNAV),
                                                                                                 LT(_LNAV,KC_SPC),
-                                                                                                                   OSL(_LSYM),   OSL(_LNAV),      KC_LEFT,     KC_DOWN,        KC_RGHT
+                                                                                                                   OSL(_LSYM),   TG(_L4),      KC_LEFT,     KC_DOWN,        KC_RGHT
  ),
 [_GAME] = LAYOUT_planck_mit(    
 
@@ -86,8 +86,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 * SYMBOL*/
 [_LSYM] = LAYOUT_planck_mit(
 
-                          CIRCUMFL,         DE_EXLM, TD(TD_DQUOT),   TD(TD_SQU),  ALGR(KC_9),        KC_DLR,   DE_AMPR,    KC_NUHS,    DE_BSLS,      KC_PERC,      DE_QUES,     KC_TRNS,
-                           KC_TRNS,       STICKTICK,  TD(TD_QUOT),   TD(TD_CUR),  ALGR(KC_0),       KC_RPRN,   DE_SLSH,    KC_BSPC,     KC_DEL,       KC_ENT,   ALGR(KC_E),     KC_TRNS,
+                          CIRCUMFL,         DE_EXLM, TD(TD_DQUOT),   TD(TD_CUR),  ALGR(KC_0),        KC_DLR,   DE_AMPR,    KC_NUHS,    DE_BSLS,      KC_PERC,      DE_QUES,     KC_TRNS,
+                           KC_TRNS,       STICKTICK,  TD(TD_QUOT),   TD(TD_SQU),  ALGR(KC_9),       KC_RPRN,   DE_SLSH,    KC_BSPC,     KC_DEL,       KC_ENT,   ALGR(KC_E),     KC_TRNS,
                            KC_LSFT,        TICKTICK,      DE_PIPE,   TD(TD_PAR),     KC_LPRN,       KC_RBRC,   DE_ASTR, TD(TD_ANG), S(KC_NUBS),      DE_TILD,        KC_UP,     KC_TRNS,
                            KC_TRNS,         KC_LGUI,      KC_LALT,      KC_TRNS,     TO(_L3),       KC_TRNS,               TO(_L3),    KC_TRNS,      KC_TRNS,      KC_TRNS,     KC_TRNS
   ),
@@ -126,10 +126,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * `-----------------------------------------------------------------------------------'
  */
 [_L4] = LAYOUT_planck_mit(
-                         KC_TRNS,         KC_F1,        KC_F2,        KC_F3,        KC_F4,     KC_INS, A(S(KC_TAB)),     KC_APP,   KC_MS_BTN2,  KC_RALT,        KC_PSCR,       KC_TRNS,
-                         KC_TRNS,         KC_F5,        KC_F6,        KC_F7,        KC_F8,     KC_LALT,   A(KC_TAB),  PICKFIRST,      PICK2ND,  PICK3RD,        KC_LALT,       KC_TRNS,
-                         KC_TRNS,         KC_F9,       KC_F10,       KC_F11,       KC_F12,     KC_LCTL,      KC_ESC,    KC_LSFT,      KC_LCTL,  KC_LALT,        KC_LGUI,       KC_TRNS,
-                         KC_TRNS,       KC_TRNS,      KC_TRNS,      KC_TRNS,      KC_TRNS,                  KC_TRNS,    KC_TRNS,      KC_TRNS,  KC_TRNS,        KC_VOLD,       KC_VOLU
+                         KC_TRNS,         KC_F1,        KC_F2,        KC_F3,        KC_F4,     KC_INS,         KC_ESC,     KC_APP,   C(S(KC_F)),  KC_RALT,        KC_PSCR,       KC_TRNS,
+                         KC_TRNS,         KC_F5,        KC_F6,        KC_F7,        KC_F8,     KC_LALT,     A(KC_TAB),  PICKFIRST,      PICK2ND,  PICK3RD,        KC_LALT,       KC_TRNS,
+                         KC_TRNS,         KC_F9,       KC_F10,       KC_F11,       KC_F12,     KC_LCTL,  A(S(KC_TAB)),    KC_LSFT,      KC_LCTL,  KC_LALT,        KC_LGUI,       KC_TRNS,
+                         KC_TRNS,       KC_TRNS,      KC_TRNS,      KC_TRNS,      KC_TRNS,                    KC_TRNS,    KC_TRNS,      KC_TRNS,  KC_TRNS,        KC_VOLD,       KC_VOLU
   )    
 
 };

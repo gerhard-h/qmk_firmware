@@ -24,6 +24,15 @@ static uint16_t lshft_up_timer;
 static uint16_t shft_used_timer; // when the last shifted letter was produced by a TAP and holding a home row mod
 
 uint8_t mod_state; // holding the binary representation of active modifiers
+static uint8_t caps_state = 0;
+bool led_update_user(led_t led_state) {
+    if (caps_state != led_state.caps_lock) {
+        //if(led_state.caps_lock) {tap_code(KC_NUMLOCK);}
+        caps_state = led_state.caps_lock;
+    }
+    return true;
+}
+
 // force home row shift even if shift key is already released
 bool force_shift_tap( uint16_t keycode, bool sft_done, bool sft_pressed, bool only_register, uint16_t shft_up_timer) {
         
@@ -293,18 +302,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
            if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
         }
         break;
-        
-    case CTLSFTF:
-        if (record->event.pressed) {
-             register_mods(MOD_BIT(KC_LCTL));
-             register_mods(MOD_BIT(KC_LSFT));
-             tap_code(KC_F);             
-             unregister_mods(MOD_BIT(KC_LSFT));
-             unregister_mods(MOD_BIT(KC_LCTL));
-        } else {
-           if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
-        }
-        break;
     case CIRCUMFL:
         if (record->event.pressed) {
             if ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT) {tap_code16(S(KC_GRV)); break;}
@@ -338,32 +335,38 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
         break;
    case BACKLIT:
+      if (record->event.pressed) {
+        register_code(KC_RSFT);
+        #ifdef BACKLIGHT_ENABLE
+          backlight_step();
+        #endif
+      } else {
+        unregister_code(KC_RSFT);
+      }
+      return false;
+      break;   
+    case KC_CAPS:
         if (record->event.pressed) {
-                register_code(KC_RSFT);
-                #ifdef BACKLIGHT_ENABLE
-                backlight_step();
-                #endif
-        } else {
-                unregister_code(KC_RSFT);
+                caps_lock_on_key = KC_NO;
         }
-        return false;   
-  case KC_0..KC_9:
+        break;
+    case KC_1 ... KC_0:
+    case KC_MINUS ... KC_SLASH:
         if (record->event.pressed) {
-                if (IS_HOST_LED_ON(USB_LED_CAPS_LOCK) == true){
+                if (caps_state){
                         caps_lock_on_key = keycode;
-                        tap_code16(KC_CAPS);
+                        tap_code(KC_CAPS);
+                        tap_code(keycode);
+                        return false;
+                }
         } else {
-                if (IS_HOST_LED_ON(USB_LED_CAPS_LOCK) == true  && caps_lock_on_key == keycode){
-                        tap_code16(KC_CAPS);
+                if (caps_lock_on_key == keycode){
+                        tap_code(KC_CAPS);
                 }      
         }
-        break;    
-   case KC_CAPS:
-        if (record->event.pressed) {
-                caps_lock_on_key = KC_CAPS;
-        }
-        break;    
-  }
+        break;  
+    
+    }
 // second lets handel the KEY_HOLD feature keycodes
 /*    if (!hold_feature_active) return true;  
     if ((key_hold_lastkey != keycode) || (timer_elapsed(key_hold_dbltap_timer) > (2 * TAPPING_TERM))) key_hold_lastkey = KC_NO;

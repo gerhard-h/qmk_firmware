@@ -15,6 +15,7 @@
 * for german keyboard layout
 * slightly improved QUERTY (NT and interpunctuation mod)
 * Shift quot -> dquote / shift dquote -> quot ... usefull???
+* alt tab replacemant with alt Hold(r)  ... usefull???
 
 ## QMK options
 
