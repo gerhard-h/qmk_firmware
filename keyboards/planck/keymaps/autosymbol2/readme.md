@@ -43,8 +43,12 @@
   SPACE +   RAISE -> ok
   SPACE ... LOWER -> ok
   LOWER/RAISE x2  -> ok
-  
+
 ## todo Custom Caps Lock
+
+todo lets try to disable capslock on layer switch
+
+todo switching to layer 3 with default layer=_LNAV should go to _L0
 
 The only good thing about Capslock is that you can shitf to get lower case again  
 2x tap OSM will not do that  
