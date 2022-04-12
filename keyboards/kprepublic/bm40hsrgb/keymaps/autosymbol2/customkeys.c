@@ -345,27 +345,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       return false;
       break;   
-    case KC_CAPS:
-        if (record->event.pressed) {
-                caps_lock_on_key = KC_NO;
-        }
-        break;
-    case KC_1 ... KC_0:
-    case KC_MINUS ... KC_SLASH:
-        if (record->event.pressed) {
-                if (caps_state){
-                        caps_lock_on_key = keycode;
-                        tap_code(KC_CAPS);
-                        tap_code(keycode);
-                        return false;
-                }
-        } else {
-                if (caps_lock_on_key == keycode){
-                        tap_code(KC_CAPS);
-                }      
-        }
-        break;  
-    
     }
 // second lets handel the KEY_HOLD feature keycodes
 /*    if (!hold_feature_active) return true;  

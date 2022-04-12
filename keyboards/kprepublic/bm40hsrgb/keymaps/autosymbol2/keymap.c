@@ -46,7 +46,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                        OSM(MOD_LSFT),      TD(TD_Y),       TD(TD_X),  TD(TD_C),    TD(TD_V),  TD(TD_B), TD(TD_M),  TD(TD_COMM), TD(TD_DOT),  TD(TD_DASH),       KC_UP, RSFT_T(KC_DEL),
                        OSM(MOD_LCTL), OSM(MOD_LGUI),  OSM(MOD_LALT),  OSL(_L4),  OSL(_LNAV),
                                                                                                 LT(_LNAV,KC_SPC),
-                                                                                                                   OSL(_LSYM),   TG(_L4),      KC_LEFT,     KC_DOWN,        KC_RGHT
+                                                                                                                   OSL(_LSYM),   TO(_L4),      KC_LEFT,     KC_DOWN,        KC_RGHT
  ),
 [_GAME] = LAYOUT_planck_mit(    
 
@@ -129,29 +129,39 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                          KC_TRNS,         KC_F1,        KC_F2,        KC_F3,        KC_F4,     KC_INS,         KC_ESC,     KC_APP,   C(S(KC_F)),  KC_RALT,        KC_PSCR,       KC_TRNS,
                          KC_TRNS,         KC_F5,        KC_F6,        KC_F7,        KC_F8,     KC_LALT,     A(KC_TAB),  PICKFIRST,      PICK2ND,  PICK3RD,        KC_LALT,       KC_TRNS,
                          KC_TRNS,         KC_F9,       KC_F10,       KC_F11,       KC_F12,     KC_LCTL,  A(S(KC_TAB)),    KC_LSFT,      KC_LCTL,  KC_LALT,        KC_LGUI,       KC_TRNS,
-                         KC_TRNS,       KC_TRNS,      KC_TRNS,      KC_TRNS,      KC_TRNS,                    KC_TRNS,    KC_TRNS,      KC_TRNS,  KC_TRNS,        KC_VOLD,       KC_VOLU
+                         KC_TRNS,       KC_TRNS,      KC_TRNS,      KC_TRNS,      KC_TRNS,                    KC_TRNS,    KC_TRNS,      TO(_L0),  KC_TRNS,        KC_VOLD,       KC_VOLU
   )    
 
 };
-/*
 layer_state_t layer_state_set_user(layer_state_t state) {
   switch (get_highest_layer(state)) {
+    case _L3:
+        //from locked _LNAV don't go to _L3
+        switch (biton32(default_layer_state)) {
+                case _LNAV:
+                    default_layer_set( ((layer_state_t)1 << _L0));
+                    tap_code(KC_NUMLOCK);
+                    return ((layer_state_t)1 << _L0);  
+        };
     case _LNAV:
-        // this code fail
-        if ((IS_HOST_LED_ON(USB_LED_NUM_LOCK) != true) && get_highest_layer(default_layer_state) > 0) {
-                tap_code(KC_NUMLOCK);
+    case _LSYM:
+        if (caps_state){
+                tap_code(KC_CAPS);
+                caps_state = 0;
+                //todo reactivate CAPSLOCK when back on _L0
+                caps_lock_on_key = KC_CAPS;
         }
         break;
     case _L0:
-        // this code clears the num lock flag on layer 0 but is not needed
-        if (IS_HOST_LED_ON(USB_LED_NUM_LOCK) == true  && get_highest_layer(default_layer_state) == _L0) {
-                tap_code(KC_NUMLOCK);
+        if (caps_lock_on_key == KC_CAPS){
+                tap_code(KC_CAPS);
+                caps_lock_on_key = KC_NO;
         }
         break;
     }
     return state;
 }
-*/
+
 //layer_state_t layer_state_set_user(layer_state_t state) {
     /*switch (get_highest_layer(state)) {
     case _L0:
