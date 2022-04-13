@@ -12,7 +12,7 @@ enum custom_keycodes {
     N_RSHFT,
     F_LSHFT
 };
-
+static uint16_t caps_lock_on_key = KC_NO;
 static uint16_t n_rshft_timer;
 static uint16_t f_lshft_timer;
 static bool n_rshft_done;
@@ -24,6 +24,15 @@ static uint16_t lshft_up_timer;
 static uint16_t shft_used_timer; // when the last shifted letter was produced by a TAP and holding a home row mod
 
 uint8_t mod_state; // holding the binary representation of active modifiers
+static uint8_t caps_state = 0;
+bool led_update_user(led_t led_state) {
+    if (caps_state != led_state.caps_lock) {
+        //if(led_state.caps_lock) {tap_code(KC_NUMLOCK);}
+        caps_state = led_state.caps_lock;
+    }
+    return true;
+}
+
 // force home row shift even if shift key is already released
 bool force_shift_tap( uint16_t keycode, bool sft_done, bool sft_pressed, bool only_register, uint16_t shft_up_timer) {
         
@@ -96,9 +105,10 @@ void handle_force_shift_tap( uint16_t keycode, bool only_register) {
                 tap_code16(keycode);
         }
 }
-
+#ifdef HOMEROWSFTSSYMBOL
 void matrix_scan_user(void) {
         // key_hold_matrix_scan_user();
+
         // resposivnes for holding F (lsft) then holding N (rsft) -> (
         if (!n_rshft_done &&  f_lshft_pressed && (timer_elapsed(n_rshft_timer) > 240) && (timer_elapsed(n_rshft_timer) < 245)){
           if(timer_elapsed(f_lshft_timer) > timer_elapsed(n_rshft_timer)){ 
@@ -117,8 +127,9 @@ void matrix_scan_user(void) {
            }
           }
         }
-        
+
 }
+#endif
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   // If console is enabled, it will print the matrix position and status of each key pressed
@@ -156,13 +167,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 if (timer_elapsed(n_rshft_timer) < 240 ) {  // < TAPPING_TERM x 2
                   tap_code16(KC_N); // enable dbl tap nn
                   n_rshft_done = true;
-                } else        
-                if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_LSFT)) {
+                } 
+#ifdef HOMEROWSFTSSYMBOL
+                else if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_LSFT)) {
                   if(!n_rshft_done){
                         tap_code16(DE_LPRN);
                         n_rshft_done = true;
                   }
                 }
+#endif
                 return false;
               }
               break;
@@ -193,16 +206,30 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 if (timer_elapsed(f_lshft_timer) < 240 ) {  // < TAPPING_TERM x 2
                           tap_code16(KC_F); // enable dbl tap ff
                           f_lshft_done = true;
-                } else        
-                        if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_RSFT )) {
+                }
+#ifdef HOMEROWSFTSSYMBOL
+                else if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_RSFT )) {
                           if(!f_lshft_done){
                                 tap_code16(KC_DLR);
                                 f_lshft_done = true;
                           }      
-                        }
+                }
+#endif
                 return false;
               }
               break;
+        case DF(_LNAV):
+                if (record->event.pressed) {
+                    tap_code(KC_NUMLOCK);
+                }
+                return true;
+        case DF(_L0):
+                if (record->event.pressed) {
+                   if (IS_HOST_LED_ON(USB_LED_NUM_LOCK) == true){
+                    tap_code(KC_NUMLOCK);
+                   }
+                }
+                return true;
         case MT(MOD_LALT, KC_K):
             if (record->tap.count && record->event.pressed) {
                 // Intercept tap function
@@ -275,18 +302,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
            if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
         }
         break;
-        
-    case CTLSFTF:
-        if (record->event.pressed) {
-             register_mods(MOD_BIT(KC_LCTL));
-             register_mods(MOD_BIT(KC_LSFT));
-             tap_code(KC_F);             
-             unregister_mods(MOD_BIT(KC_LSFT));
-             unregister_mods(MOD_BIT(KC_LCTL));
-        } else {
-           if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
-        }
-        break;
     case CIRCUMFL:
         if (record->event.pressed) {
             if ((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT) {tap_code16(S(KC_GRV)); break;}
@@ -329,7 +344,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         unregister_code(KC_RSFT);
       }
       return false;
-      break;    
+      break;   
     }
 // second lets handel the KEY_HOLD feature keycodes
 /*    if (!hold_feature_active) return true;  
@@ -352,4 +367,3 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // return false; // We handled this keypress
     return true; // We didn't handle other keypresses
 };
- 

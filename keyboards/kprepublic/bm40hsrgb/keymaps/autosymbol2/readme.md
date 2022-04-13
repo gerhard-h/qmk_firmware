@@ -5,20 +5,21 @@
 * implements **KEY_HOLD pseudo layer** to produce an alternativ key (a symbol or diacrit) without the need of an layer activiation key - similar to the autoshift concept  
 * implements an additional  **SHIFT + KEY_HOLD pseudo layer**  (can also be accessed by DOUBLE_TAP_HOLD)
 * Homerow mod early Shift - allows too release shift keys early as most people will do when typing fast
-* because pseudo layers don't require additional layer activiation keys, this concept is promising for any qmk compatible keyboard 
-* uses  home row mods (tapdance, mod tap and custom)
-* Thumb symetry (no clawing and easy to learn)
-* combined Numpad and Navigation layer
+* because pseudo layers don't require additional layer activiation keys, this concept is promising for any qmk compatible keyboard (without spare keys)
+* uses  home row mods (mod tap and custom homerow shift)
+* Thumb symetry (no clawing and easy to adapt to) - ups abandonen
+* combined Numpad and Navigation layer - layer lock within the layer (using DF feature) - visualize layer lock by setting numlock
 * phone like, strong finger numpad
 * proper (pyramide) arranged cursor keys on a 40% keyboard
 * option to use tapdance on one shot layers (sounds usefull when imlementig a one hand layout) 
 * for german keyboard layout
 * slightly improved QUERTY (NT and interpunctuation mod)
 * Shift quot -> dquote / shift dquote -> quot ... usefull???
+* alt tab replacemant with alt Hold(r)  ... usefull???
 
 ## QMK options
 
-* no VIA because of unknown incomptibilities and size limitations using extra layers
+* no VIA because of unknown incomptibilities and size limitations using 5+ layers
 * tap dance
 * rgb key highlighting per layer
 * custom keycodes (macros, autosymbol, home row shift)
@@ -27,21 +28,27 @@
 
 ## Mouse layer todos
 
-  make layer stick/fixed
-  key to exit layer
-  make mouse speed keys tap not hold
-  auto exit on tripple klick or after double click
-  left and right side click keys for dragging 
+  make layer stick/fixed                                    done
+  key to exit layer                                 space   done
+  make mouse speed keys tap not hold  or use kinetic        done
+  auto exit on tripple klick or after double click                      open/irrelevont
+  left and right side click keys for dragging               done
+  VSCode blocks 2xCTL to  highllight  mouse position        info 
 
-  Kinetic mouse is  much to fast
-  Space to leave Layer 
-  VSCode blocks 2xCTL to  highllight  mouse position  
-
+  layer activation:
   LOWER ... RAISE -> ok
   RAISE ... LOWER -> ok
-  RAISE + LOWER   -> ok
-  
+  RAISE +   LOWER -> ok
+  SPACE ... RAISE -> ok
+  SPACE +   RAISE -> ok
+  SPACE ... LOWER -> ok
+  LOWER/RAISE x2  -> ok
+
 ## todo Custom Caps Lock
+
+done lets try to disable capslock on layer switch
+
+done switching to layer 3 with default layer=_LNAV should go to _L0
 
 The only good thing about Capslock is that you can shitf to get lower case again  
 2x tap OSM will not do that  
@@ -49,7 +56,7 @@ The only good thing about Capslock is that you can shitf to get lower case again
 activating OSM lock and then using an OSL key to switch to a layer means the OSM is not active on that layer
 (would be cool if all layer keys would be OSL)
 
-f always stops OSM_shift ... maybe we  can  exploite that
+(bug fixed) f key always stops OSM_shift      
 
 best to deactivate OSM dbl_tap it but this didn't work
 
@@ -67,16 +74,15 @@ void oneshot_locked_mods_changed_user(uint8_t mods) {
    tap_code(KC_LSFT);
   }
 ```
-todo disable taptoggle as its not working for LAV any more 2x LNAV -> LMOUSE
+disabled taptoggle as its not working for number layer  any more 2x LNAV -> LMOUSE
 
-bug game layer wont activate
+deactive feature: RSHIFT + HOLD(R) -> CapsLock  
 
-todo workaround build an custom OSM key  
+Currenly  AHK ,c is mapped to CapsLock (mixing this up confuses other keyboards)
 
-Currenly RSHIFT + HOLD(R) and AHK ,c is mapped to CapsLock
-* mixing this up confuses other keyboards
-* Number and Symbol layer get confused by Capslock
-* Maybe there is a way to tell Capslock not to Shift Numbers
+
+* disabled Number and Symbol layer get confused/shifted by Capslock
+* done Maybe there is a way to tell Capslock not to Shift Numbers
 
 
 ## Features in detail
@@ -472,18 +478,22 @@ idea 5: tapdance diacrits on the OSL layer to get shifted versions
  4. use symbol layer symbols only by activating the layer by a key(space)
 
 # todos
-
- * using home row mod k as ALT is makes pressing mod combos difficult => move it to L
- * remove diacrits from the symbol layer
- * Hold(Q) -> END / Hold(esc) -> HOME
+ * done using home row mod k as ALT is makes pressing mod combos difficult => move it to L
+ * done remove diacrits from the symbol layer
+ * done Hold(Q) -> END / Hold(esc) -> HOME
  * using autosymbol should make it pointless to bind SPACE_HOLD to Symbol-Layer - remember !´`'€ - what else would be better?
- * SHIFT_HOLD s -> ''
- * map BSP DEL to layer buttons vv -> Enter  SHIFT_HOLD D -> TAB ,+d -># ,l ,+l->''
- * or SHIFT_HOLD v -> TAB 
+ * ? SHIFT_HOLD s -> '' instead of ' ... maybe not
+ * ? map BSP DEL to layer buttons
+ * done vv -> Enter 
+ * done SHIFT_HOLD v -> ENTER
+ * not done in favor of mod tap  SHIFT_HOLD D -> TAB
+ * ,+d -> Tab ;l,l ,+l->''
+ 
 
 ahk combos
 , q -> !
 , s -> '
+, l -> '
 , c -> CapsLock 
 
 # steps to improve the keyboard
@@ -805,3 +815,20 @@ Copying planck_rev6_autosymbol2.bin to qmk_firmware folder                      
 ```
 
 ## PLAY_SONG(PLANCK_SONG); not working 
+
+## Supersimplification
+
+- replace homerow mods with MT(), this diasables
+- remove/rethink SHIF_HOLD
+- remove all L0 tapdances but asuo,.-qy
+- improve tapdances like d and v  hold(c) -> tab , hold(v) -> Enter 
+
+- SHIF_HOLD into a number could aktivate numbers until Shifthold is relesased
+- search a spott for OSL SYmbols = RAISE LEFT F
+- Spacebar layer could have BSP DEL ENTER TAB on the home row
+
+Enable alt hold for d_hold -> TAB + flag ... d_tap & flag -> TAB ... ALT release  clear flag (simply implemented by a timer)
+
+## issues
+
+ * todo bug A(H(R))TAB shift is ignored

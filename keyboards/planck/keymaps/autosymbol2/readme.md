@@ -46,9 +46,9 @@
 
 ## todo Custom Caps Lock
 
-todo lets try to disable capslock on layer switch
+done lets try to disable capslock on layer switch
 
-todo switching to layer 3 with default layer=_LNAV should go to _L0
+done switching to layer 3 with default layer=_LNAV should go to _L0
 
 The only good thing about Capslock is that you can shitf to get lower case again  
 2x tap OSM will not do that  
@@ -80,9 +80,9 @@ deactive feature: RSHIFT + HOLD(R) -> CapsLock
 
 Currenly  AHK ,c is mapped to CapsLock (mixing this up confuses other keyboards)
 
-todo test oustanding
-* Number and Symbol layer get confused/shifted by Capslock
-* Maybe there is a way to tell Capslock not to Shift Numbers
+
+* disabled Number and Symbol layer get confused/shifted by Capslock
+* done Maybe there is a way to tell Capslock not to Shift Numbers
 
 
 ## Features in detail
@@ -833,4 +833,4 @@ Enable alt hold for d_hold -> TAB + flag ... d_tap & flag -> TAB ... ALT release
 
 ## issues
 
-* A(S(TAB)) shift id ignored
+ * todo bug A(H(R))TAB shift is ignored

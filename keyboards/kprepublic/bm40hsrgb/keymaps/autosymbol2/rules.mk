@@ -10,6 +10,8 @@ EXTRAFLAGS += -flto
 # console might require to disable mouse to fit in memory
 CONSOLE_ENABLE = no
 COMBO_ENABLE = no
+# DEBOUNCE and NKRO might be unecessary 
+# todo needed at least sym_defer_g on planck -> otimization potential
 # retest of NKRO no benefits spotted on planck so far
 DEBOUNCE_TYPE = sym_defer_g
 NKRO_ENABLE = no

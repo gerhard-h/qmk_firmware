@@ -11,6 +11,8 @@ EXTRAFLAGS += -flto
 CONSOLE_ENABLE = no
 RGBLIGHT_ENABLE = yes
 COMBO_ENABLE = no
+# DEBOUNCE and NKRO might be unecessary 
+# todo needed at least sym_defer_g on planck -> otimization potential
 # retest of NKRO no benefits spotted on planck so far
 NKRO_ENABLE = no
 COMMAND_ENABLE = no
