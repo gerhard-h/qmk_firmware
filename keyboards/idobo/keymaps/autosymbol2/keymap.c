@@ -154,15 +154,21 @@ KC_TRNS, KC_TRNS, KC_TRNS,        KC_F12,         KC_F1,          KC_F2,        
 layer_state_t layer_state_set_user(layer_state_t state) {
     switch (get_highest_layer(state)) {
     case _L0:
-        rgblight_sethsv_noeeprom(HSV_PURPLE);
         if (caps_lock_on_key == KC_CAPS){
                 tap_code(KC_CAPS);
                 caps_lock_on_key = KC_NO;
         }
-
+        if (default_layer_moved) {
+                        rgblight_sethsv_noeeprom(HSV_RED);
+                        rgblight_mode_noeeprom(6);
+        } else {
+        	rgblight_sethsv_noeeprom(HSV_PURPLE);
+                rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
+        }
         break;
     case _LNAV:
-        rgblight_sethsv_noeeprom(HSV_YELLOW);
+        rgblight_sethsv_noeeprom(HSV_RED);
+        rgblight_mode_noeeprom(6);
         if (caps_state){
                 tap_code(KC_CAPS);
                 caps_state = 0;
@@ -170,7 +176,19 @@ layer_state_t layer_state_set_user(layer_state_t state) {
         }        
         break;
     case _LSYM:
+        /*todo  if switch (biton32(default_layer_state)) {
+        case _LNAV:
+                 (default_layer_moved && ){
+                        return state;             
+                else 
+                    default_layer_moved = false;           
+                    default_layer_set( ((layer_state_t)1 << _L0));
+                    return ((layer_state_t)1 << _L3);  
+               }
+        };*/
+    
         rgblight_sethsv_noeeprom(HSV_WHITE);
+        rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
         if (caps_state){
                 tap_code(KC_CAPS);
                 caps_state = 0;
@@ -178,24 +196,38 @@ layer_state_t layer_state_set_user(layer_state_t state) {
         }
         break;
     case _L3:
-    	//from locked _LNAV don't go to _L3
+    	//from locked _LNAV don't go to _L3     todo is this code needed with TG_LNAV?
+        rgblight_sethsv_noeeprom(HSV_RED);
+        rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
         switch (biton32(default_layer_state)) {
                 case _LNAV:
-                    default_layer_set( ((layer_state_t)1 << _L0));
-                    tap_code(KC_NUMLOCK);
-                    return ((layer_state_t)1 << _L0);  
+                            default_layer_moved = false;
+                            default_layer_set( ((layer_state_t)1 << _L0));
+                            tap_code(KC_NUMLOCK);
+                            rgblight_sethsv_noeeprom(HSV_PURPLE);
+                            rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
+                            return ((layer_state_t)1 << _L0);
         };
-        rgblight_sethsv_noeeprom(HSV_RED);
         break;
     case _L4:
-        rgblight_sethsv_noeeprom(HSV_GOLD);
+        rgblight_sethsv_noeeprom(HSV_GREEN);
+        rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
         break;
     case _GAME:
-        rgblight_sethsv_noeeprom(HSV_RED);
+        rgblight_sethsv_noeeprom(HSV_WHITE);
+        rgblight_mode_noeeprom(2);
         break;
     default:
         rgblight_sethsv_noeeprom(HSV_PURPLE);
+        rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
         break;
     }
     return state;
 }
+#ifdef RGBLIGHT_ENABLE
+void keyboard_post_init_user(void) {
+  rgblight_enable_noeeprom(); // Enables RGB, without saving settings
+  rgblight_sethsv_noeeprom(HSV_GREEN);
+  rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
+}
+#endif
