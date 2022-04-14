@@ -241,9 +241,9 @@ void dance_ss_finished(qk_tap_dance_state_t *state, void *user_data) {
                         tap_code16(KC_TAB);
                         return;
                 }
-                if(timer_elapsed(tab_timer) < 7000 && keycode == KC_R && (get_mods() | get_oneshot_mods()) == MOD_BIT(KC_LALT|KC_RSFT)) {
+                if(timer_elapsed(tab_timer) < 7000 && keycode == KC_R && (get_mods() & MOD_MASK_SA)) {
                         tab_timer = timer_read();
-                        tap_code16(S(KC_TAB));
+                        tap_code(KC_LEFT);
                         return;
                 }
                 tap_code16(keycode);
@@ -256,7 +256,6 @@ void dance_hold_each(qk_tap_dance_state_t *state, void *user_data) {
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
     if (state->count > 1) tap_code16(keycode);
 };
-// todo we could replace dance_hold_finished with dance_ss_finished but would it really reduce firmware size
 void dance_hold_finished(qk_tap_dance_state_t *state, void *user_data) {
     atap_state.state = cur_dance(state);
     uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;        // normal

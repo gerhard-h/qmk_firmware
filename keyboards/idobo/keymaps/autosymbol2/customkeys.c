@@ -9,8 +9,10 @@ enum custom_keycodes {
     TICKTICK,
     STICKTICK,
     N_RSHFT,
-    F_LSHFT
+    F_LSHFT,
+    TG_LNAV
 };
+static bool default_layer_moved;
 static uint16_t caps_lock_on_key = KC_NO;
 static uint16_t n_rshft_timer;
 static uint16_t f_lshft_timer;
@@ -217,12 +219,35 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 return false;
               }
               break;
+        case TG_LNAV:
+                if (record->event.pressed) {
+                        if (default_layer_moved) {
+                                if (IS_HOST_LED_ON(USB_LED_NUM_LOCK) == true){
+                                        tap_code(KC_NUMLOCK);
+                                }
+                                default_layer_set( ((layer_state_t)1 << _L0));
+                                default_layer_moved = false;
+                                layer_on(_L0);
+                                return false;
+                        };
+                        default_layer_set( ((layer_state_t)1 << _LNAV));
+                        default_layer_moved = true;
+                        tap_code(KC_NUMLOCK);
+                        return false;
+                } else {
+                        return false;
+                }
+                break;
+//todo this keys can now be reused after TG_NAV
         case DF(_LNAV):
                 if (record->event.pressed) {
-                    tap_code(KC_NUMLOCK);
-                }
+                        tap_code(KC_NUMLOCK);
+                        default_layer_moved = true;
+                } 
                 return true;
+                break;
         case DF(_L0):
+                default_layer_moved = false;
                 if (record->event.pressed) {
                    if (IS_HOST_LED_ON(USB_LED_NUM_LOCK) == true){
                     tap_code(KC_NUMLOCK);
