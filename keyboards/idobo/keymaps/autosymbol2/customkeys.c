@@ -10,9 +10,11 @@ enum custom_keycodes {
     STICKTICK,
     N_RSHFT,
     F_LSHFT,
-    TG_LNAV
+    TG_LNAV,
+    TG_L4
 };
 static bool default_layer_moved;
+static bool default_layer_movedl4;
 static uint16_t caps_lock_on_key = KC_NO;
 static uint16_t n_rshft_timer;
 static uint16_t f_lshft_timer;
@@ -237,8 +239,23 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                         return false;
                 }
                 break;
+        case TG_L4: // todo maybo osl -> TO -> exit
+                if (record->event.pressed) {
+                        if (default_layer_movedl4) {
+                                default_layer_set( ((layer_state_t)1 << _L0));
+                                default_layer_movedl4 = false;
+                                layer_on(_L0);
+                                return false;
+                        };
+                        default_layer_set( ((layer_state_t)1 << _L4));
+                        default_layer_movedl4 = true;
+                        return false;
+                } else {
+                        return false;
+                }
+                break;
 //todo this keys can now be reused after TG_NAV
-        case DF(_LNAV):
+/*        case DF(_LNAV):
                 if (record->event.pressed) {
                         tap_code(KC_NUMLOCK);
                         default_layer_moved = true;
@@ -255,6 +272,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                    }
                 }
                 return true;
+*/
         case MT(MOD_LALT, KC_K):
             if (record->tap.count && record->event.pressed) {
                 // Intercept tap function
