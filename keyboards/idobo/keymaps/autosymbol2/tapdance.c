@@ -73,6 +73,8 @@ td_state_t mod_dance(qk_tap_dance_state_t *state) {
 
 //individual Tap Dance Declarations
 enum {
+  TD_ATAB,
+  TD_APUP,
   TD_A,
   TD_O,
   TD_F,
@@ -385,7 +387,34 @@ void dance_autorepeat_reset(qk_tap_dance_state_t *state, void *user_data) {
     atap_state.state = TD_NONE;
     if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
 }
-
+// atap one button
+void dance_atab_finished(qk_tap_dance_state_t *state, void *user_data) {
+    atap_state.state = cur_dance(state);
+    uint16_t keycode = ((dance_user_data_t*)user_data)->keycode;
+    uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
+    register_code16(keycode2);  //alt
+    switch (atap_state.state) {
+        case TD_SINGLE_TAP:
+            tap_code(keycode);
+            break;
+        case TD_DOUBLE_TAP:
+        case TD_DOUBLE_HOLD:
+            tap_code_delay(keycode, 40);
+            tap_code_delay(KC_RIGHT, 500);
+            break;
+        default: 
+            tap_code(keycode); 
+            for (uint8_t i=1; i < state->count; i++) {
+                tap_code_delay(keycode, 450);
+            };
+        break;
+    }
+}
+void dance_atab_reset(qk_tap_dance_state_t *state, void *user_data) {
+    atap_state.state = cur_dance(state);
+    uint16_t keycode2 = ((dance_user_data_t*)user_data)->keycode2;
+    unregister_code16(keycode2);
+}
 // esc home end ^
 void dance_esc_finished(qk_tap_dance_state_t *state, void *user_data) {
     atap_state.state = cur_dance(state);
@@ -638,6 +667,8 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_J] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_hold_finished, atap_state_reset, &((dance_user_data_t){KC_J, KC_DLR})),
     [TD_R] = ACTION_TAP_DANCE_FN_ADVANCED_USER(dance_hold_each, dance_ss_finished, atap_state_reset, &((dance_user_data_t){KC_R, ALGR(KC_0), KC_R})), // KC_CAP is an option here
     [TD_E] = ACTION_TAP_DANCE_FN_ADVANCED_USER(shortcut_dance_each, shortcut_dance_finished, atap_state_reset, &((dance_user_data_t){KC_E, KC_LEFT, ALGR(KC_7), ALGR(KC_0)})),
+    [TD_ATAB] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_atab_finished, dance_atab_reset, &((dance_user_data_t){KC_TAB, KC_LALT})),
+    [TD_APUP] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_atab_finished, dance_atab_reset, &((dance_user_data_t){KC_PGUP, KC_LALT})),
 };
 
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
@@ -661,12 +692,12 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
             //case TD(TD_D):
                 return 140;
             case TD(TD_Y):
-                return 250;
             case TD(TD_R):
+                return 250;
             case ALT_T(KC_L):
             case LALT_T(KC_K):
             case GUI_T(KC_K):
-                return 280;
+                return 350;
             default:
                 return TAPPING_TERM;  // ~ 250
         }
