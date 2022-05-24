@@ -1,5 +1,6 @@
 ﻿# An autosymbol keymap with version for planck rev6 / bm40hsrgb / idobo
 
+![04 2022](qwertz-nt-autodiacrit220423.jpg)
 ## Highlights
 
 * implements **KEY_HOLD pseudo layer** to produce an alternativ key (a symbol or diacrit) without the need of an layer activiation key - similar to the autoshift concept  
@@ -8,7 +9,9 @@
 * because pseudo layers don't require additional layer activiation keys, this concept is promising for any qmk compatible keyboard (without spare keys)
 * uses  home row mods (mod tap and custom homerow shift)
 * Thumb symetry (no clawing and easy to adapt to) - ups abandonen
-* combined Numpad and Navigation layer - layer lock within the layer (using DF feature) - visualize layer lock by setting numlock
+* combined Numpad and Navigation layer
+* layer lock within the layer (using DF feature) - visualize layer lock by setting numlock
+* layer lock with dbl tapping OSL layer key as custom key (avoids dbltap aktivation of modifiers)
 * phone like, strong finger numpad
 * proper (pyramide) arranged cursor keys on a 40% keyboard
 * option to use tapdance on one shot layers (sounds usefull when imlementig a one hand layout) 
@@ -26,8 +29,15 @@
 * SWAP_HANDS_ENABLE on bm40rgb
 * MOUSEKEY_ENABLE
 
-## Mouse layer todos
+## IDOBO todos 
+* reconsider del/bsp placement
+* number row on symbol layer Keypadnumbers?
+* done LED don't reflect locked LNAV
+* exiting locked LNAV with L3 key goes directly to L0 maybe expected was LSYM
+* DF Keys are not needed any more Space and Eins 0?
 
+## Mouse layer todos
+  done move left mousekeys to homerow, accelleration keys are not needed.
   make layer stick/fixed                                    done
   key to exit layer                                 space   done
   make mouse speed keys tap not hold  or use kinetic        done
@@ -92,7 +102,7 @@ Currenly  AHK ,c is mapped to CapsLock (mixing this up confuses other keyboards)
   process_record_user ignores alphas (key hold feature) on gaming layer,
   no use of TapDance on gaming layer,
   locate good keys for shift and space in combination with WASD
-  DF() doesn't do the trick if you want an callback => TG(_GAME) is used
+DF() doesn't do the trick if you want an callback(qmk bug) => TG(_GAME) is used
 
 ### Homerow mod early/osm Shift
 

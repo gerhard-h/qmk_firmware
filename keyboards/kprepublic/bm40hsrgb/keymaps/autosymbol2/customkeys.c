@@ -10,8 +10,12 @@ enum custom_keycodes {
     STICKTICK,
     BACKLIT,
     N_RSHFT,
-    F_LSHFT
+    F_LSHFT,
+    TG_LNAV,
+    TG_L4
 };
+static bool default_layer_moved;
+static bool default_layer_movedl4;
 static uint16_t caps_lock_on_key = KC_NO;
 static uint16_t n_rshft_timer;
 static uint16_t f_lshft_timer;
@@ -27,7 +31,6 @@ uint8_t mod_state; // holding the binary representation of active modifiers
 static uint8_t caps_state = 0;
 bool led_update_user(led_t led_state) {
     if (caps_state != led_state.caps_lock) {
-        //if(led_state.caps_lock) {tap_code(KC_NUMLOCK);}
         caps_state = led_state.caps_lock;
     }
     return true;
@@ -218,18 +221,59 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 return false;
               }
               break;
-        case DF(_LNAV):
+        case TG_LNAV:
+                if (record->event.pressed) {
+                        if (default_layer_moved) {
+                                if (IS_HOST_LED_ON(USB_LED_NUM_LOCK) == true){
+                                        tap_code(KC_NUMLOCK);
+                                }
+                                default_layer_set( ((layer_state_t)1 << _L0));
+                                default_layer_moved = false;
+                                layer_on(_L0);
+                                return false;
+                        };
+                        default_layer_set( ((layer_state_t)1 << _LNAV));
+                        default_layer_moved = true;
+                        tap_code(KC_NUMLOCK);
+                        return false;
+                } else {
+                        return false;
+                }
+                break;
+        case TG_L4: // todo maybo osl -> TO -> exit
+                if (record->event.pressed) {
+                        if (default_layer_movedl4) {
+                                default_layer_set( ((layer_state_t)1 << _L0));
+                                default_layer_movedl4 = false;
+                                layer_on(_L0);
+                                return false;
+                        };
+                        default_layer_set( ((layer_state_t)1 << _L4));
+                        default_layer_movedl4 = true;
+                        return false;
+                } else {
+                        return false;
+                }
+                break;
+//todo this keys can now be reused after TG_NAV
+/*        case DF(_LNAV):
                 if (record->event.pressed) {
                     tap_code(KC_NUMLOCK);
+                        default_layer_moved = true;
                 }
                 return true;
+                break;
         case DF(_L0):
+                default_layer_moved = false;
                 if (record->event.pressed) {
                    if (IS_HOST_LED_ON(USB_LED_NUM_LOCK) == true){
+                    rgblight_sethsv_noeeprom(HSV_PURPLE);
+                    rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
                     tap_code(KC_NUMLOCK);
                    }
                 }
                 return true;
+*/
         case MT(MOD_LALT, KC_K):
             if (record->tap.count && record->event.pressed) {
                 // Intercept tap function

@@ -257,9 +257,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 //todo this keys can now be reused after TG_NAV
 /*        case DF(_LNAV):
                 if (record->event.pressed) {
-                        tap_code(KC_NUMLOCK);
+                    tap_code(KC_NUMLOCK);
                         default_layer_moved = true;
-                } 
+                }
                 return true;
                 break;
         case DF(_L0):
