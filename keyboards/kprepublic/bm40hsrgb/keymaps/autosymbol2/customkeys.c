@@ -277,8 +277,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case MT(MOD_LALT, KC_K):
             if (record->tap.count && record->event.pressed) {
                 // Intercept tap function
-                if ( force_rightside_shift_tap(KC_K, false)) {return false;}
-                if( f_lshft_pressed || n_rshft_pressed){shft_used_timer = timer_read();}
+                if (force_rightside_shift_tap(KC_K, false)) {return false;}
+                if (f_lshft_pressed || n_rshft_pressed){shft_used_timer = timer_read();}
             }
             return true;             // Return true for normal processing of tap keycode
 

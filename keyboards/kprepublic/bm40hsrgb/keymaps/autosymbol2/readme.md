@@ -98,10 +98,10 @@ Currenly  AHK ,c is mapped to CapsLock (mixing this up confuses other keyboards)
 ## Features in detail
 
 ### Gaming layer  
-  must be a lower number than NAV and SYM-Layer,
-  process_record_user ignores alphas (key hold feature) on gaming layer,
-  no use of TapDance on gaming layer,
-  locate good keys for shift and space in combination with WASD
+must be a lower number than NAV and SYM-Layer,  
+process_record_user ignores alphas (key hold feature) on gaming layer,  
+no use of TapDance on gaming layer,  
+locate good keys for shift and space in combination with WASD  
 DF() doesn't do the trick if you want an callback(qmk bug) => TG(_GAME) is used
 
 ### Homerow mod early/osm Shift
@@ -311,7 +311,9 @@ reconsider RAISE and right side Layer4 keys Tap function: Tab?/Del? Bsp?/Del?
 todo add light_control if OSM(modifier) is locked  (may be check osm status in matrix user)
 
 todo bm40rgb light intensity controls are inactive -> search solution in oryx keymap code   
+
 todo planck has the Backlit key any purpose?  
+
 info tapdance usage: there have been serious errors on bm40rgb/idobo and maybe all amtel if the dbl_tap array got too big, so far not reproduced on planck 
 
 info planck doesn't check firmware size 58kb file size was a problem
