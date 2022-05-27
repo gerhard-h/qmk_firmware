@@ -52,6 +52,7 @@ bool force_shift_tap( uint16_t keycode, bool sft_done, bool sft_pressed, bool on
         return false;
 }
 bool force_leftside_shift_tap( uint16_t keycode, bool only_register) {
+        // this allows for pressing multiple modifiers at the same time, but still predict shifts 
         dprintf("TD left side tap keycode: %u done: %b pressed: %b rshft_up_timer: %u shft_used_timer: %u limit: 300\n", keycode, n_rshft_done,n_rshft_pressed,  timer_elapsed(rshft_up_timer), timer_elapsed(shft_used_timer));
         switch (keycode) {
                         case KC_Q:
@@ -144,32 +145,44 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
    // first lets handel custom keycodes
    switch (keycode) {
         case N_RSHFT:
+              // bug sometimes Fe becomes Nfe  ... logging improved 
               if(record->event.pressed) {
+                // immediatly Shift
                 n_rshft_pressed = true;      
                 n_rshft_done = false;
                 n_rshft_timer = timer_read();
-                dprintf("N down ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
+                dprintf("N down = RSFT ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
                 register_code(KC_RSFT); // Change the key to be held here
               } else {
+                // immediatly Un-Shift
                 rshft_up_timer = timer_read();
                 n_rshft_pressed = false;      
-                unregister_code(KC_RSFT); // Change the key that was held here, too!
-                if (timer_elapsed(n_rshft_timer) < 120 ) {  // < TAPPING_TERM
-                  dprintf("N tap ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
-                  dprintf("N tap diff: %u ls: %u rs: %u\n", f_lshft_timer - n_rshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
-                  // if F (lsft) was pressed after N-down but before N-up don't shift N
+                unregister_code(KC_RSFT);
+                dprintf("unregister_code(KC_RSFT)\n");
+                if (timer_elapsed(n_rshft_timer) < 120 ) {  // < TAPPING_TERM for this key
+                  //preserver lowercase n: if F (lsft) was pressed after N-down but before N-up don't shift N
                   if( n_rshft_timer < f_lshft_timer && f_lshft_timer - n_rshft_timer < 80){
+                        dprintf("lower n tap ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
+                        dprintf("lower n tap diff: %u ls: %u rs: %u\n", f_lshft_timer - n_rshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
                         unregister_code(KC_LSFT);
                         tap_code16(KC_N);
                         register_code(KC_LSFT);
                   } else {
-                        tap_code16(KC_N); // Change the character(s) to be sent on tap here
+                        dprintf("any N tap ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
+                        dprintf("any N tap diff: %u ls: %u rs: %u\n", f_lshft_timer - n_rshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
+                        handle_force_shift_tap(KC_N, false); // TAP: can be n or N
+                        if (f_lshft_pressed || n_rshft_pressed){shft_used_timer = timer_read();}
                   }
+                  dprintf("n_rshft_done = true\n");
                   n_rshft_done = true;
                 } else 
-                if (timer_elapsed(n_rshft_timer) < 240 ) {  // < TAPPING_TERM x 2
-                  tap_code16(KC_N); // enable dbl tap nn
-                  n_rshft_done = true;
+                    if (timer_elapsed(n_rshft_timer) < 240 ) {  // < TAPPING_TERM x 2
+                        dprintf("double N tap ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
+                        dprintf("double N tap diff: %u ls: %u rs: %u\n", f_lshft_timer - n_rshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
+                        
+                        handle_force_shift_tap(KC_N, false); // TAP: can be n or N
+                        if (f_lshft_pressed || n_rshft_pressed){shft_used_timer = timer_read();}
+                        n_rshft_done = true;
                 } 
 #ifdef HOMEROWSFTSSYMBOL
                 else if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_LSFT)) {
@@ -188,27 +201,39 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 f_lshft_done = false;     
                 f_lshft_timer = timer_read();
                 register_code(KC_LSFT); // Change the key to be held here
-                dprintf("F down ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
+                dprintf("F down = LSFT ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
               } else {
                 lshft_up_timer = timer_read();
                 f_lshft_pressed = false;
                 unregister_code(KC_LSFT); // Change the key that was held here, too!
+                dprintf("unregister_code(KC_LSFT)\n");
                 if (timer_elapsed(f_lshft_timer) < 120 ) {  // < TAPPING_TERM
-                  dprintf("F tap ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
-                  dprintf("F tap diff: %u ls: %u rs: %u\n", n_rshft_timer - f_lshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
-                  // if N (rsft) was pressed after F-down but before F-up don't shift F
+                 // if N (rsft) was pressed after F-down but before F-up don't shift F
                   if( f_lshft_timer < n_rshft_timer && n_rshft_timer - f_lshft_timer < 80){
+                        dprintf("lower F tap ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
+                        dprintf("lower F tap diff: %u ls: %u rs: %u\n", n_rshft_timer - f_lshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
                         unregister_code(KC_RSFT);
                         tap_code16(KC_F);
                         register_code(KC_RSFT);
                   } else {
-                        tap_code16(KC_F); // Change the character(s) to be sent on tap here
+                      
+                        dprintf("any F tap ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
+                        dprintf("any F tap diff: %u ls: %u rs: %u\n", n_rshft_timer - f_lshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
+                        
+                        handle_force_shift_tap(KC_F, false); // Change the character(s) to be sent on tap here
+                        if (f_lshft_pressed || n_rshft_pressed){shft_used_timer = timer_read();}
                   }
                   f_lshft_done = true;
+                  dprintf("f_lshft_done = true\n");
                 } else 
-                if (timer_elapsed(f_lshft_timer) < 240 ) {  // < TAPPING_TERM x 2
-                          tap_code16(KC_F); // enable dbl tap ff
-                          f_lshft_done = true;
+                    if (timer_elapsed(f_lshft_timer) < 240 ) {  // < TAPPING_TERM x 2
+                
+                        dprintf("double F tap ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
+                        dprintf("double F tap diff: %u ls: %u rs: %u\n", n_rshft_timer - f_lshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
+                        
+                        handle_force_shift_tap(KC_F, false); // Change the character(s) to be sent on tap here
+                        if (f_lshft_pressed || n_rshft_pressed){shft_used_timer = timer_read();}
+                        f_lshft_done = true;
                 }
 #ifdef HOMEROWSFTSSYMBOL
                 else if ((get_mods() | get_oneshot_mods()) & MOD_BIT(KC_RSFT )) {
