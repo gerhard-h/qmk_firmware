@@ -39,7 +39,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //      KC_ESC,     KC_PSCR, C(A(KC_PAUSE)),
 //                                           TD(TD_ESC),          KC_1,          KC_2,          KC_3,          KC_4,          KC_5,          KC_6,           KC_7,           KC_8,           KC_9,           KC_0,         KC_DEL,
 //     TO(_L0),     TO(_L3),  TD(TD_ATAB),
-                                             TD(TD_ESC),      TD(TD_Q),      TD(TD_W),      TD(TD_E),      TD(TD_R),      TD(TD_J),      TD(TD_Z),       TD(TD_U),       TD(TD_I),       TD(TD_O),       TD(TD_P),        KC_BSPC,
+                                             TD(TD_ESC),      TD(TD_Q),      TD(TD_W),      TD(TD_E),      TD(TD_R),      TD(TD_J),      TD(TD_Z),       TD(TD_U),       TD(TD_I),       TD(TD_O),       TD(TD_P),     TD(TD_BSP),
 //     KC_VOLU,     KC_PGUP,  TD(TD_APUP),
                                          HYPR_T(KC_TAB),      TD(TD_A),     TD(TD_SS),   CTL_T(KC_D),       F_LSHFT,      TD(TD_G),      TD(TD_H),        N_RSHFT,    CTL_T(KC_T),    ALT_T(KC_L),    GUI_T(KC_K), RCTL_T(KC_ENT),
 //     KC_VOLD,     KC_PGDN,        KC_NO,

@@ -145,7 +145,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
    // first lets handel custom keycodes
    switch (keycode) {
         case N_RSHFT:
-              // bug sometimes Fe becomes Nfe  ... logging improved 
+              // bug sometimes Fe becomes Nfe  ... logging improved happens if timing is blow tappingterm 120, 
               if(record->event.pressed) {
                 // immediatly Shift
                 n_rshft_pressed = true;      
@@ -159,7 +159,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 n_rshft_pressed = false;      
                 unregister_code(KC_RSFT);
                 dprintf("unregister_code(KC_RSFT)\n");
-                if (timer_elapsed(n_rshft_timer) < 120 ) {  // < TAPPING_TERM for this key
+                if (timer_elapsed(n_rshft_timer) < 100 ) {  // < TAPPING_TERM for this key
                   //preserver lowercase n: if F (lsft) was pressed after N-down but before N-up don't shift N
                   if( n_rshft_timer < f_lshft_timer && f_lshft_timer - n_rshft_timer < 80){
                         dprintf("lower n tap ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
@@ -207,7 +207,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 f_lshft_pressed = false;
                 unregister_code(KC_LSFT); // Change the key that was held here, too!
                 dprintf("unregister_code(KC_LSFT)\n");
-                if (timer_elapsed(f_lshft_timer) < 120 ) {  // < TAPPING_TERM
+                if (timer_elapsed(f_lshft_timer) < 100 ) {  // < TAPPING_TERM
                  // if N (rsft) was pressed after F-down but before F-up don't shift F
                   if( f_lshft_timer < n_rshft_timer && n_rshft_timer - f_lshft_timer < 80){
                         dprintf("lower F tap ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);

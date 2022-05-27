@@ -92,6 +92,7 @@ enum {
   TD_ESC,
   TD_R,
   TD_P,
+  TD_BSP
 };
 
 
@@ -441,7 +442,7 @@ void modifier_dbldance_each(qk_tap_dance_state_t *state, void *user_data) {
 // Tap Dance definitions - look at the _finished functions names to know what is happening, reset_ and each_ functions might be shared
 qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_ESC] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_esc_finished, dance_esc_reset, &((dance_user_data_t){KC_ESC, KC_HOME, KC_GRV, KC_END})), //tap (tripple tap hold for AutoRepeat), hold (with AR), double_hold (without AR), shift passthrough
-    [TD_Q] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_esc_finished, dance_esc_reset, &((dance_user_data_t){KC_Q, KC_END, DE_EXLM, DE_EXLM})),
+    [TD_Q] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_esc_finished, dance_esc_reset, &((dance_user_data_t){KC_Q, DE_EXLM, DE_AT, DE_EXLM})),
     [TD_X] = ACTION_TAP_DANCE_FN_ADVANCED_USER(shortcut_dance_each, shortcut_dance_finished, atap_state_reset, &((dance_user_data_t){KC_X, KC_NO, S(KC_NUHS), S(KC_NUHS)})),
     [TD_C] = ACTION_TAP_DANCE_FN_ADVANCED_USER(shortcut_dance_each, shortcut_dance_finished, atap_state_reset, &((dance_user_data_t){KC_C, KC_LEFT, ALGR(KC_7), ALGR(KC_0)})), // tap, double_hold autoclose for "" '' () []...
     [TD_V] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, dance_dbltap_finished, atap_state_reset, &((dance_user_data_t){KC_V, ALGR(KC_0), KC_ENT})),
@@ -473,6 +474,8 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_E] = ACTION_TAP_DANCE_FN_ADVANCED_USER(shortcut_dance_each, shortcut_dance_finished, atap_state_reset, &((dance_user_data_t){KC_E, KC_LEFT, S(KC_8), S(KC_9)})),
     [TD_ATAB] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_atab_finished, dance_atab_reset, &((dance_user_data_t){KC_TAB, KC_LALT})),
     [TD_APUP] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_atab_finished, dance_atab_reset, &((dance_user_data_t){KC_PGUP, KC_LALT})),
+    [TD_BSP] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_autorepeat_finished, dance_autorepeat_reset, &((dance_user_data_t){KC_BSPC, C(KC_BSPC), C(KC_BSPC)})),
+   
 };
 
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
@@ -489,6 +492,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
              //return 120;
             case LCTL_T(KC_D):
             case LCTL_T(KC_T):
+            case TD(TD_BSP):
                 return 140;
             case TD(TD_Y):
             case TD(TD_R):
