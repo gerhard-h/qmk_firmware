@@ -255,26 +255,32 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                         return false;
                 }
                 break;
-//todo this keys can now be reused after TG_NAV
-/*        case DF(_LNAV):
-                if (record->event.pressed) {
-                    tap_code(KC_NUMLOCK);
-                        default_layer_moved = true;
-                }
-                return true;
-                break;
-        case DF(_L0):
-                default_layer_moved = false;
-                if (record->event.pressed) {
-                   if (IS_HOST_LED_ON(USB_LED_NUM_LOCK) == true){
-                    rgblight_sethsv_noeeprom(HSV_PURPLE);
-                    rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
-                    tap_code(KC_NUMLOCK);
-                   }
-                }
-                return true;
-*/
-        case MT(MOD_LALT, KC_K):
+        case CTL_T(KC_D):
+            // you have to do this for all mod taps you use else a shift may get force applied to the next following tapdance
+            if (record->tap.count && record->event.pressed) {
+                // Intercept tap function
+                if (force_leftside_shift_tap(KC_D, false)) {return false;}
+                if (f_lshft_pressed || n_rshft_pressed){shft_used_timer = timer_read();}
+            }
+            return true;
+        case CTL_T(KC_T):
+            // you have to do this for all mod taps you use else a shift may get force applied to the next following tapdance
+            if (record->tap.count && record->event.pressed) {
+                // Intercept tap function
+                if (force_rightside_shift_tap(KC_T, false)) {return false;}
+                if (f_lshft_pressed || n_rshft_pressed){shft_used_timer = timer_read();}
+            }
+            return true;
+        case ALT_T(KC_L):
+            // you have to do this for all mod taps you use else a shift may get force applied to the next following tapdance
+            if (record->tap.count && record->event.pressed) {
+                // Intercept tap function
+                if (force_rightside_shift_tap(KC_L, false)) {return false;}
+                if (f_lshft_pressed || n_rshft_pressed){shft_used_timer = timer_read();}
+            }
+            return true;
+        case GUI_T(KC_K):
+            // you have to do this for all mod taps you use else a shift may get force applied to the next following tapdance
             if (record->tap.count && record->event.pressed) {
                 // Intercept tap function
                 if (force_rightside_shift_tap(KC_K, false)) {return false;}
