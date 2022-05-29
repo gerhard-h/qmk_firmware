@@ -37,7 +37,9 @@ bool led_update_user(led_t led_state) {
 }
 
 bool _force_shift_tap( uint16_t keycode, bool sft_done, bool sft_pressed, bool only_register, uint16_t shft_up_timer) {
-        // force home row shift even if shift key was already released, but only if no other key consumed that shift. both timers are compared to 300ms but they could be adjusted individually        
+        // force home row shift even if shift key was JUST released, but only if no other key consumed that shift.
+        // both timers are compared to 300ms but they could be adjusted individually
+        // The shft_used_timer here also prevents unintended DOuble UPper CAse
         if ( !sft_done && !sft_pressed && timer_elapsed(shft_up_timer) < 300 && timer_elapsed(shft_used_timer) > 300 ) {
                                         dprintf("SHIFT enforced\n");
                                         if(only_register){
@@ -55,7 +57,9 @@ bool _force_shift_tap( uint16_t keycode, bool sft_done, bool sft_pressed, bool o
 
 // TODO refactor: move force_leftside_shift_tap/force_rightside_shift_tap and timer reset: if (f_lshft_pressed || n_rshft_pressed){shft_used_timer = timer_read();} into a single funktion
 bool force_shift_tap( uint16_t keycode, bool only_register) {
-        // this allows for pressing multiple modifiers at the same time, but still predict shifts 
+        // by dividing the keyboard in left and right this function allows for pressing multiple home row modifiers (including shift) at the same time on the same side of the keyboard (without enforcing uppercase letters)
+        // this function only outputs a key if a enforced shift is necessary
+        // the return value corresponds to the return value of process_record_user 
         switch (keycode) {
                         case KC_Q:
                         case KC_W:
@@ -209,7 +213,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 unregister_code(KC_LSFT); // Change the key that was held here, too!
                 dprintf("unregister_code(KC_LSFT)\n");
                 if (timer_elapsed(f_lshft_timer) < 100 && f_lshft_timer < n_rshft_timer && n_rshft_timer - f_lshft_timer < 80){  //here you set something similar to TAPPING_TERM for F_LSHFT ~ 100
-                        // protect lower f from delayed shifting: if the other home row shift N_RSHFT was pressed short after F-down but before F-up don't shift f
+                        // protect lower "f" from delayed shifting: if the other home row shift N_RSHFT was pressed short after F-down but before F-up don't shift f
                         dprintf("lower F tap f down timer: %u n down timer: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
                         dprintf("lower F tap diff: %u ls: %u rs: %u\n", n_rshft_timer - f_lshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
                         unregister_code(KC_RSFT);
