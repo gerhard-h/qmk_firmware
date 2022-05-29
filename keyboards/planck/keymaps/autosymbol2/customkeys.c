@@ -36,11 +36,10 @@ bool led_update_user(led_t led_state) {
     return true;
 }
 
-// force home row shift even if shift key is already released
 bool force_shift_tap( uint16_t keycode, bool sft_done, bool sft_pressed, bool only_register, uint16_t shft_up_timer) {
-        
+        // force home row shift even if shift key was already released, but only if no other key consumed that shift. both timers are compared to 300ms but they could be adjusted individually        
         if ( !sft_done && !sft_pressed && timer_elapsed(shft_up_timer) < 300 && timer_elapsed(shft_used_timer) > 300 ) {
-                                        dprintf("TD force SFT  \n");
+                                        dprintf("SHIFT enforced\n");
                                         if(only_register){
                                                 register_code16(S(keycode));
                                         } else {
@@ -51,6 +50,8 @@ bool force_shift_tap( uint16_t keycode, bool sft_done, bool sft_pressed, bool on
         }
         return false;
 }
+
+// TODO refactor: move force_leftside_shift_tap/force_rightside_shift_tap and timer reset: if (f_lshft_pressed || n_rshft_pressed){shft_used_timer = timer_read();} into a single funktion
 bool force_leftside_shift_tap( uint16_t keycode, bool only_register) {
         // this allows for pressing multiple modifiers at the same time, but still predict shifts 
         dprintf("TD left side tap keycode: %u done: %b pressed: %b rshft_up_timer: %u shft_used_timer: %u limit: 300\n", keycode, n_rshft_done,n_rshft_pressed,  timer_elapsed(rshft_up_timer), timer_elapsed(shft_used_timer));
@@ -89,7 +90,7 @@ bool force_rightside_shift_tap( uint16_t keycode, bool only_register) {
                         case KC_T:
                         case KC_L:
                         case KC_K:
-                        case MT(MOD_LALT, KC_K):
+                        case MT(MOD_LALT, KC_K): // this line seems pointless todo
                         case KC_M:
                         case KC_COMM:
                         case KC_DOT:
@@ -100,10 +101,15 @@ bool force_rightside_shift_tap( uint16_t keycode, bool only_register) {
         }
 }
 void handle_force_shift_tap( uint16_t keycode, bool only_register) {
-        if ( force_leftside_shift_tap(keycode, false)) {return;}
-        if ( force_rightside_shift_tap(keycode, false)) {return;}
-        if( f_lshft_pressed || n_rshft_pressed){shft_used_timer = timer_read();}
-        if( only_register ) {
+        //remember! this function should be called for:
+        // --- all tapdance TD_SINGLE_TAP cases 
+        // --- for each Mod Tap you have to add a case to process_record_user
+        
+        if (force_leftside_shift_tap(keycode, false)) {return;}
+        if (force_rightside_shift_tap(keycode, false)) {return;}
+        // if shift isn't enforced let's continue as normal
+        if (f_lshft_pressed || n_rshft_pressed){shft_used_timer = timer_read();}
+        if (only_register) {
                 register_code16(keycode);
         } else {
                 tap_code16(keycode);
@@ -140,8 +146,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #ifdef CONSOLE_ENABLE
     //dprintf("KL: kc: 0x%04X, col: %u, row: %u, pressed: %b, time: %u, interrupt: %b, count: %u\n", keycode, record->event.key.col, record->event.key.row, record->event.pressed, record->event.time, record->tap.interrupted, record->tap.count);
 #endif
-   // Store the current modifier state in the variable for later reference
-    mod_state = get_mods();
+   
+    mod_state = get_mods(); // Store the current modifier state in the variable for later reference
    // first lets handel custom keycodes
    switch (keycode) {
         case N_RSHFT:
@@ -195,38 +201,38 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 return false;
               }
               break;
-        case F_LSHFT:
+        case F_LSHFT
               if(record->event.pressed) {
                 f_lshft_pressed = true;     
                 f_lshft_done = false;     
                 f_lshft_timer = timer_read();
-                register_code(KC_LSFT); // Change the key to be held here
+                register_code(KC_LSFT); // Change the key to be held here 
                 dprintf("F down = LSFT ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
               } else {
                 lshft_up_timer = timer_read();
                 f_lshft_pressed = false;
                 unregister_code(KC_LSFT); // Change the key that was held here, too!
                 dprintf("unregister_code(KC_LSFT)\n");
-                if (timer_elapsed(f_lshft_timer) < 100 ) {  // < TAPPING_TERM
-                 // if N (rsft) was pressed after F-down but before F-up don't shift F
+                if (timer_elapsed(f_lshft_timer) < 100 ) {  here you set TAPPING_TERM for F_LSHFT
                   if( f_lshft_timer < n_rshft_timer && n_rshft_timer - f_lshft_timer < 80){
+                        // protect lower f from delayed shifting: if the other home row shift N_RSHFT was pressed short after F-down but before F-up don't shift f
                         dprintf("lower F tap ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
                         dprintf("lower F tap diff: %u ls: %u rs: %u\n", n_rshft_timer - f_lshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
                         unregister_code(KC_RSFT);
                         tap_code16(KC_F);
                         register_code(KC_RSFT);
                   } else {
-                      
+                        
                         dprintf("any F tap ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
                         dprintf("any F tap diff: %u ls: %u rs: %u\n", n_rshft_timer - f_lshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
                         
                         handle_force_shift_tap(KC_F, false); // Change the character(s) to be sent on tap here
                         if (f_lshft_pressed || n_rshft_pressed){shft_used_timer = timer_read();}
                   }
-                  f_lshft_done = true;
+                  f_lshft_done = true; // we released shift within F_LSHFT-TAPPING_TERM so we don't want to shift anything anymore
                   dprintf("f_lshft_done = true\n");
-                } else 
-                    if (timer_elapsed(f_lshft_timer) < 240 ) {  // < TAPPING_TERM x 2
+                } else // this part is doing the same as the else Part above besides the logmessage ... todo=refactor
+                    if (timer_elapsed(f_lshft_timer) < 240 ) {  // ~ F_LSHFT-TAPPING_TERM x 2
                 
                         dprintf("double F tap ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
                         dprintf("double F tap diff: %u ls: %u rs: %u\n", n_rshft_timer - f_lshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
@@ -318,39 +324,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             
             return false;*/
-            
-        /* S(BSP) = DEL ... tends to be more confusing than helpfull   
-        case KC_BSPC:
-        {
-        // Initialize a boolean variable that keeps track
-        // of the delete key status: registered or not?
-        static bool delkey_registered;
-        if (record->event.pressed) {
-            // Detect the activation of either shift keys
-            if (mod_state & MOD_MASK_SHIFT) {
-                // First temporarily canceling both shifts so that
-                // shift isn't applied to the KC_DEL keycode
-                del_mods(MOD_MASK_SHIFT);
-                register_code(KC_DEL);
-                // Update the boolean variable to reflect the status of KC_DEL
-                delkey_registered = true;
-                // Reapplying modifier state so that the held shift key(s)
-                // still work even after having tapped the Backspace/Delete key.
-                set_mods(mod_state);
-                return false;
-            }
-        } else { // on release of KC_BSPC
-            // In case KC_DEL is still being sent even after the release of KC_BSPC
-            if (delkey_registered) {
-                unregister_code(KC_DEL);
-                delkey_registered = false;
-                return false;
-            }
-        }
-        // Let QMK process the KC_BSPC keycode as usual outside of shift
-        return true;
-    }
-    */
+
     case PICKFIRST:
         if (record->event.pressed) {
             // when keycode PICKFIRST is pressed
@@ -421,7 +395,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       return false;
       break;   
     }
-// second lets handel the KEY_HOLD feature keycodes
+// lets handel the KEY_HOLD feature keycodes
 /*    if (!hold_feature_active) return true;  
     if ((key_hold_lastkey != keycode) || (timer_elapsed(key_hold_dbltap_timer) > (2 * TAPPING_TERM))) key_hold_lastkey = KC_NO;
     switch (keycode) {
