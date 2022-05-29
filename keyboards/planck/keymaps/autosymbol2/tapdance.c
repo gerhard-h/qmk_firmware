@@ -203,8 +203,7 @@ void dance_ss_finished(qk_tap_dance_state_t *state, void *user_data) {
              }
              tap_code16(keycode2); return;
         default:
-                if (force_leftside_shift_tap(keycode, false)) {return;}
-                if( f_lshft_pressed || n_rshft_pressed ){shft_used_timer = timer_read();}
+                if (force_shift_tap(keycode, false)) {return;}
                 if(timer_elapsed(tab_timer) < 7000 && keycode == KC_R && (get_mods() | get_oneshot_mods()) == MOD_BIT(KC_LALT)) {
                         tab_timer = timer_read();
                         tap_code16(KC_TAB);
@@ -283,7 +282,7 @@ void dance_autorepeat_finished(qk_tap_dance_state_t *state, void *user_data) {
         case TD_SINGLE_TAP:
                 switch (keycode) {
                         case KC_M:
-                                if ( force_rightside_shift_tap(keycode, true)) {return;}
+                                if (force_shift_tap(keycode, true)) {return;}
                 }
                 if( f_lshft_pressed || n_rshft_pressed){shft_used_timer = timer_read();}
                 register_code16(keycode);
