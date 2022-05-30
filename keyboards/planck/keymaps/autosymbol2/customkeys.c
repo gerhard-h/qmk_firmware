@@ -166,26 +166,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 n_rshft_pressed = false;      
                 unregister_code(KC_RSFT);
                 dprintf("unregister_code(KC_RSFT)\n");
-                if (timer_elapsed(n_rshft_timer) < 100 ) {  // < TAPPING_TERM for this key
+                if (timer_elapsed(n_rshft_timer) < 100 && n_rshft_timer < f_lshft_timer && f_lshft_timer - n_rshft_timer < 80){
                   //preserver lowercase n: if F (lsft) was pressed after N-down but before N-up don't shift N
-                  if( n_rshft_timer < f_lshft_timer && f_lshft_timer - n_rshft_timer < 80){
+                  
                         dprintf("lower n tap ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
                         dprintf("lower n tap diff: %u ls: %u rs: %u\n", f_lshft_timer - n_rshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
                         unregister_code(KC_LSFT);
                         tap_code16(KC_N);
                         register_code(KC_LSFT);
-                  } else {
-                        dprintf("any N tap ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
-                        dprintf("any N tap diff: %u ls: %u rs: %u\n", f_lshft_timer - n_rshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
-                        handle_force_shift_tap(KC_N, false); // TAP: can be n or N
-                  }
-                  dprintf("n_rshft_done = true\n");
-                  n_rshft_done = true;
-                } else 
-                    if (timer_elapsed(n_rshft_timer) < 240 ) {  // < TAPPING_TERM x 2
-                        dprintf("double N tap ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
-                        dprintf("double N tap diff: %u ls: %u rs: %u\n", f_lshft_timer - n_rshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
-                        
+                        n_rshft_done = true;
+                } else if (timer_elapsed(n_rshft_timer) < 240 ) {  // < TAPPING_TERM x 2
+                        dprintf("any N tap f down timer: %u n down timer: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
+                        if (f_lshft_timer > n_rshft_timer ){
+                            dprintf("any N tap diff: %u ls: %u rs: %u\n", f_lshft_timer - n_rshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
+                        } else {
+                            dprintf("any N tap diff: %u ls: %u rs: %u\n", n_rshft_timer - f_lshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
+                        }
                         handle_force_shift_tap(KC_N, false); // TAP: can be n or N
                         n_rshft_done = true;
                 } 

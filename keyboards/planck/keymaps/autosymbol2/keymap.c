@@ -111,11 +111,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-----------------------------------------------------------------------------------.
  * |escF12| 1 F1 | 2 F2 | 3 F3 | 4 F4 | 5 F5 | 6 F6 | 7 F7 | 8 F8 | 9 F9 |  F10 |delF11|
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |^ Home|   !  |  "   |  (   |  )   |  $   |  &   |  %   |  \   |  #   |  ?   |      |
+ * |^ Home|  !   |  "   |  (   |  )   |  $   |  &   |  %   |  \   |  #   |  ?   |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |  `   |  '   |  [   |  ]   |  =   |  /   |  "   |  '   |  !   |  €   |      |
+ * |      |  `   |  |   |  [   |  ]   |  =   |  /   |  "   |  '   |  !   |  €   |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |  ´   |  |   |  {   |  }   |  +   |  *   |  <   |  >   |  ~   |      |      |
+ * |      |  ´   |  '   |  {   |  }   |  +   |  *   |  <   |  >   |  ~   |      |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * |      |  WIN |  ALT | [SYM]|  _L3 |             | [SYM]|  _L4 |      |      |      |
  * `-----------------------------------------------------------------------------------'
@@ -127,9 +127,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //     KC_TRNS,     TG(_L4),      KC_TRNS,
                                                CIRCUMFL,       DE_EXLM,  TD(TD_DQUOT),    TD(TD_PAR),       KC_LPRN,        KC_DLR,       DE_AMPR,        KC_PERC,        DE_BSLS,        KC_NUHS,        DE_QUES,        KC_TRNS,
 //     KC_TRNS,     KC_TRNS,      KC_TRNS,
-                                                KC_TRNS,     STICKTICK,   TD(TD_QUOT),    TD(TD_SQU),    ALGR(KC_9),       KC_RPRN,       DE_SLSH,   TD(TD_DQUOT),    TD(TD_QUOT),        DE_EXLM,     ALGR(KC_E),        KC_TRNS,
+                                                KC_TRNS,     STICKTICK,       DE_PIPE,    TD(TD_SQU),    ALGR(KC_9),       KC_RPRN,       DE_SLSH,   TD(TD_DQUOT),    TD(TD_QUOT),        DE_EXLM,     ALGR(KC_E),        KC_TRNS,
 //     KC_TRNS,     KC_TRNS,      KC_TRNS,
-                                                KC_LSFT,      TICKTICK,       DE_PIPE,    TD(TD_CUR),    ALGR(KC_0),       KC_RBRC,       DE_ASTR,     TD(TD_ANG),     S(KC_NUBS),        DE_TILD,          KC_UP,        KC_TRNS,
+                                                KC_LSFT,      TICKTICK,   TD(TD_QUOT),    TD(TD_CUR),    ALGR(KC_0),       KC_RBRC,       DE_ASTR,     TD(TD_ANG),     S(KC_NUBS),        DE_TILD,          KC_UP,        KC_TRNS,
 //     KC_TRNS,     KC_TRNS,      KC_TRNS,
                                                 KC_TRNS,       KC_LGUI,       KC_LALT,       KC_TRNS,       TO(_L3),
 //                                                                                                                         KC_TRNS,
