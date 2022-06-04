@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<paths>
+		<left>C:\Users\heideg\qmk_firmware_my\keyboards\planck\keymaps\autosymbol2\</left>
+		<right>C:\Users\heideg\qmk_firmware_my\keyboards\kprepublic\bm40hsrgb\keymaps\autosymbol2\</right>
+		<filter>Exclude Source Control</filter>
+		<subfolders>1</subfolders>
+		<left-readonly>0</left-readonly>
+		<right-readonly>0</right-readonly>
+	</paths>
+</project>

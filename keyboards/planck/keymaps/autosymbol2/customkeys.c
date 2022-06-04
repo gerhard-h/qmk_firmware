@@ -77,7 +77,12 @@ bool force_shift_tap( uint16_t keycode, bool only_register) {
                         case KC_V:
                         case KC_B:
                                 dprintf("TD left side tap keycode: %u done: %b pressed: %b rshft_up_timer: %u shft_used_timer: %u limit: 300\n", keycode, n_rshft_done,n_rshft_pressed,  timer_elapsed(rshft_up_timer), timer_elapsed(shft_used_timer));
-                                return _force_shift_tap( keycode, n_rshft_done, n_rshft_pressed, only_register, rshft_up_timer);
+                                if (_force_shift_tap( keycode, n_rshft_done, n_rshft_pressed, only_register, rshft_up_timer)) {
+                                    n_rshft_done = true; // todo the timer might be enough to control _done and this is not needed
+                                    return true;
+                                } else {
+                                    return false;
+                                }
                         
                         case KC_Y: //Z
                         case KC_U:
@@ -94,7 +99,12 @@ bool force_shift_tap( uint16_t keycode, bool only_register) {
                         case KC_COMM:
                         case KC_DOT:
                                 dprintf("TD right side tap keycode: %u done: %b pressed: %b lshft_up_timer: %u shft_used_timer: %u limit: 300\n", keycode, f_lshft_done,f_lshft_pressed,  timer_elapsed(lshft_up_timer), timer_elapsed(shft_used_timer));
-                                return _force_shift_tap( keycode, f_lshft_done, f_lshft_pressed, only_register, lshft_up_timer);
+                                if (_force_shift_tap( keycode, f_lshft_done, f_lshft_pressed, only_register, lshft_up_timer)) {
+                                    f_lshft_done = true; // todo the timer might be enough to control _done and this is not needed
+                                    return true;
+                                } else {
+                                    return false;
+                                }
                         
                         default:
                                 dprintf("tap keycode: %u is ignored bc it is not left or right side\n", keycode);
@@ -196,7 +206,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 return false;
               }
               break;
-        case F_LSHFT
+        case F_LSHFT:
               if(record->event.pressed) {
                 f_lshft_pressed = true;     
                 f_lshft_done = false;     

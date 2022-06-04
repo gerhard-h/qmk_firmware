@@ -187,7 +187,10 @@ void dance_ss_finished(qk_tap_dance_state_t *state, void *user_data) {
     switch (atap_state.state) {
         case TD_SINGLE_HOLD:
              if ((get_mods() | get_oneshot_mods()) == MOD_BIT(KC_RSFT)) {
-               tap_code16(keycode3); // ' extra
+               	    mod_state = get_mods();
+                    clear_mods();
+                    tap_code16(keycode3);
+                    set_mods(mod_state);
                return;
              }
              if ((get_mods() | get_oneshot_mods()) == MOD_BIT(KC_LALT)) {
@@ -441,8 +444,8 @@ void modifier_dbldance_each(qk_tap_dance_state_t *state, void *user_data) {
 // Tap Dance definitions - look at the _finished functions names to know what is happening, reset_ and each_ functions might be shared
 qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_ESC] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_esc_finished, dance_esc_reset, &((dance_user_data_t){KC_ESC, KC_HOME, KC_GRV, KC_END})), //tap (tripple tap hold for AutoRepeat), hold (with AR), double_hold (without AR), shift passthrough
-    [TD_Q] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_esc_finished, dance_esc_reset, &((dance_user_data_t){KC_Q, DE_EXLM, DE_AT, DE_EXLM})),
-    [TD_X] = ACTION_TAP_DANCE_FN_ADVANCED_USER(shortcut_dance_each, shortcut_dance_finished, atap_state_reset, &((dance_user_data_t){KC_X, KC_LEFT, S(KC_NUHS), S(KC_NUHS)}))
+    [TD_Q] = ACTION_TAP_DANCE_FN_ADVANCED_USER(NULL, dance_esc_finished, dance_esc_reset, &((dance_user_data_t){KC_Q, DE_EXLM, DE_AT, DE_AT})),
+    [TD_X] = ACTION_TAP_DANCE_FN_ADVANCED_USER(shortcut_dance_each, shortcut_dance_finished, atap_state_reset, &((dance_user_data_t){KC_X, KC_LEFT, S(KC_NUHS), S(KC_NUHS)})),
     [TD_C] = ACTION_TAP_DANCE_FN_ADVANCED_USER(shortcut_dance_each, shortcut_dance_finished, atap_state_reset, &((dance_user_data_t){KC_C, KC_LEFT, ALGR(KC_7), ALGR(KC_0)})), // tap, double_hold autoclose for "" '' () []...
     [TD_V] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, dance_dbltap_finished, atap_state_reset, &((dance_user_data_t){KC_V, ALGR(KC_0), KC_ENT})),
     [TD_Y] = ACTION_TAP_DANCE_FN_ADVANCED_USER(modifier_dbldance_each, dance_dbltap_finished, atap_state_reset, &((dance_user_data_t){KC_Z, C(KC_Z), C(KC_Z)})),
