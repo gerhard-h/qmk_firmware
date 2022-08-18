@@ -4,19 +4,20 @@
 
 ## The AUTOSYSMBOL concept
 
-* Make most usefull keys available without use ove a dedicated layer key
-* Make especially diacrits ä ü ö ß acessible by Key hold
-* Keep key hold definition consistent with the corresponding Symbol-Layer e.g. Hold(i) = Symbol-Layer(i) = \
-* Keep SHIFT + KEY_HOLD or DOUBLE_TAP_HOLD related to the HOLD action e.g. Hold(c) = {  DOUBLE_TAP_HOLD(c) = {}
-* for comma, dot,... Hold() is the same as Shift 
+* Make most usefull symbol/keys available without pressing an additional dedicated layer key
+* Make especially diacrits ä ü ö ß acessible by KEY_HOLD, but don't put them on the symbol layer
+* Keep key hold definition consistent with the corresponding Symbol-Layer e.g. HOLD(i) = Symbol-Layer(i) = \
+* for comma, dot,... Hold() is the same as Shift, because the shifted keys are more frequent than the symbol layer keys 
+* Keep additional key combos like: SHIFT + KEY_HOLD or DOUBLE_TAP_HOLD related to the original HOLD action e.g. HOLD(c) -> {  DOUBLE_TAP_HOLD(c) -> {}
 
 ## Highlights
 * implements **KEY_HOLD pseudo layer** to produce an alternativ key (a symbol or diacrit) without the need of an layer activiation key - similar to the autoshift concept  
-* implements an additional  **SHIFT + KEY_HOLD pseudo layer**  (can also be accessed by DOUBLE_TAP_HOLD)
-* uses  home row mods (mod tap and custom homerow shift)
-* custom Homerow mod early Shift - allows too release shift keys early as most people will do when typing fast
-* because pseudo layers don't require additional layer activiation keys, this concept is promising for any qmk compatible keyboard (without spare keys for layer activation)
-* combined Numpad and Navigation layer
+* implements an additional  **SHIFT + KEY_HOLD pseudo layer**  (also accessible by DOUBLE_TAP_HOLD)
+* uses home row mods (mod tap and custom homerow shift)
+* custom Homerow early Shift - allows too release shift keys early as most people will do when typing fast
+* because pseudo layers don't require additional layer activiation keys, this concept is also promising for any qmk keyboard (without spare keys for layer activation in convinient locations)
+* remember g and h could be used as layer activation keys 
+* combined Numpad and Navigation layer (can be activated by SPACE wich enable one and two handed input)
 * layer lock with dbl tapping OSL layer key as custom key (avoids dbltap aktivation on OSM modifiers)
 * phone like, strong finger numpad
 * proper (pyramide) arranged cursor keys on a 40% keyboard
@@ -171,31 +172,25 @@ this requires the skill not to Hold a upper case letter longer than a lower case
 current exsamples when holding Shift and holding key  
 ```
  * activation            output  is shifted       implemented by
- * rsft + hold(F)         -> $   S                custom keycode  lsft + hold(F) -> sft + ctl
- * lsft + hold(N)         -> (   S                custom keycode  rsft + hold(N) -> sft + ctl
- info for home row shifts rsft+hold(F) -> '$' and lsft+hold(N) -> '('  to not only show up after key release they are handeled in matrix_scan_user too if activated
- * lsft + hold(T)         -> )   S                tapdance        also dbl_tap_hold (if super fast)  
- * rsft + hold(D)         -> #   N                tapdance        also dbl_tap_hold (if super fast)
  * sft + hold(,)          -> <   N                tapdance        also dbl_tap
  * sft + hold(.)          -> >   S                tapdance        also dbl_tap_hold
  * sft + hold(-)          -> ~   N                tapdance        also dbl_tap_hold
- * sft + hold(Q)          -> @   N                tapdance        also dbl_tap    
- * sft + hold(E)          -> []  N                tapdance        also dbl_tap_hold   
+ * sft + hold(Q)          -> !   S                tapdance        also dbl_tap 
+ * sft + hold(E)          -> ()  S                tapdance        also dbl_tap_hold
  * sft + hold(W)          -> ""  S                tapdance        also dbl_tap_hold
  * sft + hold(Z)          -> &&  S                tapdance        also dbl_tap_hold
  * sft + hold(C)          -> {}  N                tapdance        also dbl_tap_hold
- * sft + hold(L)          -> ''  S                tapdance        also dbl_tap_hold
  * sft + hold(I)          -> \\  N                tapdance        also dbl_tap_hold
  * sft + hold(H)          -> //  S                tapdance        also dbl_tap_hold
- * sft + hold(X)          -> ||  N                tapdance        also dbl_tap_hold
+ * sft + hold(X)          -> ''  S                tapdance        also dbl_tap_hold
  * sft + hold(B)          -> ++  N                tapdance        also dbl_tap_hold
  * sft + hold(G)          -> ==  S                tapdance        also dbl_tap_hold
- * sft + hold(A)          -> Ä   S                tapdance   
+ * sft + hold(A)          -> Ä   S                tapdance
  * sft + hold(U)          -> Ü   S                tapdance
- * sft + hold(O)          -> Ö   S                tapdance     
- * sft + hold(s)	  -> '   S	          tapdance
- * sft + hold(r)	  -> R   S	          tapdance
- * sft + hold(v)	  -> ent N	          tapdance
+ * sft + hold(O)          -> Ö   S                tapdance
+ * sft + hold(s)          -> |   N                tapdance
+ * sft + hold(r)          -> ????                 tapdance
+ * sft + hold(v)          -> ent N                tapdance        also dbl_tap
  
 ```
 learnings  

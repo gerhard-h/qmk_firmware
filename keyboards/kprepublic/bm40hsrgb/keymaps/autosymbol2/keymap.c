@@ -104,11 +104,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //     _______,     _______,      _______,      _______,       _______,       _______,       _______,       _______,       _______,       _______,        _______,        _______,        _______,        _______,        _______|
 //     _______,     _______,      _______,       KC_F12,         KC_F1,         KC_F2,         KC_F3,         KC_F4,         KC_F5,         KC_F6,          KC_F7,          KC_F8,          KC_F9,          KC_F10,        KC_F11,
 //     _______,   TO(_LSYM),      _______,
-                                                _______,   TD(TD_DASH),          KC_1,          KC_2,          KC_3,        KC_SPC,        KC_ESC,        KC_HOME,          KC_UP,         KC_END, LGUI_T(KC_PGUP),       KC_BSPC,
+                                                _______,   TD(TD_DASH),          KC_1,          KC_2,          KC_3,        KC_SPC,        KC_ESC,        KC_HOME,          KC_UP,         KC_END, LGUI_T(KC_PGUP),    TD(TD_BSP),
 //     _______,     _______,      _______,
                                                 _______,    TD(TD_DOT),  LALT_T(KC_4),  LCTL_T(KC_5),  LSFT_T(KC_6),   GUI_T(KC_0),        KC_TAB,        KC_LEFT,        KC_DOWN,        KC_RGHT, LALT_T(KC_PGDN),       _______,
 //     _______,     _______,      _______,
-                                                _______,   TD(TD_COMM),          KC_7,          KC_8,          KC_9,       KC_RBRC,        KC_ENT,        KC_BSPC,         KC_DEL,     KC_MS_BTN2,         _______,       _______,
+                                                _______,   TD(TD_COMM),          KC_7,          KC_8,          KC_9,       KC_RBRC,        KC_ENT,     TD(TD_BSP),         KC_DEL,     KC_MS_BTN2,         _______,       _______,
 //     _______,     _______,      _______,
                                                 _______,       _______,       _______,       _______,       TG_LNAV,
 //                                                                                                                         _______,
@@ -189,9 +189,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //     _______,   TO(_GAME),      _______,
                                                  KC_F12,         KC_F1,         KC_F2,         KC_F3,         KC_F4,         KC_F5,         KC_F6,          KC_F7,          KC_F8,          KC_F9,         KC_F10,         KC_F11,
 //     _______,     _______,      _______,
-                                                _______,        KC_INS,        KC_APP,       KC_PSCR,    C(S(KC_F)),     A(KC_TAB),     A(KC_TAB),      PICKFIRST,        PICK2ND,        PICK3RD,         KC_APP,        _______,
+                                                _______,        KC_INS,        KC_APP,       KC_PSCR,    C(S(KC_F)),     A(KC_TAB),   TD(TD_ATAB),      PICKFIRST,        PICK2ND,        PICK3RD,         KC_APP,        _______,
 //     _______,     _______,      _______,
-                                                _______,       KC_LGUI,       KC_LALT,       KC_LCTL,       KC_LSFT,  A(S(KC_TAB)),  A(S(KC_TAB)),        KC_LSFT,        KC_LCTL,        KC_LALT,        KC_LGUI,        _______,
+                                                _______,       KC_LGUI,       KC_LALT,       KC_LCTL,       KC_LSFT,  A(S(KC_TAB)),   TD(TD_APUP),        KC_LSFT,        KC_LCTL,        KC_LALT,        KC_LGUI,        _______,
 //     _______,     _______,      _______,
                                                 _______,       _______,       _______,       _______,       _______,                      _______,        _______,          TG_L4,        _______,        KC_VOLD,        KC_VOLU
 )
