@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+#define RGBLIGHT_MODE_STATIC_LIGHT 1
 #include "print.h"
 #include QMK_KEYBOARD_H
 //#include "muse.h"
@@ -52,7 +52,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //     KC_VOLD,     KC_PGDN,        KC_NO,
                                           OSM(MOD_LSFT),      TD(TD_Y),      TD(TD_X),      TD(TD_C),      TD(TD_V),      TD(TD_B),      TD(TD_M),    TD(TD_COMM),     TD(TD_DOT),    TD(TD_DASH),          KC_UP, RSFT_T(KC_DEL),
 //     KC_LCTL,     KC_LALT,        KC_NO,
-                                          OSM(MOD_LCTL),       KC_LGUI, OSM(MOD_LALT),    OSL(_LSYM),    OSL(_LNAV),
+                                          OSM(MOD_LCTL),       KC_LGUI, OSM(MOD_LALT),    OSL(_L3),    OSL(_LNAV),
                                                                                                                                  LT(_LNAV,KC_SPC),
                                                                                                                                                 LT(_LSYM, KC_F24),       OSL(_L4),        KC_LEFT,        KC_DOWN,        KC_RGHT
 ),
@@ -134,7 +134,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //     _______,     TG(_L4),      _______,
                                                CIRCUMFL,       DE_EXLM,  TD(TD_DQUOT),    TD(TD_PAR),       KC_LPRN,        KC_DLR,       DE_AMPR,        KC_PERC,        DE_BSLS,        KC_NUHS,        DE_QUES,        _______,
 //     _______,     _______,      _______,
-                                                _______,     STICKTICK,       DE_PIPE,    TD(TD_SQU),    ALGR(KC_9),       KC_RPRN,       DE_SLSH,   TD(TD_DQUOT),    TD(TD_QUOT),        DE_EXLM,     ALGR(KC_E),        _______,
+                                                _______,     STICKTICK,       DE_PIPE,    TD(TD_SQU),    ALGR(KC_9),       KC_RPRN,       DE_SLSH,    TD(TD_ATAB),    TD(TD_APUP),        DE_EXLM,     ALGR(KC_E),        _______,
 //     _______,     _______,      _______,
                                                 KC_LSFT,      TICKTICK,   TD(TD_QUOT),    TD(TD_CUR),    ALGR(KC_0),       KC_RBRC,       DE_ASTR,     TD(TD_ANG),     S(KC_NUBS),        DE_TILD,          KC_UP,        _______,
 //     _______,     _______,      _______,
@@ -189,9 +189,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //     _______,   TO(_GAME),      _______,
                                                  KC_F12,         KC_F1,         KC_F2,         KC_F3,         KC_F4,         KC_F5,         KC_F6,          KC_F7,          KC_F8,          KC_F9,         KC_F10,         KC_F11,
 //     _______,     _______,      _______,
-                                                _______,        KC_INS,        KC_APP,       KC_PSCR,    C(S(KC_F)),     A(KC_TAB),   TD(TD_ATAB),      PICKFIRST,        PICK2ND,        PICK3RD,         KC_APP,        _______,
-//     _______,     _______,      _______,
                                                 _______,       KC_LGUI,       KC_LALT,       KC_LCTL,       KC_LSFT,  A(S(KC_TAB)),   TD(TD_APUP),        KC_LSFT,        KC_LCTL,        KC_LALT,        KC_LGUI,        _______,
+//     _______,     _______,      _______,
+                                                _______,        KC_INS,        KC_APP,       KC_PSCR,    C(S(KC_F)),     A(KC_TAB),   TD(TD_ATAB),      PICKFIRST,        PICK2ND,        PICK3RD,        KC_VOLU,        _______,
 //     _______,     _______,      _______,
                                                 _______,       _______,       _______,       _______,       _______,                      _______,        _______,          TG_L4,        _______,        KC_VOLD,        KC_VOLU
 )

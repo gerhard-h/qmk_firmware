@@ -100,21 +100,13 @@ void rgb_matrix_indicators_user(void) {
         case 6:
         //_L4:
                 rgb_matrix_set_color_all(0,1,60);
-                rgb_matrix_set_color(1, 150, 150, 50); // num pad
+                rgb_matrix_set_color(1, 150, 150, 50); // F1-4
                 rgb_matrix_set_color(2, 150, 150, 50);
                 rgb_matrix_set_color(3, 150, 150, 50);
                 rgb_matrix_set_color(4, 150, 150, 50);
-                rgb_matrix_set_color(13, 150, 150, 50);
-                rgb_matrix_set_color(14, 150, 150, 50);
-                rgb_matrix_set_color(15, 150, 150, 50);
-                rgb_matrix_set_color(16, 150, 150, 50);
-                rgb_matrix_set_color(25, 150, 150, 50);
-                rgb_matrix_set_color(26, 150, 150, 50);
-                rgb_matrix_set_color(27, 150, 150, 50);
-                rgb_matrix_set_color(28, 150, 150, 50);
-                rgb_matrix_set_color(19, 150, 150, 50); // makro
-                rgb_matrix_set_color(20, 150, 150, 50);
-                rgb_matrix_set_color(21, 150, 150, 50);
+                rgb_matrix_set_color(9, 150, 150, 50);  // F9-10
+                rgb_matrix_set_color(10, 150, 150, 50);
+                rgb_matrix_set_color(18, 150, 150, 50); //atab
                 rgb_matrix_set_color(45, 50, 10, 10); // volume
                 rgb_matrix_set_color(34, 50, 10, 10);
                 break;
