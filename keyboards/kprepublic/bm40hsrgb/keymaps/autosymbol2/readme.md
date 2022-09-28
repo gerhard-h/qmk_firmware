@@ -1,13 +1,17 @@
 # new usage report
-"'!€ on NTLK are not used  -> put makro keys here (multiTab)
-Left LSYM key not used -> LMOUSE or LFkey
+"'!€ on NTLK are not used  -> put makro keys here (multiTab) or -> *multi-alttab rm-multi-alttab 
+Left LSYM key not used -> *LMOUSE or LFkey
 L3 not used 
 LOWER+RAISE not activating L3 ( RAISE+LOWER or LOWER+L4)
 second gaming layer for  numbers and F keys missing 
-ALT + HoldR not used
-L4 + H (multiTab not used)
-L4 Makros not used -> relocate Modifiers
+ALT + HoldR not used and maks problems
+L4 + H/M (TD_APUP/TD_ATAB not used) 
+L4 Makros not used -> * relocate Modifiers Makros in bottom row
 L4 Lighting not up to date
+Double upper case like DEr or TIef bc of holding home row shift for to long: autocorretion if 
+a) it is the second UCase in sequence  
+b) timing is very fast  
+see force_unshift_tap  
 
 
 

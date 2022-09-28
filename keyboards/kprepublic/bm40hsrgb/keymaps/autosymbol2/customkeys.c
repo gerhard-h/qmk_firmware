@@ -118,6 +118,7 @@ void handle_force_shift_tap( uint16_t keycode, bool only_register) {
         if (force_shift_tap(keycode, false)) {
             return;
         }
+        // TODO add force_unshift_tap here
         else if (only_register) {
                 register_code16(keycode);
         } else {
