@@ -63,8 +63,8 @@ bool force_shift_tap( uint16_t keycode, bool only_register) {
                         case KC_Q:
                         case KC_W:
                         case KC_R:
+                        case KC_T:
                         case KC_E:
-                        case KC_J:
                         case KC_A:
                         case KC_S:
                         case KC_D:
@@ -84,13 +84,13 @@ bool force_shift_tap( uint16_t keycode, bool only_register) {
                                 }
                         
                         case KC_Y: //Z
+                        case KC_J:
                         case KC_U:
                         case KC_I:
                         case KC_O:
                         case KC_P:
                         case KC_H:
                         case KC_N:
-                        case KC_T:
                         case KC_L:
                         case KC_K:
                         case KC_M:
@@ -182,7 +182,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                         dprintf("lower n tap ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
                         dprintf("lower n tap diff: %u ls: %u rs: %u\n", f_lshft_timer - n_rshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
                         unregister_code(KC_LSFT);
-                        tap_code16(KC_N);
+                        tap_code16(KC_J);
                         register_code(KC_LSFT);
                         n_rshft_done = true;
                 } else if (timer_elapsed(n_rshft_timer) < 240 ) {  // < TAPPING_TERM x 2
@@ -192,7 +192,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                         } else {
                             dprintf("any N tap diff: %u ls: %u rs: %u\n", n_rshft_timer - f_lshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
                         }
-                        handle_force_shift_tap(KC_N, false); // TAP: can be n or N
+                        handle_force_shift_tap(KC_J, false); // TAP: can be n or N
                         n_rshft_done = true;
                 } 
 #ifdef HOMEROWSFTSSYMBOL
