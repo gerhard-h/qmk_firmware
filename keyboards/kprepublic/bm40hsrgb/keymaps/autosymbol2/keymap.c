@@ -50,7 +50,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //     KC_VOLU,     KC_PGUP,  TD(TD_APUP),
                                          HYPR_T(KC_TAB),      TD(TD_A),     TD(TD_SS),   CTL_T(KC_D),       F_LSHFT,      TD(TD_G),      TD(TD_H),        N_RSHFT,    CTL_T(KC_K),    ALT_T(KC_L),    TD(TD_DASH), RCTL_T(KC_ENT),
 //     KC_VOLD,     KC_PGDN,        KC_NO,
-                                          OSM(MOD_LSFT),      TD(TD_Y),      TD(TD_X),      TD(TD_C),      TD(TD_V),      TD(TD_B),      TD(TD_N),       TD(TD_M),    TD(TD_COMM),     TD(TD_DOT),           KC_UP, RSFT_T(KC_DEL),
+                                          OSM(MOD_LSFT),      TD(TD_Y),      TD(TD_X),      TD(TD_C),      TD(TD_V),      TD(TD_B),LT(_LSYM,KC_N),       TD(TD_M),    TD(TD_COMM),     TD(TD_DOT),           KC_UP, RSFT_T(KC_DEL),
 //     KC_LCTL,     KC_LALT,        KC_NO,
                                           OSM(MOD_LCTL),       KC_LGUI, OSM(MOD_LALT),    OSL(_L3),    OSL(_LNAV),
                                                                                                                                  LT(_LNAV,KC_SPC),
@@ -74,7 +74,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_SWAP] = LAYOUT_planck_mit(
 //     _______,     _______,      _______,      _______,       _______,       _______,       _______,       _______,       _______,       _______,        _______,        _______,        _______,        _______,        _______|
-                          TD(TD_ESC),      TD(TD_Q),      TD(TD_W),   TD(TD_E),    TD(TD_R),  TD(TD_J), TD(TD_Z), TD(TD_U),    TD(TD_I), TD(TD_O),     TD(TD_P),        KC_BSPC,
+                          TD(TD_ESC),      TD(TD_Q),      TD(TD_W),   TD(TD_E),    TD(TD_R),  TD(TD_T), TD(TD_Z), TD(TD_U),    TD(TD_I), TD(TD_O),     TD(TD_P),        KC_BSPC,
                        CTL_T(KC_TAB),      TD(TD_A),     TD(TD_SS), LCTL_T(KC_D),    F_LSHFT,  TD(TD_G), TD(TD_H),      N_RSHFT,     CTL_T(KC_T),  ALT_T(KC_L),  GUI_T(KC_K), RCTL_T(KC_ENT),
                        OSM(MOD_LSFT),      TD(TD_Y),      TD(TD_X),   TD(TD_C),    TD(TD_V),  TD(TD_B), TD(TD_M),  TD(TD_COMM),  TD(TD_DOT),  TD(TD_DASH),        KC_UP, RSFT_T(KC_DEL),
                        OSM(MOD_LCTL), OSM(MOD_LGUI), OSM(MOD_LALT), OSL(_LNAV),  OSL(_LNAV),
@@ -177,9 +177,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | F12  |   F1 |   F2 |   F3 |   F4 |   F5 |   F6 |   F7 |   F8 |   F9 |  F10 |  F11 |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |  INS |  APP | PSCR | C+S+F| ATAB | ATAB |  1st |  2nd | 3rd  |  APP |      |
+ * |      |  WIN |  ALT | CTRL | SHFT | ATAB-| ATPU | SHFT | CTRL | ALT  |  WIN |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |  WIN |  ALT | CTRL | SHFT | ATAB-| ATAB-| SHFT | CTRL | ALT  |  WIN |      |
+ * |      |  INS |  APP | PSCR | C+S+F| ATAB | ATAB |  1st |  2nd | 3rd  | VOL+ |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * |      |      |      |      |      |             |      | lock |      | VOL- | VOL+ |
  * `-----------------------------------------------------------------------------------'

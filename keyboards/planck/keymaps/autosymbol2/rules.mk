@@ -15,7 +15,7 @@ COMBO_ENABLE = no
 # todo needed at least sym_defer_g on planck -> otimization potential
 # retest of NKRO no benefits spotted on planck so far
 DEBOUNCE_TYPE = sym_defer_g
-NKRO_ENABLE = yes
+NKRO_ENABLE = no
 COMMAND_ENABLE = no
 SLEEP_LED_ENABLE = no
 #Plank SWAP_HANDS is not usable
