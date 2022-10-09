@@ -106,9 +106,11 @@ void rgb_matrix_indicators_user(void) {
                 rgb_matrix_set_color(4, 150, 150, 50);
                 rgb_matrix_set_color(9, 150, 150, 50);  // F9-10
                 rgb_matrix_set_color(10, 150, 150, 50);
-                rgb_matrix_set_color(18, 150, 150, 50); //atab
+                rgb_matrix_set_color(32, 150, 150, 50); //makro
+                rgb_matrix_set_color(33, 150, 150, 50);
+                rgb_matrix_set_color(31, 150, 150, 50);
                 rgb_matrix_set_color(45, 50, 10, 10); // volume
-                rgb_matrix_set_color(34, 50, 10, 10);
+                rgb_matrix_set_color(46, 50, 10, 10);
                 break;
         }
 }

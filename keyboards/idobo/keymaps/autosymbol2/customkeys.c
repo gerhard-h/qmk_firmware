@@ -8,6 +8,7 @@ enum custom_keycodes {
     CIRCUMFL,
     TICKTICK,
     STICKTICK,
+    BACKLIT,
     N_RSHFT,
     F_LSHFT,
     TG_LNAV,
@@ -54,7 +55,6 @@ bool _force_shift_tap( uint16_t keycode, bool sft_done, bool sft_pressed, bool o
         return false;
 }
 
-// TODO refactor: move force_leftside_shift_tap/force_rightside_shift_tap and timer reset: if (f_lshft_pressed || n_rshft_pressed){shft_used_timer = timer_read();} into a single funktion
 bool force_shift_tap( uint16_t keycode, bool only_register) {
         // by dividing the keyboard in left and right this function allows for pressing multiple home row modifiers (including shift) at the same time on the same side of the keyboard (without enforcing uppercase letters)
         // this function only outputs a key if a enforced shift is necessary
@@ -63,8 +63,8 @@ bool force_shift_tap( uint16_t keycode, bool only_register) {
                         case KC_Q:
                         case KC_W:
                         case KC_R:
+                        case KC_T:
                         case KC_E:
-                        case KC_J:
                         case KC_A:
                         case KC_S:
                         case KC_D:
@@ -84,16 +84,15 @@ bool force_shift_tap( uint16_t keycode, bool only_register) {
                                 }
                         
                         case KC_Y: //Z
+                        case KC_J:
                         case KC_U:
                         case KC_I:
                         case KC_O:
                         case KC_P:
                         case KC_H:
                         case KC_N:
-                        case KC_T:
                         case KC_L:
                         case KC_K:
-                        //case MT(MOD_LALT, KC_K): // this line seems pointless todo
                         case KC_M:
                         case KC_COMM:
                         case KC_DOT:
@@ -119,6 +118,7 @@ void handle_force_shift_tap( uint16_t keycode, bool only_register) {
         if (force_shift_tap(keycode, false)) {
             return;
         }
+        // TODO add force_unshift_tap here
         else if (only_register) {
                 register_code16(keycode);
         } else {
@@ -161,7 +161,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
    // first lets handel custom keycodes
    switch (keycode) {
         case N_RSHFT:
-              // bug sometimes Fe becomes Nfe  ... logging improved happens if timing is blow tappingterm 120, 
+              // bug sometimes Fe becomes Nfe ... logging improved happens if timing is blow tappingterm 120, 
               if(record->event.pressed) {
                 // immediatly Shift
                 n_rshft_pressed = true;      
@@ -175,13 +175,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 n_rshft_pressed = false;      
                 unregister_code(KC_RSFT);
                 dprintf("unregister_code(KC_RSFT)\n");
-                if (timer_elapsed(n_rshft_timer) < 100 && n_rshft_timer < f_lshft_timer && f_lshft_timer - n_rshft_timer < 80){
+                // lower value from 100 to 90 22.08.
+                if (timer_elapsed(n_rshft_timer) < 80 && n_rshft_timer < f_lshft_timer && f_lshft_timer - n_rshft_timer < 80){
                   //preserver lowercase n: if F (lsft) was pressed after N-down but before N-up don't shift N
                   
                         dprintf("lower n tap ft: %u nt: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
                         dprintf("lower n tap diff: %u ls: %u rs: %u\n", f_lshft_timer - n_rshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
                         unregister_code(KC_LSFT);
-                        tap_code16(KC_N);
+                        tap_code16(KC_J);
                         register_code(KC_LSFT);
                         n_rshft_done = true;
                 } else if (timer_elapsed(n_rshft_timer) < 240 ) {  // < TAPPING_TERM x 2
@@ -191,7 +192,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                         } else {
                             dprintf("any N tap diff: %u ls: %u rs: %u\n", n_rshft_timer - f_lshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
                         }
-                        handle_force_shift_tap(KC_N, false); // TAP: can be n or N
+                        handle_force_shift_tap(KC_J, false); // TAP: can be n or N
                         n_rshft_done = true;
                 } 
 #ifdef HOMEROWSFTSSYMBOL
@@ -217,7 +218,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 f_lshft_pressed = false;
                 unregister_code(KC_LSFT); // Change the key that was held here, too!
                 dprintf("unregister_code(KC_LSFT)\n");
-                if (timer_elapsed(f_lshft_timer) < 100 && f_lshft_timer < n_rshft_timer && n_rshft_timer - f_lshft_timer < 80){  //here you set something similar to TAPPING_TERM for F_LSHFT ~ 100
+                if (timer_elapsed(f_lshft_timer) < 80 && f_lshft_timer < n_rshft_timer && n_rshft_timer - f_lshft_timer < 80){  //here you set something similar to TAPPING_TERM for F_LSHFT ~ 100
                         // protect lower "f" from delayed shifting: if the other home row shift N_RSHFT was pressed short after F-down but before F-up don't shift f
                         dprintf("lower F tap f down timer: %u n down timer: %u pressed: %b time: %u\n", f_lshft_timer, n_rshft_timer, record->event.pressed, record->event.time);
                         dprintf("lower F tap diff: %u ls: %u rs: %u\n", n_rshft_timer - f_lshft_timer, mod_state & MOD_BIT(KC_LSFT), mod_state & MOD_BIT(KC_RSFT));
@@ -373,7 +374,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         } else {
            if (is_oneshot_layer_active()) clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
         }
-        break;   
+        break;
+   case BACKLIT:
+      if (record->event.pressed) {
+        register_code(KC_RSFT);
+        #ifdef BACKLIGHT_ENABLE
+          backlight_step();
+        #endif
+      } else {
+        unregister_code(KC_RSFT);
+      }
+      return false;
+      break;   
     }
 // lets handel the KEY_HOLD feature keycodes
 /*    if (!hold_feature_active) return true;  
