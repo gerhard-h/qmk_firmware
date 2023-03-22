@@ -4,7 +4,7 @@ Left LSYM key not used -> *LMOUSE or LFkey
 L3 not used 
 LOWER+RAISE not activating L3 ( RAISE+LOWER or LOWER+L4)
 second gaming layer for  numbers and F keys missing 
-ALT + HoldR not used and maks problems
+ALT + HoldR not used and makes problems
 L4 + H/M (TD_APUP/TD_ATAB not used) 
 L4 Makros not used -> * relocate Modifiers Makros in bottom row
 L4 Lighting not up to date
